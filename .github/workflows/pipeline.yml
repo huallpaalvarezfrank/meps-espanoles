@@ -1,0 +1,44 @@
+name: Pipeline diario MEPs
+
+on:
+  schedule:
+    - cron: '0 22 * * *'  # 23:00 hora española (UTC+1)
+  workflow_dispatch:       # permite lanzar manualmente desde GitHub
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: |
+          pip install playwright pandas openpyxl anthropic
+          python -m playwright install chromium
+          python -m playwright install-deps chromium
+
+      - name: Scraping (EU.py)
+        run: python EU.py --headless
+
+      - name: Clasificar reuniones nuevas (clasificar.py)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -X utf8 clasificar.py
+
+      - name: Normalizar nombres (normalizar.py)
+        run: python -X utf8 normalizar.py
+
+      - name: Commit y push BD actualizada
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add meps_es_reuniones.db revisar.csv
+          git diff --staged --quiet || git commit -m "Actualización automática $(date +'%Y-%m-%d')"
+          git push
