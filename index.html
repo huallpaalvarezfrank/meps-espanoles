@@ -33,12 +33,17 @@
     button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     select,input{font:inherit}
 
-    /* Loading */
-    #loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;z-index:1000;transition:opacity .5s}
-    #loading.out{opacity:0;pointer-events:none}
-    .spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--b);border-top-color:var(--blue);animation:spin .75s linear infinite}
-    .ld-stars{color:var(--gold);font-size:1.2rem;letter-spacing:5px;animation:pulse 1.6s ease-in-out infinite}
-    .ld-text{font-size:.85rem;color:var(--t2)}
+    /* Loading — thin progress bar only */
+    #db-bar{position:fixed;top:0;left:0;height:3px;background:var(--blue);z-index:500;width:0;transition:width .3s ease}
+    #db-bar.done{width:100%;opacity:0;transition:width .4s ease,opacity .4s ease .1s}
+    .spinner{width:28px;height:28px;border-radius:50%;border:2px solid var(--b);border-top-color:var(--blue);animation:spin .75s linear infinite}
+
+    /* Skeleton pulse */
+    @keyframes skel-pulse{0%,100%{opacity:.45}50%{opacity:.9}}
+    .skel-num{display:inline-block;height:1.9rem;width:72px;background:rgba(0,0,0,0.07);border-radius:var(--rf);animation:skel-pulse 1.3s ease infinite;vertical-align:middle}
+    .skel-line{height:13px;border-radius:var(--rf);background:rgba(0,0,0,0.07);animation:skel-pulse 1.3s ease infinite;width:100%}
+    .skel-line.w40{width:40%}.skel-line.w60{width:60%}.skel-line.w80{width:80%}
+    .skel-row td{padding:.9rem 1rem}.skel-row .skel-line{margin:2px 0}
 
     /* Header */
     .hdr{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--b);height:60px;padding:0 1.75rem;display:flex;align-items:center;justify-content:space-between}
@@ -62,17 +67,18 @@
     .tab-btn.on{color:var(--t);border-bottom-color:var(--blue)}
 
     /* Hero */
-    .hero{padding:5rem 1.5rem 3rem;text-align:center;position:relative;overflow:hidden}
-    .hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse at center,rgba(37,99,235,.06) 0%,transparent 65%);pointer-events:none}
-    .eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-size:.73rem;font-weight:600;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--gold-d);background:var(--gold-d);padding:.28rem .85rem;border-radius:var(--rf);margin-bottom:1.5rem}
-    .hero h1{font-size:clamp(1.9rem,5vw,3.4rem);font-weight:800;letter-spacing:-.025em;line-height:1.12;max-width:800px;margin:0 auto 1rem}
-    .hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue-l) 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .hero p{font-size:.97rem;color:var(--t2);max-width:500px;margin:0 auto 2.5rem}
-    .srch-wrap{position:relative;max-width:640px;margin:0 auto}
+    .hero{padding:3.5rem 1.5rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse at center,rgba(37,99,235,.05) 0%,transparent 65%);pointer-events:none}
+    .hero-label{display:inline-flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:700;color:var(--blue);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem}
+    .hero-label::before,.hero-label::after{content:'';width:24px;height:1px;background:var(--blue);opacity:.4}
+    .hero h1{font-size:clamp(1.6rem,4vw,2.8rem);font-weight:800;letter-spacing:-.025em;line-height:1.15;max-width:720px;margin:0 auto .85rem}
+    .hero h1 em{font-style:normal;color:var(--blue)}
+    .hero p{font-size:.93rem;color:var(--t2);max-width:480px;margin:0 auto 2rem}
+    .srch-wrap{position:relative;max-width:600px;margin:0 auto}
     .srch-wrap svg{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--t3)}
-    #q{width:100%;padding:.95rem 1rem .95rem 2.9rem;font-size:1rem;background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);color:var(--t);outline:none;transition:border-color .2s,box-shadow .2s;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+    #q{width:100%;padding:.9rem 1rem .9rem 2.9rem;font-size:.97rem;background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);color:var(--t);outline:none;transition:border-color .2s,box-shadow .2s;box-shadow:0 2px 12px rgba(0,0,0,.07)}
     #q::placeholder{color:var(--t3)}
-    #q:focus{border-color:var(--blue);box-shadow:0 4px 16px rgba(0,0,0,.08),0 0 0 3px rgba(37,99,235,.15)}
+    #q:focus{border-color:var(--blue);box-shadow:0 2px 12px rgba(0,0,0,.07),0 0 0 3px rgba(37,99,235,.12)}
 
     /* Stats */
     .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;max-width:880px;margin:0 auto;padding:0 1.5rem 3rem}
@@ -81,15 +87,18 @@
     .stat-l{font-size:.72rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:.15rem}
 
     /* Filters */
-    .filters{max-width:1200px;margin:0 auto;padding:0 1.5rem 1.25rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
-    .sel{padding:.48rem 2.1rem .48rem .8rem;background:var(--surf);border:1px solid var(--b);border-radius:var(--rm);color:var(--t);font-size:.85rem;outline:none;cursor:pointer;transition:border-color .18s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%238496c0' d='M5 7L1 3h8z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .65rem center}
-    .sel option{background:#f1f5f9}
-    .sel:hover,.sel:focus{border-color:var(--blue)}
-    .btn-sm{padding:.48rem .85rem;font-size:.85rem;color:var(--t2);border:1px solid var(--b);border-radius:var(--rm);transition:all .18s}
+    .filters-bar{max-width:1200px;margin:0 auto;padding:0 1.5rem 1rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--b);padding-bottom:1rem;margin-bottom:.5rem}
+    .filters-label{font-size:.72rem;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-right:.25rem;white-space:nowrap}
+    .sel{padding:.42rem 2rem .42rem .75rem;background:var(--surf);border:1px solid var(--b);border-radius:var(--rf);color:var(--t);font-size:.83rem;outline:none;cursor:pointer;transition:border-color .18s,box-shadow .18s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%2394a3b8' d='M5 7L1 3h8z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6rem center}
+    .sel option{background:#fff}
+    .sel:hover{border-color:var(--bh)}.sel:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+    .sel.active-filter{border-color:var(--blue);background-color:rgba(37,99,235,.05);color:var(--blue);font-weight:500}
+    .btn-sm{padding:.42rem .8rem;font-size:.83rem;color:var(--t2);border:1px solid var(--b);border-radius:var(--rf);transition:all .18s}
     .btn-sm:hover{color:var(--t);border-color:var(--bh)}
+    .filter-count{font-size:.78rem;font-weight:600;color:var(--blue);background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.15);border-radius:var(--rf);padding:.25rem .65rem;white-space:nowrap}
 
     /* Results count */
-    .rbar{max-width:1200px;margin:0 auto;padding:0 1.5rem .75rem;font-size:.8rem;color:var(--t3)}
+    .rbar{max-width:1200px;margin:0 auto;padding:.5rem 1.5rem .75rem;font-size:.8rem;color:var(--t3)}
 
     /* Table */
     .tbl-wrap{max-width:1200px;margin:0 auto;padding:0 1.5rem;overflow-x:auto}
@@ -225,18 +234,31 @@
 
     /* Responsive */
     @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
-    @media(max-width:768px){.stats{grid-template-columns:repeat(2,1fr)}.td-title{display:none}.logo-sub{display:none}.tab-btn{font-size:.8rem;padding:.75rem .75rem}}
+    @media(max-width:768px){
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .td-title{display:none}
+      .tab-btn{font-size:.82rem;padding:.7rem .8rem}
+      th:nth-child(5),td:nth-child(5){display:none}
+      .filters-bar{gap:.4rem}
+    }
+    @media(max-width:600px){
+      .hero{padding:2.5rem 1rem 2rem}
+      th:nth-child(4),td:nth-child(4){display:none}
+      .stats{gap:.5rem}
+      .stat{padding:.9rem .75rem}
+      .stat-n{font-size:1.5rem}
+      .hdr{padding:0 1rem}
+      .filters-bar{padding:0 1rem 1rem}
+      .tbl-wrap{padding:0 .75rem}
+      .an-subnav{flex-wrap:wrap;gap:.3rem}
+    }
     @media(max-width:520px){.mep-photo{display:none}}
   </style>
 </head>
 <body>
 
-<!-- Loading -->
-<div id="loading">
-  <div class="ld-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
-  <div class="spinner"></div>
-  <div class="ld-text" data-i18n="loading">Cargando base de datos…</div>
-</div>
+<!-- Progress bar -->
+<div id="db-bar"></div>
 
 <!-- Header -->
 <header class="hdr">
@@ -258,8 +280,8 @@
 
 <!-- Tab nav -->
 <nav class="tab-nav">
-  <button class="tab-btn on" data-tab="search" data-i18n="tab-search">🔍 Buscar reuniones</button>
-  <button class="tab-btn" data-tab="analisis" data-i18n="tab-analysis">📊 Análisis</button>
+  <button class="tab-btn on" data-tab="search">Buscar reuniones</button>
+  <button class="tab-btn" data-tab="analisis">Análisis</button>
 </nav>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -267,9 +289,9 @@
 <!-- ═══════════════════════════════════════════════ -->
 <div id="panel-search">
   <section class="hero">
-    <div class="eyebrow fu" data-i18n="eyebrow">★ &nbsp;Parlamento Europeo</div>
-    <h1 class="fu d1" data-i18n-html="hero-h1">¿Con quién se reúnen los <em>eurodiputados españoles</em>?</h1>
-    <p class="fu d2" data-i18n="hero-p">Portal de transparencia sobre las reuniones de los 60 eurodiputados españoles con empresas, organizaciones e instituciones.</p>
+    <div class="hero-label fu">Parlamento Europeo · Transparencia</div>
+    <h1 class="fu d1">¿Con quién se reúnen los <em>eurodiputados españoles</em>?</h1>
+    <p class="fu d2">Explora las reuniones declaradas por los 60 MEPs españoles con empresas, organizaciones e instituciones.</p>
     <div class="srch-wrap fu d3">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input id="q" type="text" placeholder="Busca por empresa, organización, eurodiputado…" data-i18n-ph="search-ph" autocomplete="off">
@@ -277,22 +299,24 @@
   </section>
 
   <div class="stats">
-    <div class="stat fu d1"><div class="stat-n" id="s-r">—</div><div class="stat-l" data-i18n="stat-meetings">Reuniones</div></div>
-    <div class="stat fu d2"><div class="stat-n" id="s-m">—</div><div class="stat-l" data-i18n="stat-meps">Eurodiputados</div></div>
-    <div class="stat fu d2"><div class="stat-n" id="s-o">—</div><div class="stat-l" data-i18n="stat-orgs">Organizaciones</div></div>
-    <div class="stat fu d3"><div class="stat-n" id="s-s">—</div><div class="stat-l" data-i18n="stat-sectors">Ámbitos</div></div>
+    <div class="stat fu d1"><div class="stat-n" id="s-r"><span class="skel-num"></span></div><div class="stat-l">Reuniones</div></div>
+    <div class="stat fu d2"><div class="stat-n" id="s-m"><span class="skel-num"></span></div><div class="stat-l">Eurodiputados</div></div>
+    <div class="stat fu d2"><div class="stat-n" id="s-o"><span class="skel-num"></span></div><div class="stat-l">Organizaciones</div></div>
+    <div class="stat fu d3"><div class="stat-n" id="s-s"><span class="skel-num"></span></div><div class="stat-l">Ámbitos</div></div>
   </div>
 
-  <div class="filters">
-    <select class="sel" id="f-sector"><option value="" data-i18n="filter-all-sectors">Todos los ámbitos</option></select>
-    <select class="sel" id="f-mep"><option value="" data-i18n="filter-all-meps">Todos los eurodiputados</option></select>
-    <select class="sel" id="f-partido"><option value="" data-i18n="filter-all-parties">Todos los partidos</option></select>
+  <div class="filters-bar">
+    <span class="filters-label">Filtrar</span>
+    <select class="sel" id="f-sector"><option value="">Todos los ámbitos</option></select>
+    <select class="sel" id="f-mep"><option value="">Todos los eurodiputados</option></select>
+    <select class="sel" id="f-partido"><option value="">Todos los partidos</option></select>
     <select class="sel" id="f-tipo">
-      <option value="" data-i18n="filter-all-types">Individual y Grupal</option>
-      <option value="Individual" data-i18n="tipo-individual">Individual</option>
-      <option value="Grupal" data-i18n="tipo-grupal">Grupal</option>
+      <option value="">Individual y Grupal</option>
+      <option value="Individual">Individual</option>
+      <option value="Grupal">Grupal</option>
     </select>
-    <button class="btn-sm" onclick="clearAll()" data-i18n="btn-clear">✕ Limpiar</button>
+    <button class="btn-sm" onclick="clearAll()">Limpiar</button>
+    <span class="filter-count" id="filter-count" hidden></span>
   </div>
 
   <div class="rbar" id="rbar" data-i18n="loading">Cargando…</div>
@@ -307,7 +331,13 @@
           <th data-i18n="th-type">Tipo</th>
           <th data-i18n="th-meeting">Reunión</th>
         </tr></thead>
-        <tbody id="tbody"></tbody>
+        <tbody id="tbody">
+          <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td></tr>
+          <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td></tr>
+          <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td></tr>
+          <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td></tr>
+          <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td></tr>
+        </tbody>
       </table>
     </div>
   </div>
@@ -329,9 +359,9 @@
 
     <!-- Sub-nav pills -->
     <div class="an-subnav">
-      <button class="an-btn on" data-an="sectors" data-i18n="an-tab-sectors">📊 Por ámbito</button>
-      <button class="an-btn" data-an="meps" data-i18n="an-tab-meps">👤 Por eurodiputado</button>
-      <button class="an-btn" data-an="partidos" data-i18n="an-tab-parties">🏛️ Por partido</button>
+      <button class="an-btn on" data-an="sectors">Por ámbito</button>
+      <button class="an-btn" data-an="meps">Por eurodiputado</button>
+      <button class="an-btn" data-an="partidos">Por partido</button>
     </div>
 
     <!-- ─── Sectores view ─── -->
@@ -734,18 +764,23 @@ function mkChart(id, config) {
 // ── Boot ─────────────────────────────────────────────────────
 (async () => {
   applyDefaults();
+  // Animate progress bar
+  const bar = document.getElementById('db-bar');
+  let pct = 0;
+  const prog = setInterval(() => { pct = Math.min(pct + Math.random() * 12, 85); bar.style.width = pct + '%'; }, 200);
   try {
     const SQL = await initSqlJs({ locateFile: f => WASM + f });
     const buf = await (await fetch('meps_es_reuniones.db')).arrayBuffer();
     db = new SQL.Database(new Uint8Array(buf));
+    clearInterval(prog);
+    bar.style.width = '100%';
+    setTimeout(() => bar.classList.add('done'), 100);
     initStats();
     initFilters();
     run(0);
-    const ld = document.getElementById('loading');
-    ld.classList.add('out');
-    setTimeout(() => ld.remove(), 600);
   } catch(e) {
-    document.querySelector('.ld-text').textContent = t('loading-error');
+    clearInterval(prog);
+    bar.style.background = '#ef4444';
     console.error(e);
   }
 })();
@@ -831,6 +866,20 @@ function render(rows, total, p) {
   document.getElementById('rbar').textContent = total
     ? t('showing').replace('{from}', fmt(from)).replace('{to}', fmt(to)).replace('{total}', fmt(total))
     : t('no-results');
+  // Filter count badge
+  const fc = document.getElementById('filter-count');
+  const sector = document.getElementById('f-sector').value;
+  const mepId  = document.getElementById('f-mep').value;
+  const partido= document.getElementById('f-partido').value;
+  const tipo   = document.getElementById('f-tipo').value;
+  const active = [sector, mepId, partido, tipo].filter(Boolean).length;
+  fc.hidden = !active;
+  if (active) fc.textContent = `${fmt(total)} resultado${total!==1?'s':''}`;
+  // Highlight active selects
+  ['f-sector','f-mep','f-partido','f-tipo'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.toggle('active-filter', !!el.value);
+  });
   document.getElementById('tbody').innerHTML = rows.length
     ? rows.map(rowHtml).join('')
     : `<tr><td colspan="6" style="padding:3rem;text-align:center;color:var(--t3)">${t('no-rows')}</td></tr>`;
@@ -925,8 +974,8 @@ function renderSectorsView() {
         tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')} (${Math.round(ctx.raw/totalR*100)}%)` } }
       },
       scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8496c0' }, border: { color: 'rgba(255,255,255,0.05)' } },
-        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 12 }, autoSkip: false }, border: { display: false } }
+        x: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#94a3b8' }, border: { color: 'rgba(0,0,0,0.06)' } },
+        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 12 }, autoSkip: false }, border: { display: false } }
       },
       onClick: (_, els) => { if (els.length) showSectorDetail(labels[els[0].index]); }
     }
@@ -940,7 +989,7 @@ function renderSectorsView() {
       labels: tipos.map(r=>r[0]),
       datasets: [{ data: tipos.map(r=>r[1]), backgroundColor: ['rgba(37,99,235,.65)','rgba(201,168,76,.65)','rgba(107,114,128,.5)'], borderColor: ['#2563eb','#c9a84c','#6b7280'], borderWidth: 1, hoverOffset: 6 }]
     },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'right', labels: { color: '#8496c0' } }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} (${Math.round(ctx.raw/totalR*100)}%)` } } } }
+    options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'right', labels: { color: '#475569' } }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} (${Math.round(ctx.raw/totalR*100)}%)` } } } }
   });
 }
 
@@ -982,7 +1031,7 @@ function goToSectorFull(sector) {
   mkChart('c-sect-tipos', {
     type: 'doughnut',
     data: { labels: tipos.map(r=>r[0]), datasets: [{ data: tipos.map(r=>r[1]), backgroundColor: ['rgba(37,99,235,.65)','rgba(201,168,76,.65)','rgba(107,114,128,.5)'], borderColor: ['#2563eb','#c9a84c','#6b7280'], borderWidth: 1, hoverOffset: 6 }] },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'right', labels: { color: '#8496c0' } }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} (${Math.round(ctx.raw/totalSect*100)}%)` } } } }
+    options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'right', labels: { color: '#475569' } }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} (${Math.round(ctx.raw/totalSect*100)}%)` } } } }
   });
 
   // Top orgs
@@ -1011,8 +1060,8 @@ function goToSectorFull(sector) {
       indexAxis: 'y', responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}` } } },
       scales: {
-        x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8496c0' }, border: { display: false } },
-        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 12 }, autoSkip: false }, border: { display: false } }
+        x: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { color: '#94a3b8' }, border: { display: false } },
+        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 12 }, autoSkip: false }, border: { display: false } }
       }
     }
   });
@@ -1073,8 +1122,8 @@ function renderMepsView() {
         tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')} · ${shortParty(parties[ctx.dataIndex])}` } }
       },
       scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8496c0' }, border: { color: 'rgba(255,255,255,0.05)' } },
-        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 11 }, autoSkip: false }, border: { display: false } }
+        x: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#94a3b8' }, border: { color: 'rgba(0,0,0,0.06)' } },
+        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 11 }, autoSkip: false }, border: { display: false } }
       },
       onClick: (_, els) => { if (els.length) showMepDetail(mepIds[els[0].index]); }
     }
@@ -1118,14 +1167,14 @@ function showMepDetail(mepId) {
       labels: sects.map(r=>r[0]),
       datasets: [{ data: sects.map(r=>r[1]), backgroundColor: sects.map(r=>(C[r[0]]||C['Otros'])[0]), borderColor: sects.map(r=>(C[r[0]]||C['Otros'])[1]), borderWidth: 1, hoverOffset: 6 }]
     },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '58%', plugins: { legend: { position: 'right', labels: { color: '#8496c0', font: { size: 11 }, padding: 10 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} (${Math.round(ctx.raw/total*100)}%)` } } } }
+    options: { responsive: true, maintainAspectRatio: false, cutout: '58%', plugins: { legend: { position: 'right', labels: { color: '#475569', font: { size: 11 }, padding: 10 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} (${Math.round(ctx.raw/total*100)}%)` } } } }
   });
 
   const years = db.exec("SELECT substr(fecha,1,4) yr, COUNT(*) n FROM reuniones WHERE mep_id=? AND fecha IS NOT NULL GROUP BY yr ORDER BY yr",[mepId])[0]?.values ?? [];
   mkChart('c-mep-year', {
     type: 'bar',
     data: { labels: years.map(r=>r[0]), datasets: [{ data: years.map(r=>r[1]), backgroundColor: 'rgba(37,99,235,.55)', borderColor: '#2563eb', borderWidth: 1, borderRadius: 4 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}` } } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8496c0' }, border: { display: false } }, x: { grid: { display: false }, ticks: { color: '#8496c0' }, border: { display: false } } } }
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}` } } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,.06)' }, ticks: { color: '#94a3b8' }, border: { display: false } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' }, border: { display: false } } } }
   });
 
   const rows = db.exec("SELECT actores FROM reuniones WHERE mep_id=? AND actores IS NOT NULL",[mepId])[0]?.values ?? [];
@@ -1194,8 +1243,8 @@ function renderPartidosView() {
         tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')} (${Math.round(ctx.raw/totalR*100)}%)` } }
       },
       scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8496c0' }, border: { display: false } },
-        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 13 }, autoSkip: false }, border: { display: false } }
+        x: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#94a3b8' }, border: { display: false } },
+        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 13 }, autoSkip: false }, border: { display: false } }
       },
       onClick: (_, els) => { if (els.length) showPartidoDetail(full[els[0].index]); }
     }
@@ -1230,8 +1279,8 @@ function showPartidoDetail(partido) {
       indexAxis: 'y', responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}` } } },
       scales: {
-        x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8496c0' }, border: { display: false } },
-        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 11 }, autoSkip: false }, border: { display: false } }
+        x: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { color: '#94a3b8' }, border: { display: false } },
+        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 11 }, autoSkip: false }, border: { display: false } }
       },
       onClick: (_, els) => { if (els.length) { switchAnTab('meps'); showMepDetail(mepIds[els[0].index]); } }
     }
@@ -1249,7 +1298,7 @@ function showPartidoDetail(partido) {
       labels: sects.map(r => r[0]),
       datasets: [{ data: sects.map(r => r[1]), backgroundColor: sects.map(r => (C[r[0]]||C['Otros'])[0]), borderColor: sects.map(r => (C[r[0]]||C['Otros'])[1]), borderWidth: 1, hoverOffset: 6 }]
     },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '58%', plugins: { legend: { position: 'right', labels: { color: '#8496c0', font: { size: 11 }, padding: 10 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} (${Math.round(ctx.raw/total*100)}%)` } } } }
+    options: { responsive: true, maintainAspectRatio: false, cutout: '58%', plugins: { legend: { position: 'right', labels: { color: '#475569', font: { size: 11 }, padding: 10 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} (${Math.round(ctx.raw/total*100)}%)` } } } }
   });
 
   // Bar: años
@@ -1260,7 +1309,7 @@ function showPartidoDetail(partido) {
   mkChart('c-partido-year', {
     type: 'bar',
     data: { labels: years.map(r => r[0]), datasets: [{ data: years.map(r => r[1]), backgroundColor: partyBg(partido), borderColor: partyBorder(partido), borderWidth: 1, borderRadius: 4 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}` } } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8496c0' }, border: { display: false } }, x: { grid: { display: false }, ticks: { color: '#8496c0' }, border: { display: false } } } }
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}` } } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,.06)' }, ticks: { color: '#94a3b8' }, border: { display: false } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' }, border: { display: false } } } }
   });
 
   // Top orgs
