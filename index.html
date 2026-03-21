@@ -71,6 +71,8 @@
     .hdr-nav{display:flex;align-items:center;gap:.25rem}
     .hdr-nav-link{font-size:.8rem;font-weight:500;color:var(--t2);padding:.3rem .7rem;border-radius:var(--rm);transition:all .18s}
     .hdr-nav-link:hover{color:var(--blue);background:rgba(37,99,235,.07)}
+    .mep-cell[onclick]:hover .mep-name{text-decoration:underline}
+    td[onclick]:hover{background:rgba(0,51,153,.04)}
     .btn-apoya-footer{display:inline-flex;align-items:center;font-size:.75rem;color:var(--t2);background:transparent;border:1px solid var(--bh);border-radius:var(--rm);padding:.35rem .85rem;text-decoration:none;transition:border-color .18s,color .18s;white-space:nowrap;min-height:44px;cursor:pointer}
     .btn-apoya-footer:hover{border-color:var(--bh);color:var(--t)}
     @media(max-width:640px){.btn-apoya-footer{width:100%;justify-content:center;margin-bottom:.25rem}}
@@ -1154,16 +1156,17 @@ function setBreadcrumb(navId, crumbs) {
 }
 
 // ── Mobile card renderer ──────────────────────────────────────
-function mobileCardHtml([fecha,titulo,actores,sector,tipo,nombre,partido,grupo,foto]) {
+function mobileCardHtml([fecha,titulo,actores,sector,tipo,nombre,partido,grupo,foto,mepId]) {
   const d = fecha ? fecha.slice(0,10).split('-').reverse().join('/') : '—';
   const orgs = actores ? actores.split('|').slice(0,2).map(a=>a.trim()).join(', ') : (titulo||'—');
   const tipTag = tipo==='Grupal'
     ? `<span class="mobile-tag mobile-tag-grupal">Grupal</span>`
     : `<span class="mobile-tag">Individual</span>`;
-  const secTag = sector ? `<span class="mobile-tag mobile-tag-amb">${esc(sector)}</span>` : '';
+  const secTag = sector ? `<span class="mobile-tag mobile-tag-amb" onclick="navigateToSector('${esc(sector)}')" style="cursor:pointer">${esc(sector)}</span>` : '';
+  const mepClick = mepId ? `onclick="navigateToMep('${esc(mepId)}')" style="cursor:pointer;text-decoration:underline"` : '';
   return `<div class="mobile-card">
     <div class="mobile-card-hdr">
-      <span class="mobile-card-mep">${esc(nombre||'—')}</span>
+      <span class="mobile-card-mep" ${mepClick}>${esc(nombre||'—')}</span>
       <span class="mobile-card-date">${d}</span>
     </div>
     <div class="mobile-card-org">${esc(orgs)}</div>
@@ -1404,7 +1407,7 @@ function run(p = 0) {
   const where = conds.join(' AND ');
   const join  = 'FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id WHERE '+where;
   const total = db.exec(`SELECT COUNT(*) ${join}`, params)[0]?.values[0][0] ?? 0;
-  const rows  = db.exec(`SELECT r.fecha,r.titulo,r.actores,r.sector,r.tipo_reunion,m.nombre,m.partido_nacional,m.grupo_politico,m.foto_url ${join} ORDER BY r.fecha DESC LIMIT ${PAGE} OFFSET ${p*PAGE}`, params)[0]?.values ?? [];
+  const rows  = db.exec(`SELECT r.fecha,r.titulo,r.actores,r.sector,r.tipo_reunion,m.nombre,m.partido_nacional,m.grupo_politico,m.foto_url,r.mep_id ${join} ORDER BY r.fecha DESC LIMIT ${PAGE} OFFSET ${p*PAGE}`, params)[0]?.values ?? [];
   render(rows, total, p);
   if (p === 0) renderTimeline(); // update timeline only on filter change, not pagination
   if (p > 0) window.scrollTo({top:0,behavior:'smooth'});
@@ -1457,7 +1460,7 @@ function render(rows, total, p) {
   paginate(total, p);
 }
 
-function rowHtml([fecha,titulo,actores,sector,tipo,nombre,partido,grupo,foto]) {
+function rowHtml([fecha,titulo,actores,sector,tipo,nombre,partido,grupo,foto,mepId]) {
   const d = fecha ? fecha.slice(0,10).split('-').reverse().join('/') : '—';
   const ph = foto ? `<img class="mep-photo" src="${esc(foto)}" alt="" loading="lazy" onerror="this.style.display='none'">` : '';
   const ac = actorBadges(actores);
@@ -1466,7 +1469,9 @@ function rowHtml([fecha,titulo,actores,sector,tipo,nombre,partido,grupo,foto]) {
     ? `<span class="badge tipo-g">${t('tipo-grupal-badge')}</span>`
     : `<span class="badge tipo-i">${t('tipo-individual')}</span>`;
   const tt = titulo && titulo.length > 80 ? titulo.slice(0,80)+'…' : (titulo||'—');
-  return `<tr><td class="td-date">${d}</td><td><div class="mep-cell">${ph}<div><div class="mep-name">${esc(nombre||'—')}</div><div class="mep-sub">${esc(partido||grupo||'')}</div></div></div></td><td><div class="actors">${ac}</div></td><td>${sc}</td><td>${tipoBadge}</td><td class="td-title" title="${esc(titulo||'')}">${esc(tt)}</td></tr>`;
+  const mepClick = mepId ? `onclick="navigateToMep('${esc(mepId)}')" style="cursor:pointer"` : '';
+  const sectClick = sector ? `onclick="navigateToSector('${esc(sector)}')" style="cursor:pointer"` : '';
+  return `<tr><td class="td-date">${d}</td><td><div class="mep-cell" ${mepClick}>${ph}<div><div class="mep-name">${esc(nombre||'—')}</div><div class="mep-sub">${esc(partido||grupo||'')}</div></div></div></td><td><div class="actors">${ac}</div></td><td ${sectClick}>${sc}</td><td>${tipoBadge}</td><td class="td-title" title="${esc(titulo||'')}">${esc(tt)}</td></tr>`;
 }
 
 function actorBadges(a) {
@@ -2533,6 +2538,20 @@ function initAutocomplete() {
   document.addEventListener('click', e => {
     if (!e.target.closest('.srch-wrap')) hideDropdown();
   });
+}
+
+// ── Navegación desde Buscar → Análisis ────────────────────────
+function navigateToMep(mepId) {
+  switchTab('analisis');
+  if (!analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
+  switchAnTab('meps');
+  showMepDetail(mepId);
+}
+function navigateToSector(sector) {
+  switchTab('analisis');
+  if (!analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
+  switchAnTab('sectors');
+  goToSectorFull(sector);
 }
 
 // ── PayPal: link directo a paypal.com/ncp/payment/Y3H9Q5AWFV9E6 ──
