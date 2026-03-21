@@ -67,16 +67,21 @@
     .tab-btn.on{color:var(--t);border-bottom-color:var(--blue)}
 
     /* Hero */
-    .hero{padding:3.5rem 1.5rem 2.5rem;text-align:center;position:relative;overflow:hidden}
-    .hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse at center,rgba(37,99,235,.05) 0%,transparent 65%);pointer-events:none}
-    .hero-label{display:inline-flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:700;color:var(--blue);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem}
-    .hero-label::before,.hero-label::after{content:'';width:24px;height:1px;background:var(--blue);opacity:.4}
-    .hero h1{font-size:clamp(1.6rem,4vw,2.8rem);font-weight:800;letter-spacing:-.025em;line-height:1.15;max-width:720px;margin:0 auto .85rem}
+    .hero{padding:3rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:700px;height:380px;background:radial-gradient(ellipse at center,rgba(37,99,235,.05) 0%,transparent 65%);pointer-events:none}
+    .hero-label{display:inline-flex;align-items:center;gap:.4rem;font-size:.67rem;font-weight:700;color:var(--blue);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.9rem}
+    .hero-label::before,.hero-label::after{content:'';width:20px;height:1px;background:var(--blue);opacity:.4}
+    .hero h1{font-size:clamp(1.55rem,3.8vw,2.6rem);font-weight:800;letter-spacing:-.025em;line-height:1.15;max-width:680px;margin:0 auto .7rem}
     .hero h1 em{font-style:normal;color:var(--blue)}
-    .hero p{font-size:.93rem;color:var(--t2);max-width:480px;margin:0 auto 2rem}
-    .srch-wrap{position:relative;max-width:600px;margin:0 auto}
+    .hero-sub{font-size:.93rem;color:var(--t2);max-width:480px;margin:0 auto 1.75rem}
+    .hero-ctas{display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem}
+    .btn-cta{display:inline-flex;align-items:center;gap:.45rem;background:var(--blue);color:#fff;font-weight:600;font-size:.9rem;padding:.65rem 1.4rem;border-radius:var(--rf);border:2px solid var(--blue);transition:all .18s;cursor:pointer}
+    .btn-cta:hover{background:var(--blue-l);border-color:var(--blue-l)}
+    .btn-cta svg{transition:transform .2s}
+    .btn-cta:hover svg{transform:translateY(2px)}
+    .srch-wrap{position:relative;max-width:580px;margin:0 auto}
     .srch-wrap svg{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--t3)}
-    #q{width:100%;padding:.9rem 1rem .9rem 2.9rem;font-size:.97rem;background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);color:var(--t);outline:none;transition:border-color .2s,box-shadow .2s;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+    #q{width:100%;padding:.88rem 1rem .88rem 2.9rem;font-size:.96rem;background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);color:var(--t);outline:none;transition:border-color .2s,box-shadow .2s;box-shadow:0 2px 12px rgba(0,0,0,.07)}
     #q::placeholder{color:var(--t3)}
     #q:focus{border-color:var(--blue);box-shadow:0 2px 12px rgba(0,0,0,.07),0 0 0 3px rgba(37,99,235,.12)}
 
@@ -86,22 +91,53 @@
     .stat-n{font-size:1.9rem;font-weight:700;letter-spacing:-.03em}
     .stat-l{font-size:.72rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:.15rem}
 
-    /* Filters */
-    .filters-bar{max-width:1200px;margin:0 auto;padding:0 1.5rem 1rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--b);padding-bottom:1rem;margin-bottom:.5rem}
-    .filters-label{font-size:.72rem;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-right:.25rem;white-space:nowrap}
-    .sel{padding:.42rem 2rem .42rem .75rem;background:var(--surf);border:1px solid var(--b);border-radius:var(--rf);color:var(--t);font-size:.83rem;outline:none;cursor:pointer;transition:border-color .18s,box-shadow .18s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%2394a3b8' d='M5 7L1 3h8z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6rem center}
+    /* ── Search layout: sidebar + content ── */
+    .search-layout{display:grid;grid-template-columns:224px 1fr;gap:1.25rem;max-width:1440px;margin:0 auto;padding:1.25rem 1.5rem 2rem;align-items:start}
+
+    /* Sidebar */
+    .sidebar{background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);padding:1.25rem 1.1rem;position:sticky;top:112px;max-height:calc(100vh - 130px);overflow-y:auto}
+    .sidebar-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+    .sidebar-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--t3)}
+    .sidebar-close{display:none;font-size:1rem;color:var(--t3);padding:.2rem .4rem;transition:color .15s}
+    .sidebar-close:hover{color:var(--t)}
+    .result-count-sb{font-size:.85rem;font-weight:700;color:var(--t);margin-bottom:1.1rem;padding-bottom:.9rem;border-bottom:1px solid var(--b);line-height:1.3}
+    .result-count-sb span{display:block;font-size:.73rem;font-weight:400;color:var(--t3);margin-top:.15rem}
+    .filter-group{margin-bottom:1rem}
+    .filter-group-label{display:block;font-size:.73rem;font-weight:600;color:var(--t2);margin-bottom:.4rem}
+    .sel{width:100%;padding:.42rem 2rem .42rem .75rem;background:var(--surf);border:1px solid var(--b);border-radius:var(--rm);color:var(--t);font-size:.83rem;outline:none;cursor:pointer;transition:border-color .18s,box-shadow .18s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%2394a3b8' d='M5 7L1 3h8z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6rem center}
     .sel option{background:#fff}
     .sel:hover{border-color:var(--bh)}.sel:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-    .sel.active-filter{border-color:var(--blue);background-color:rgba(37,99,235,.05);color:var(--blue);font-weight:500}
+    .sel.active{border-color:var(--blue)}
+    /* Tipo pills */
+    .tipo-pills{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem}
+    .tipo-pill{padding:.35rem .3rem;font-size:.78rem;font-weight:500;border:1px solid var(--b);border-radius:var(--rm);color:var(--t2);text-align:center;transition:all .15s}
+    .tipo-pill:hover{border-color:var(--bh);color:var(--t)}
+    .tipo-pill.on{background:var(--blue);border-color:var(--blue);color:#fff}
+    /* Clear button */
+    .btn-limpiar{width:100%;margin-top:.75rem;padding:.42rem .8rem;font-size:.81rem;color:var(--t3);border:1px solid var(--b);border-radius:var(--rm);transition:all .18s;text-align:center}
+    .btn-limpiar:hover{color:var(--t);border-color:var(--bh)}
+
+    /* Mobile filter toggle */
+    .filter-toggle-bar{display:none;align-items:center;justify-content:space-between;max-width:1440px;margin:0 auto;padding:.75rem 1rem;border-bottom:1px solid var(--b)}
+    .filter-toggle-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.38rem .85rem;font-size:.83rem;font-weight:500;color:var(--t2);border:1px solid var(--b);border-radius:var(--rf);transition:all .18s}
+    .filter-toggle-btn:hover{color:var(--t);border-color:var(--bh)}
+    .filter-badge-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;background:var(--blue);color:#fff;border-radius:50%;font-size:.65rem;font-weight:700;padding:0 4px}
+    .filter-count-mobile{font-size:.78rem;color:var(--t3)}
+
+    /* Sidebar overlay */
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:190;opacity:0;transition:opacity .25s ease}
+    .sidebar-overlay.open{opacity:1}
+
+    /* Content area */
+    .content-area{min-width:0}
     .btn-sm{padding:.42rem .8rem;font-size:.83rem;color:var(--t2);border:1px solid var(--b);border-radius:var(--rf);transition:all .18s}
     .btn-sm:hover{color:var(--t);border-color:var(--bh)}
-    .filter-count{font-size:.78rem;font-weight:600;color:var(--blue);background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.15);border-radius:var(--rf);padding:.25rem .65rem;white-space:nowrap}
 
     /* Results count */
-    .rbar{max-width:1200px;margin:0 auto;padding:.5rem 1.5rem .75rem;font-size:.8rem;color:var(--t3)}
+    .rbar{font-size:.79rem;color:var(--t3);padding:.35rem 0 .6rem;min-height:1.4rem}
 
     /* Table */
-    .tbl-wrap{max-width:1200px;margin:0 auto;padding:0 1.5rem;overflow-x:auto}
+    .tbl-wrap{overflow-x:auto}
     .tbl-box{border:1px solid var(--b);border-radius:var(--rl);background:var(--surf);overflow:hidden}
     table{width:100%;border-collapse:collapse;font-size:.865rem}
     thead tr{border-bottom:1px solid var(--b)}
@@ -185,7 +221,7 @@
     .org-rank{font-size:.72rem;font-weight:700;color:var(--t3);min-width:18px;text-align:center}
     .org-name{flex:1;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .org-count{font-size:.78rem;font-weight:600;color:var(--t2);white-space:nowrap}
-    .org-bar-wrap{width:80px;height:4px;background:rgba(255,255,255,.07);border-radius:2px;flex-shrink:0}
+    .org-bar-wrap{width:80px;height:4px;background:rgba(0,0,0,.08);border-radius:2px;flex-shrink:0}
     .org-bar{height:100%;border-radius:2px;background:var(--blue-l)}
 
     /* MEP detail header */
@@ -233,23 +269,37 @@
     .d1{animation-delay:.08s}.d2{animation-delay:.18s}.d3{animation-delay:.28s}
 
     /* Responsive */
-    @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+    @media(max-width:960px){
+      .kpi-grid{grid-template-columns:repeat(2,1fr)}
+      .grid-2{grid-template-columns:1fr}
+      /* Switch sidebar → drawer */
+      .search-layout{grid-template-columns:1fr;padding:1rem 1rem 2rem;gap:0}
+      .filter-toggle-bar{display:flex}
+      .sidebar{
+        position:fixed;left:0;top:0;bottom:0;
+        width:290px;z-index:200;
+        border-radius:0;border:none;border-right:1px solid var(--b);
+        transform:translateX(-100%);
+        transition:transform .28s cubic-bezier(.4,0,.2,1);
+        max-height:none;overflow-y:auto;padding-top:1.5rem
+      }
+      .sidebar.open{transform:translateX(0)}
+      .sidebar-overlay{display:block}
+      .sidebar-close{display:block}
+    }
     @media(max-width:768px){
       .stats{grid-template-columns:repeat(2,1fr)}
       .td-title{display:none}
       .tab-btn{font-size:.82rem;padding:.7rem .8rem}
       th:nth-child(5),td:nth-child(5){display:none}
-      .filters-bar{gap:.4rem}
     }
     @media(max-width:600px){
-      .hero{padding:2.5rem 1rem 2rem}
+      .hero{padding:2.2rem 1rem 1.6rem}
       th:nth-child(4),td:nth-child(4){display:none}
-      .stats{gap:.5rem}
+      .stats{gap:.5rem;padding:0 1rem 2rem}
       .stat{padding:.9rem .75rem}
       .stat-n{font-size:1.5rem}
       .hdr{padding:0 1rem}
-      .filters-bar{padding:0 1rem 1rem}
-      .tbl-wrap{padding:0 .75rem}
       .an-subnav{flex-wrap:wrap;gap:.3rem}
     }
     @media(max-width:520px){.mep-photo{display:none}}
@@ -262,14 +312,14 @@
 
 <!-- Header -->
 <header class="hdr">
-  <div class="logo">
+  <button class="logo" onclick="switchTab('search');window.scrollTo({top:0,behavior:'smooth'})" title="Inicio" style="cursor:pointer">
     <span class="logo-flag">🇪🇺</span>
     <div class="logo-divider"></div>
     <div class="logo-text">
       <span class="logo-name">MEPs España</span>
       <span class="logo-tag">Portal de Transparencia</span>
     </div>
-  </div>
+  </button>
   <div class="hdr-right">
     <nav class="hdr-nav">
       <a class="hdr-nav-link" href="#metodologia">Metodología</a>
@@ -289,12 +339,18 @@
 <!-- ═══════════════════════════════════════════════ -->
 <div id="panel-search">
   <section class="hero">
-    <div class="hero-label fu">Parlamento Europeo · Transparencia</div>
-    <h1 class="fu d1">¿Con quién se reúnen los <em>eurodiputados españoles</em>?</h1>
-    <p class="fu d2">Explora las reuniones declaradas por los 60 MEPs españoles con empresas, organizaciones e instituciones.</p>
-    <div class="srch-wrap fu d3">
+    <div class="hero-label fu">Parlamento Europeo · Datos abiertos</div>
+    <h1 class="fu d1">Transparencia<br><em>parlamentaria europea</em></h1>
+    <p class="hero-sub fu d2">Descubre con quién se reúnen los 60 eurodiputados españoles</p>
+    <div class="hero-ctas fu d3">
+      <button class="btn-cta" onclick="document.getElementById('explore-anchor').scrollIntoView({behavior:'smooth',block:'start'})">
+        Explorar reuniones
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </button>
+    </div>
+    <div class="srch-wrap fu" style="animation-delay:.38s">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input id="q" type="text" placeholder="Busca por empresa, organización, eurodiputado…" data-i18n-ph="search-ph" autocomplete="off">
+      <input id="q" type="text" placeholder="Busca por empresa, organización, eurodiputado…" autocomplete="off">
     </div>
   </section>
 
@@ -305,43 +361,102 @@
     <div class="stat fu d3"><div class="stat-n" id="s-s"><span class="skel-num"></span></div><div class="stat-l">Ámbitos</div></div>
   </div>
 
-  <div class="filters-bar">
-    <span class="filters-label">Filtrar</span>
-    <select class="sel" id="f-sector"><option value="">Todos los ámbitos</option></select>
-    <select class="sel" id="f-mep"><option value="">Todos los eurodiputados</option></select>
-    <select class="sel" id="f-partido"><option value="">Todos los partidos</option></select>
-    <select class="sel" id="f-tipo">
-      <option value="">Individual y Grupal</option>
-      <option value="Individual">Individual</option>
-      <option value="Grupal">Grupal</option>
-    </select>
-    <button class="btn-sm" onclick="clearAll()">Limpiar</button>
-    <span class="filter-count" id="filter-count" hidden></span>
+  <!-- Anchor for scroll-to -->
+  <div id="explore-anchor" style="scroll-margin-top:108px"></div>
+
+  <!-- Mobile: filter toggle bar -->
+  <div class="filter-toggle-bar" id="filter-toggle-bar">
+    <button class="filter-toggle-btn" id="filter-toggle">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      Filtros
+      <span class="filter-badge-count" id="filter-badge" hidden></span>
+    </button>
+    <span class="filter-count-mobile" id="filter-count"></span>
   </div>
 
-  <div class="rbar" id="rbar" data-i18n="loading">Cargando…</div>
-  <div class="tbl-wrap">
-    <div class="tbl-box">
-      <table>
-        <thead><tr>
-          <th data-i18n="th-date">Fecha</th>
-          <th data-i18n="th-mep">Eurodiputado</th>
-          <th data-i18n="th-with">Con quién</th>
-          <th data-i18n="th-sector">Ámbito</th>
-          <th data-i18n="th-type">Tipo</th>
-          <th data-i18n="th-meeting">Reunión</th>
-        </tr></thead>
-        <tbody id="tbody">
-          <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td></tr>
-          <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td></tr>
-          <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td></tr>
-          <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td></tr>
-          <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td></tr>
-        </tbody>
-      </table>
+  <!-- Sidebar overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Search layout -->
+  <div class="search-layout">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-hdr">
+        <span class="sidebar-title">Filtros</span>
+        <button class="sidebar-close" id="sidebar-close" title="Cerrar">✕</button>
+      </div>
+
+      <div class="result-count-sb" id="result-count-sb">
+        <span class="skel-num" style="width:80px;height:1rem"></span>
+      </div>
+
+      <!-- Tipo toggle pills -->
+      <div class="filter-group">
+        <label class="filter-group-label">Tipo de reunión</label>
+        <div class="tipo-pills">
+          <button class="tipo-pill on" data-tipo="">Todos</button>
+          <button class="tipo-pill" data-tipo="Individual">Individual</button>
+          <button class="tipo-pill" data-tipo="Grupal">Grupal</button>
+        </div>
+        <select id="f-tipo" style="display:none">
+          <option value="">Individual y Grupal</option>
+          <option value="Individual">Individual</option>
+          <option value="Grupal">Grupal</option>
+        </select>
+      </div>
+
+      <!-- Ámbito -->
+      <div class="filter-group">
+        <label class="filter-group-label" for="f-sector">Ámbito</label>
+        <select class="sel" id="f-sector"><option value="">Todos los ámbitos</option></select>
+      </div>
+
+      <!-- Partido -->
+      <div class="filter-group">
+        <label class="filter-group-label" for="f-partido">Partido</label>
+        <select class="sel" id="f-partido"><option value="">Todos los partidos</option></select>
+      </div>
+
+      <!-- Eurodiputado -->
+      <div class="filter-group">
+        <label class="filter-group-label" for="f-mep">Eurodiputado</label>
+        <select class="sel" id="f-mep"><option value="">Todos</option></select>
+      </div>
+
+      <button class="btn-limpiar" onclick="clearAll()">Limpiar filtros</button>
+    </aside>
+
+    <!-- ── Content area ── -->
+    <div class="content-area">
+      <div class="rbar" id="rbar"></div>
+      <div class="tbl-wrap">
+        <div class="tbl-box">
+          <table>
+            <thead><tr>
+              <th>Fecha</th>
+              <th>Eurodiputado</th>
+              <th>Con quién</th>
+              <th>Ámbito</th>
+              <th>Tipo</th>
+              <th>Reunión</th>
+            </tr></thead>
+            <tbody id="tbody">
+              <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td></tr>
+              <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td></tr>
+              <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td></tr>
+              <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td></tr>
+              <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td></tr>
+              <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td></tr>
+              <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="pager" id="pager"></div>
     </div>
-  </div>
-  <div class="pager" id="pager"></div>
+
+  </div><!-- /search-layout -->
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -864,21 +979,29 @@ function run(p = 0) {
 function render(rows, total, p) {
   const from = total ? p*PAGE+1 : 0, to = Math.min((p+1)*PAGE, total);
   document.getElementById('rbar').textContent = total
-    ? t('showing').replace('{from}', fmt(from)).replace('{to}', fmt(to)).replace('{total}', fmt(total))
-    : t('no-results');
-  // Filter count badge
-  const fc = document.getElementById('filter-count');
-  const sector = document.getElementById('f-sector').value;
-  const mepId  = document.getElementById('f-mep').value;
-  const partido= document.getElementById('f-partido').value;
-  const tipo   = document.getElementById('f-tipo').value;
-  const active = [sector, mepId, partido, tipo].filter(Boolean).length;
-  fc.hidden = !active;
-  if (active) fc.textContent = `${fmt(total)} resultado${total!==1?'s':''}`;
+    ? `Mostrando ${fmt(from)}–${fmt(to)} de ${fmt(total)} reuniones`
+    : 'Sin resultados para esa búsqueda';
+
+  // Sidebar result count
+  const sbEl = document.getElementById('result-count-sb');
+  if (sbEl) {
+    sbEl.innerHTML = `<strong>${fmt(total)}</strong> reunión${total!==1?'es':''}<span>${total ? `Página ${p+1} de ${Math.ceil(total/PAGE)}` : 'Ajusta los filtros'}</span>`;
+  }
+
+  // Mobile filter count badge
+  const sector  = document.getElementById('f-sector').value;
+  const mepId   = document.getElementById('f-mep').value;
+  const partido = document.getElementById('f-partido').value;
+  const tipo    = document.getElementById('f-tipo').value;
+  const active  = [sector, mepId, partido, tipo].filter(Boolean).length;
+  const badge   = document.getElementById('filter-badge');
+  const countEl = document.getElementById('filter-count');
+  if (badge)   { badge.hidden = !active; badge.textContent = active; }
+  if (countEl) { countEl.textContent = active ? `${fmt(total)} resultado${total!==1?'s':''}` : ''; }
   // Highlight active selects
-  ['f-sector','f-mep','f-partido','f-tipo'].forEach(id => {
+  ['f-sector','f-mep','f-partido'].forEach(id => {
     const el = document.getElementById(id);
-    el.classList.toggle('active-filter', !!el.value);
+    el.classList.toggle('active', !!el.value);
   });
   document.getElementById('tbody').innerHTML = rows.length
     ? rows.map(rowHtml).join('')
@@ -923,12 +1046,49 @@ function paginate(total, cur) {
 }
 
 function clearAll() {
-  ['q','f-sector','f-mep','f-partido','f-tipo'].forEach(id=>{const e=document.getElementById(id);if(e.tagName==='INPUT')e.value='';else e.value='';});
+  ['q','f-sector','f-mep','f-partido','f-tipo'].forEach(id=>{
+    const e = document.getElementById(id);
+    e.value = '';
+  });
+  // Reset tipo pills
+  document.querySelectorAll('.tipo-pill').forEach(b => b.classList.toggle('on', b.dataset.tipo === ''));
   run(0);
 }
 
 document.getElementById('q').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(()=>run(0), 280); });
-['f-sector','f-mep','f-partido','f-tipo'].forEach(id => document.getElementById(id).addEventListener('change', ()=>run(0)));
+['f-sector','f-mep','f-partido'].forEach(id => document.getElementById(id).addEventListener('change', ()=>run(0)));
+
+// ── Tipo pills (sync to hidden select) ───────────────────────
+document.querySelectorAll('.tipo-pill').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tipo-pill').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById('f-tipo').value = btn.dataset.tipo;
+    run(0);
+  });
+});
+
+// ── Sidebar drawer (mobile) ───────────────────────────────────
+function openSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  sb.classList.add('open');
+  ov.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  sb.classList.remove('open');
+  ov.classList.remove('open');
+  document.body.style.overflow = '';
+}
+const ftBtn = document.getElementById('filter-toggle');
+const sbClose = document.getElementById('sidebar-close');
+const sbOv = document.getElementById('sidebar-overlay');
+if (ftBtn)   ftBtn.addEventListener('click', openSidebar);
+if (sbClose) sbClose.addEventListener('click', closeSidebar);
+if (sbOv)    sbOv.addEventListener('click', closeSidebar);
 
 // ══════════════════════════════════════════════════════════════
 // ANÁLISIS TAB — main init
