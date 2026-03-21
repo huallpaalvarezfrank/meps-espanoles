@@ -40,11 +40,8 @@
     .ld-stars{color:var(--gold);font-size:1.2rem;letter-spacing:5px;animation:pulse 1.6s ease-in-out infinite}
     .ld-text{font-size:.85rem;color:var(--t2)}
 
-    /* Header accent bar */
-    .hdr-accent{height:4px;background:linear-gradient(90deg,#1d4ed8 0%,#2563eb 60%,#3b82f6 100%);position:sticky;top:0;z-index:91}
-
     /* Header */
-    .hdr{position:sticky;top:4px;z-index:90;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--b);height:60px;padding:0 1.75rem;display:flex;align-items:center;justify-content:space-between}
+    .hdr{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--b);height:60px;padding:0 1.75rem;display:flex;align-items:center;justify-content:space-between}
     .logo{display:flex;align-items:center;gap:.85rem}
     .logo-divider{width:1px;height:28px;background:var(--b)}
     .logo-flag{font-size:1.45rem;line-height:1;flex-shrink:0}
@@ -56,7 +53,7 @@
     .hdr-right{display:flex;align-items:center;gap:.5rem}
 
     /* Tab nav */
-    .tab-nav{position:sticky;top:64px;z-index:85;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--b);display:flex;padding:0 1.75rem;gap:.25rem}
+    .tab-nav{position:sticky;top:60px;z-index:85;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--b);display:flex;padding:0 1.75rem;gap:.25rem}
     .tab-btn{padding:.75rem 1.1rem;font-size:.875rem;color:var(--t2);border-bottom:2px solid transparent;transition:all .18s;font-weight:500}
     .tab-btn:hover{color:var(--t)}
     .tab-btn.on{color:var(--t);border-bottom-color:var(--blue)}
@@ -233,9 +230,6 @@
   <div class="spinner"></div>
   <div class="ld-text" data-i18n="loading">Cargando base de datos…</div>
 </div>
-
-<!-- Header accent -->
-<div class="hdr-accent"></div>
 
 <!-- Header -->
 <header class="hdr">
