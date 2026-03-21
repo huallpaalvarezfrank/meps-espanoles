@@ -283,6 +283,7 @@
     <div class="an-subnav">
       <button class="an-btn on" data-an="sectors">📊 Por sector</button>
       <button class="an-btn" data-an="meps">👤 Por eurodiputado</button>
+      <button class="an-btn" data-an="partidos">🏛️ Por partido</button>
     </div>
 
     <!-- ─── Sectores view ─── -->
@@ -395,6 +396,60 @@
       </div>
     </div>
 
+    <!-- ─── Partidos view ─── -->
+    <div id="an-partidos" hidden>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Partido más activo</div><div class="kpi-val" id="kpi-p-top">—</div><div class="kpi-sub" id="kpi-p-top-n"></div></div>
+        <div class="kpi"><div class="kpi-label">Partidos representados</div><div class="kpi-val" id="kpi-p-count">—</div><div class="kpi-sub">en el PE</div></div>
+        <div class="kpi"><div class="kpi-label">Media por partido</div><div class="kpi-val" id="kpi-p-avg">—</div><div class="kpi-sub">reuniones</div></div>
+        <div class="kpi"><div class="kpi-label">MEPs del partido líder</div><div class="kpi-val" id="kpi-p-meps">—</div><div class="kpi-sub" id="kpi-p-meps-n"></div></div>
+      </div>
+
+      <!-- Partido detail (shown on click) -->
+      <div id="partido-detail" hidden>
+        <button class="btn-back" onclick="clearPartidoDetail()">← Volver al ranking</button>
+        <div class="an-section-hdr">
+          <div class="an-section-title" id="partido-detail-title">—</div>
+          <div class="an-section-sub" id="partido-detail-stats"></div>
+        </div>
+        <!-- MEPs del partido -->
+        <div class="chart-card" style="margin-bottom:1.25rem">
+          <div class="chart-card-title">Eurodiputados del partido</div>
+          <div class="chart-card-sub">Ordenados por número de reuniones · Haz clic para ver su perfil</div>
+          <div class="chart-wrap chart-wrap-md"><canvas id="c-partido-meps"></canvas></div>
+        </div>
+        <div class="grid-2">
+          <div class="chart-card">
+            <div class="chart-card-title">Sectores más frecuentes</div>
+            <div class="chart-card-sub" id="partido-sector-sub"></div>
+            <div class="chart-wrap chart-wrap-md"><canvas id="c-partido-sector"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Evolución por año</div>
+            <div class="chart-card-sub" id="partido-year-sub"></div>
+            <div class="chart-wrap chart-wrap-md"><canvas id="c-partido-year"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Organizaciones más frecuentes</div>
+          <div class="chart-card-sub">Top 10 entidades con las que se han reunido los MEPs del partido</div>
+          <div id="partido-org-list" class="org-list" style="margin-top:.5rem"></div>
+          <button class="btn-sm" id="partido-ver-reuniones" style="margin-top:1rem">Ver todas las reuniones del partido →</button>
+        </div>
+      </div>
+
+      <!-- Global bar chart -->
+      <div id="an-partido-overview">
+        <div class="chart-card">
+          <div class="chart-card-title">Reuniones por partido político</div>
+          <div class="chart-card-sub">Haz clic en una barra para ver el detalle del partido</div>
+          <div class="chart-wrap" id="c-partidos-wrap"><canvas id="c-partidos"></canvas></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -492,11 +547,12 @@ function switchTab(name) {
 }
 document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
 
-// ── Analysis sub-tabs (Sectores / Eurodiputados) ─────────────
+// ── Analysis sub-tabs ────────────────────────────────────────
 function switchAnTab(name) {
   document.querySelectorAll('.an-btn').forEach(b => b.classList.toggle('on', b.dataset.an === name));
-  document.getElementById('an-sectors').hidden = name !== 'sectors';
-  document.getElementById('an-meps').hidden    = name !== 'meps';
+  document.getElementById('an-sectors').hidden  = name !== 'sectors';
+  document.getElementById('an-meps').hidden     = name !== 'meps';
+  document.getElementById('an-partidos').hidden = name !== 'partidos';
 }
 document.querySelectorAll('.an-btn').forEach(b => b.addEventListener('click', () => switchAnTab(b.dataset.an)));
 
@@ -613,6 +669,7 @@ document.getElementById('q').addEventListener('input', () => { clearTimeout(time
 function renderAnalisisTab() {
   renderSectorsView();
   renderMepsView();
+  renderPartidosView();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -883,15 +940,156 @@ function clearMepDetail() {
 }
 
 // ══════════════════════════════════════════════════════════════
+// PARTIDOS VIEW
+// ══════════════════════════════════════════════════════════════
+function renderPartidosView() {
+  const partidoData = db.exec(`
+    SELECT m.partido_nacional, COUNT(*) n, COUNT(DISTINCT m.mep_id) nmeps
+    FROM reuniones r JOIN meps m ON r.mep_id = m.mep_id
+    WHERE m.partido_nacional IS NOT NULL AND m.partido_nacional != ''
+    GROUP BY m.partido_nacional ORDER BY n DESC
+  `)[0]?.values ?? [];
+
+  const totalR = db.exec('SELECT COUNT(*) FROM reuniones')[0]?.values[0][0] ?? 1;
+  const top = partidoData[0];
+
+  document.getElementById('kpi-p-top').textContent    = top ? shortParty(top[0]) : '—';
+  document.getElementById('kpi-p-top-n').textContent  = top ? `${fmt(top[1])} reuniones` : '';
+  document.getElementById('kpi-p-count').textContent  = partidoData.length;
+  document.getElementById('kpi-p-avg').textContent    = fmt(Math.round(totalR / Math.max(partidoData.length, 1)));
+  document.getElementById('kpi-p-meps').textContent   = top ? top[2] : '—';
+  document.getElementById('kpi-p-meps-n').textContent = top ? `eurodiputados en ${shortParty(top[0])}` : '';
+
+  const labels  = partidoData.map(r => shortParty(r[0]));
+  const full    = partidoData.map(r => r[0]);
+  const counts  = partidoData.map(r => r[1]);
+  const barH    = Math.max(300, partidoData.length * 40);
+  document.getElementById('c-partidos-wrap').style.height = barH + 'px';
+
+  mkChart('c-partidos', {
+    type: 'bar',
+    data: { labels, datasets: [{ data: counts, backgroundColor: full.map(p => partyBg(p)), borderColor: full.map(p => partyBorder(p)), borderWidth: 1, borderRadius: 4 }] },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} reuniones (${Math.round(ctx.raw/totalR*100)}%)` } }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8496c0' }, border: { display: false } },
+        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 13 }, autoSkip: false }, border: { display: false } }
+      },
+      onClick: (_, els) => { if (els.length) showPartidoDetail(full[els[0].index]); }
+    }
+  });
+}
+
+function showPartidoDetail(partido) {
+  const total = db.exec(
+    `SELECT COUNT(*) FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id WHERE m.partido_nacional=?`, [partido]
+  )[0]?.values[0][0] ?? 0;
+  const nmeps = db.exec(
+    `SELECT COUNT(DISTINCT mep_id) FROM meps WHERE partido_nacional=?`, [partido]
+  )[0]?.values[0][0] ?? 0;
+
+  document.getElementById('partido-detail-title').textContent  = partido;
+  document.getElementById('partido-detail-stats').textContent  = `${fmt(total)} reuniones · ${nmeps} eurodiputados`;
+  document.getElementById('partido-sector-sub').textContent    = `Distribución sectorial de las ${fmt(total)} reuniones`;
+  document.getElementById('partido-year-sub').textContent      = `Actividad registrada por año`;
+
+  // Bar: MEPs del partido
+  const mepRows = db.exec(`
+    SELECT r.mep_id, m.nombre, COUNT(*) n FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
+    WHERE m.partido_nacional=? GROUP BY r.mep_id ORDER BY n DESC
+  `, [partido])[0]?.values ?? [];
+  const mepIds = mepRows.map(r => r[0]);
+  const mepH   = Math.max(200, mepRows.length * 32);
+  document.getElementById('c-partido-meps').parentElement.style.height = mepH + 'px';
+  mkChart('c-partido-meps', {
+    type: 'bar',
+    data: { labels: mepRows.map(r => r[1]), datasets: [{ data: mepRows.map(r => r[2]), backgroundColor: partyBg(partido), borderColor: partyBorder(partido), borderWidth: 1, borderRadius: 3 }] },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} reuniones` } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8496c0' }, border: { display: false } },
+        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 11 }, autoSkip: false }, border: { display: false } }
+      },
+      onClick: (_, els) => { if (els.length) { switchAnTab('meps'); showMepDetail(mepIds[els[0].index]); } }
+    }
+  });
+
+  // Donut: sectores
+  const sects = db.exec(`
+    SELECT r.sector, COUNT(*) n FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
+    WHERE m.partido_nacional=? AND r.sector IS NOT NULL AND r.sector!=''
+    GROUP BY r.sector ORDER BY n DESC
+  `, [partido])[0]?.values ?? [];
+  mkChart('c-partido-sector', {
+    type: 'doughnut',
+    data: {
+      labels: sects.map(r => r[0]),
+      datasets: [{ data: sects.map(r => r[1]), backgroundColor: sects.map(r => (C[r[0]]||C['Otros'])[0]), borderColor: sects.map(r => (C[r[0]]||C['Otros'])[1]), borderWidth: 1, hoverOffset: 6 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '58%', plugins: { legend: { position: 'right', labels: { color: '#8496c0', font: { size: 11 }, padding: 10 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} (${Math.round(ctx.raw/total*100)}%)` } } } }
+  });
+
+  // Bar: años
+  const years = db.exec(`
+    SELECT substr(r.fecha,1,4) yr, COUNT(*) n FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
+    WHERE m.partido_nacional=? AND r.fecha IS NOT NULL GROUP BY yr ORDER BY yr
+  `, [partido])[0]?.values ?? [];
+  mkChart('c-partido-year', {
+    type: 'bar',
+    data: { labels: years.map(r => r[0]), datasets: [{ data: years.map(r => r[1]), backgroundColor: partyBg(partido), borderColor: partyBorder(partido), borderWidth: 1, borderRadius: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} reuniones` } } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8496c0' }, border: { display: false } }, x: { grid: { display: false }, ticks: { color: '#8496c0' }, border: { display: false } } } }
+  });
+
+  // Top orgs
+  const rows = db.exec(`
+    SELECT r.actores FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
+    WHERE m.partido_nacional=? AND r.actores IS NOT NULL
+  `, [partido])[0]?.values ?? [];
+  const cnt = {};
+  rows.forEach(([a]) => a.split('|').forEach(x => { const k = x.trim(); if (k) cnt[k] = (cnt[k]||0)+1; }));
+  const top10 = Object.entries(cnt).sort((a,b) => b[1]-a[1]).slice(0,10);
+  const mx = top10[0]?.[1] || 1;
+  document.getElementById('partido-org-list').innerHTML = top10.map(([name,n],i) => `
+    <div class="org-item">
+      <span class="org-rank">${i+1}</span>
+      <span class="org-name" title="${esc(name)}">${esc(name)}</span>
+      <div class="org-bar-wrap"><div class="org-bar" style="width:${Math.round(n/mx*100)}%"></div></div>
+      <span class="org-count">${n}</span>
+    </div>`).join('');
+
+  document.getElementById('partido-ver-reuniones').onclick = () => {
+    document.getElementById('f-partido').value = partido;
+    switchTab('search');
+    run(0);
+  };
+
+  document.getElementById('an-partido-overview').hidden = true;
+  document.getElementById('partido-detail').hidden = false;
+  document.getElementById('partido-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearPartidoDetail() {
+  document.getElementById('partido-detail').hidden      = true;
+  document.getElementById('an-partido-overview').hidden = false;
+}
+
+// ══════════════════════════════════════════════════════════════
 // ANALYSIS SEARCH / AUTOCOMPLETE
 // ══════════════════════════════════════════════════════════════
 function initAnSuggData() {
   if (anSuggData || !db) return;
-  const sectors = (db.exec("SELECT DISTINCT sector FROM reuniones WHERE sector IS NOT NULL AND sector!='' ORDER BY sector")[0]?.values ?? [])
+  const sectors  = (db.exec("SELECT DISTINCT sector FROM reuniones WHERE sector IS NOT NULL AND sector!='' ORDER BY sector")[0]?.values ?? [])
     .map(r => ({ type: 'sector', label: r[0] }));
-  const meps = (db.exec("SELECT mep_id, nombre FROM meps ORDER BY nombre")[0]?.values ?? [])
+  const meps     = (db.exec("SELECT mep_id, nombre FROM meps ORDER BY nombre")[0]?.values ?? [])
     .map(r => ({ type: 'mep', label: r[1], id: r[0] }));
-  anSuggData = { sectors, meps };
+  const partidos = (db.exec("SELECT DISTINCT partido_nacional FROM meps WHERE partido_nacional IS NOT NULL AND partido_nacional!='' ORDER BY partido_nacional")[0]?.values ?? [])
+    .map(r => ({ type: 'partido', label: r[0] }));
+  anSuggData = { sectors, meps, partidos };
 }
 
 document.getElementById('an-q').addEventListener('input', function() {
@@ -899,15 +1097,23 @@ document.getElementById('an-q').addEventListener('input', function() {
   const box = document.getElementById('an-sugg');
   if (!q) { box.hidden = true; return; }
   initAnSuggData();
-  const matchM = anSuggData.meps.filter(m => m.label.toLowerCase().includes(q)).slice(0, 7);
-  const matchS = anSuggData.sectors.filter(s => s.label.toLowerCase().includes(q)).slice(0, 6);
-  if (!matchM.length && !matchS.length) { box.hidden = true; return; }
+  const matchM = anSuggData.meps.filter(m => m.label.toLowerCase().includes(q)).slice(0, 6);
+  const matchS = anSuggData.sectors.filter(s => s.label.toLowerCase().includes(q)).slice(0, 5);
+  const matchP = anSuggData.partidos.filter(p => p.label.toLowerCase().includes(q) || shortParty(p.label).toLowerCase().includes(q)).slice(0, 5);
+  if (!matchM.length && !matchS.length && !matchP.length) { box.hidden = true; return; }
   let html = '';
   if (matchM.length) {
     html += `<div class="an-sugg-group">Eurodiputados</div>`;
     html += matchM.map(m => `<div class="an-sugg-item" onclick="selectAnMep(${m.id})">
-      <span class="an-sugg-tag" style="background:${partyBg('')};color:#94a3b8">MEP</span>
+      <span class="an-sugg-tag" style="background:rgba(100,116,139,.3);color:#94a3b8">MEP</span>
       ${esc(m.label)}
+    </div>`).join('');
+  }
+  if (matchP.length) {
+    html += `<div class="an-sugg-group">Partidos</div>`;
+    html += matchP.map(p => `<div class="an-sugg-item" onclick="selectAnPartido('${esc(p.label).replace(/'/g,"\\'")}')">
+      <span class="an-sugg-tag" style="background:${partyBg(p.label)};color:${partyBorder(p.label)}">${esc(shortParty(p.label))}</span>
+      ${esc(p.label)}
     </div>`).join('');
   }
   if (matchS.length) {
@@ -935,6 +1141,14 @@ function selectAnSector(sector) {
   if (!analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
   switchAnTab('sectors');
   goToSectorFull(sector);
+}
+
+function selectAnPartido(partido) {
+  document.getElementById('an-q').value = '';
+  document.getElementById('an-sugg').hidden = true;
+  if (!analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
+  switchAnTab('partidos');
+  showPartidoDetail(partido);
 }
 
 // Close dropdown on outside click
