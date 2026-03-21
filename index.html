@@ -454,7 +454,7 @@
     .hm-sector { padding: 6px 10px; font-size: 11.5px; color: #475569; font-weight: 500; border-right: 1px solid #e2e8f0; white-space: nowrap; }
     .hm-cell { width: 60px; height: 36px; text-align: center; font-size: 11px; font-weight: 500; border: 1px solid rgba(0,0,0,0.04); cursor: pointer; transition: opacity .15s; }
     .hm-cell:hover { opacity: 0.82; outline: 2px solid #003399; }
-    .hm-legend { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .hm-legend { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .hm-legend-bar { flex: 1; max-width: 200px; height: 10px; border-radius: 5px; background: linear-gradient(to right, #ffffff, #003399); border: 1px solid #e2e8f0; }
 
     /* ── Phase 3: Accessibility — reduced motion ── */
@@ -2231,12 +2231,12 @@ function renderHeatmap(mode) {
     html += '</tr>';
   });
 
-  html += '</tbody></table></div>';
-  html += `<div class="hm-legend">
+  const legend = `<div class="hm-legend">
     <span style="font-size:11px;color:#94a3b8">Ninguna actividad</span>
     <div class="hm-legend-bar"></div>
     <span style="font-size:11px;color:#003399">Máxima actividad</span>
   </div>`;
+  html = legend + html + '</tbody></table></div>';
 
   const container = document.getElementById('heatmap-container');
   if (container) container.innerHTML = html;
