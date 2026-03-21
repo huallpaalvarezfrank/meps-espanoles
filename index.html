@@ -965,7 +965,7 @@
       <p style="font-size:.85rem;color:#475569;margin:0;line-height:1.5">Este portal de transparencia es gratuito y sin publicidad. Tu contribución lo mantiene vivo.</p>
     </div>
     <label style="font-size:.78rem;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.06em">Cantidad (€)</label>
-    <input id="donation-amount" type="number" value="5" min="1" step="1"
+    <input id="donation-amount" type="number" value="3" min="1" step="1"
       style="width:100%;margin:.4rem 0 1.1rem;padding:.65rem .85rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:1.1rem;font-weight:600;color:#0f172a;outline:none;box-sizing:border-box"
       onfocus="this.style.borderColor='#003399'" onblur="this.style.borderColor='#e2e8f0'">
     <div id="paypal-buttons-container"></div>
@@ -2565,7 +2565,7 @@ function openDonationModal() {
   document.body.style.overflow = 'hidden';
   if (!paypalLoaded) {
     const script = document.createElement('script');
-    script.src = 'https://www.paypal.com/sdk/js?client-id=AazvuD01CL7eN4NfNEGS_xdDOVjiPZQ0PKOWtBOUDQyJM96GU3h1Kb0AEpNgUR8noZLVubx0lsmjGubP&currency=EUR&intent=capture&enable-funding=applepay,card,venmo&locale=es_ES';
+    script.src = 'https://www.paypal.com/sdk/js?client-id=AazvuD01CL7eN4NfNEGS_xdDOVjiPZQ0PKOWtBOUDQyJM96GU3h1Kb0AEpNgUR8noZLVubx0lsmjGubP&currency=EUR&intent=capture&components=buttons,applepay&enable-funding=applepay&locale=es_ES';
     script.onload = () => { paypalLoaded = true; renderPaypalButtons(); };
     document.head.appendChild(script);
   } else if (!paypalButtonsRendered) {
