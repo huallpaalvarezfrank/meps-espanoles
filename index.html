@@ -161,8 +161,8 @@
     .an-section-sub{font-size:.875rem;color:var(--t2)}
 
     /* Back button */
-    .btn-back{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--t3);border:1px solid var(--b);border-radius:var(--rm);padding:.35rem .75rem;margin-bottom:1.25rem;transition:all .18s}
-    .btn-back:hover{color:var(--t);border-color:var(--bh)}
+    .btn-back{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--blue-l);border:1px solid rgba(59,130,246,.3);border-radius:var(--rm);padding:.38rem .9rem;margin-bottom:1.25rem;transition:all .18s;font-weight:500}
+    .btn-back:hover{color:#fff;background:var(--blue);border-color:var(--blue)}
 
     /* Top orgs list */
     .org-list{display:flex;flex-direction:column;gap:.4rem;margin-top:.5rem}
@@ -183,10 +183,28 @@
     /* Click hint */
     .click-hint{font-size:.78rem;color:var(--t3);text-align:center;padding:.75rem;display:flex;align-items:center;justify-content:center;gap:.4rem}
 
+    /* Back button — visible */
+    /* (overrides inline style below) */
+
     /* Footer */
     footer{max-width:1200px;margin:2rem auto 0;padding:1.5rem 1.5rem 2rem;border-top:1px solid var(--b);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-size:.78rem;color:var(--t3)}
     footer a{color:var(--t2)}
     footer a:hover{color:var(--t)}
+
+    /* Sobre mí */
+    .sobre{max-width:1200px;margin:0 auto;padding:2.5rem 1.5rem;border-top:1px solid var(--b)}
+    .sobre-inner{background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);padding:2rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start}
+    .sobre-text{flex:1;min-width:220px}
+    .sobre-title{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:var(--t)}
+    .sobre-bio{font-size:.87rem;color:var(--t2);line-height:1.65;margin-bottom:1rem}
+    .sobre-links{display:flex;gap:.6rem;flex-wrap:wrap}
+    .sobre-link{display:inline-flex;align-items:center;gap:.35rem;font-size:.8rem;font-weight:500;color:var(--t2);border:1px solid var(--b);border-radius:var(--rf);padding:.3rem .8rem;transition:all .18s}
+    .sobre-link:hover{color:var(--t);border-color:var(--bh)}
+    .data-notice{flex:1;min-width:220px;background:var(--gold-d);border:1px solid rgba(201,168,76,.2);border-radius:var(--rm);padding:1.25rem 1.25rem 1rem;font-size:.83rem;line-height:1.6;color:var(--t2)}
+    .data-notice strong{color:var(--gold);display:block;margin-bottom:.35rem;font-size:.85rem}
+    .data-notice a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(201,168,76,.4)}
+    .data-notice a:hover{color:#e6c56a}
+    @media(max-width:768px){.sobre-inner{flex-direction:column}}
 
     /* Animations */
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -218,7 +236,6 @@
     <span class="logo-sub" data-i18n="logo-sub">· Portal de Transparencia</span>
   </div>
   <div class="hdr-right">
-    <button class="hdr-link" id="lang-toggle" onclick="setLang(lang==='es'?'en':'es')">EN</button>
     <a class="hdr-link" href="https://github.com/huallpaalvarezfrank/meps-espanoles" target="_blank">GitHub →</a>
   </div>
 </header>
@@ -234,7 +251,7 @@
 <!-- ═══════════════════════════════════════════════ -->
 <div id="panel-search">
   <section class="hero">
-    <div class="eyebrow fu" data-i18n="eyebrow">★ &nbsp;Parlamento Europeo · Datos abiertos</div>
+    <div class="eyebrow fu" data-i18n="eyebrow">★ &nbsp;Parlamento Europeo</div>
     <h1 class="fu d1" data-i18n-html="hero-h1">¿Con quién se reúnen los <em>eurodiputados españoles</em>?</h1>
     <p class="fu d2" data-i18n="hero-p">Portal de transparencia sobre las reuniones de los 60 eurodiputados españoles con empresas, organizaciones e instituciones.</p>
     <div class="srch-wrap fu d3">
@@ -336,7 +353,7 @@
           <div class="chart-card-sub" data-i18n="chart-num-meetings-registered">Número de reuniones registradas</div>
           <div class="chart-wrap chart-wrap-md"><canvas id="c-sect-meps"></canvas></div>
         </div>
-        <button class="btn-sm" id="btn-ver-sector" style="margin-bottom:1rem" data-i18n="btn-ver-sector">Ver todas las reuniones de este ámbito →</button>
+        <button class="btn-sm" id="btn-ver-sector" style="margin-bottom:1rem;background:var(--blue);color:#fff;border-color:var(--blue)" data-i18n="btn-ver-sector">Ver todas las reuniones de este ámbito →</button>
       </div>
 
       <!-- Global overview (shown by default) -->
@@ -397,7 +414,7 @@
           <div class="chart-card-title" data-i18n="chart-top-orgs-freq">Organizaciones más frecuentes</div>
           <div class="chart-card-sub" data-i18n="chart-top10-mep">Top 10 entidades con las que se ha reunido</div>
           <div id="mep-org-list" class="org-list" style="margin-top:.5rem"></div>
-          <button class="btn-sm" id="mep-ver-reuniones" style="margin-top:1rem" data-i18n="btn-ver-reuniones">Ver todas las reuniones →</button>
+          <button class="btn-sm" id="mep-ver-reuniones" style="margin-top:1rem;background:var(--blue);color:#fff;border-color:var(--blue)" data-i18n="btn-ver-reuniones">Ver todas las reuniones →</button>
         </div>
       </div>
 
@@ -451,7 +468,7 @@
           <div class="chart-card-title" data-i18n="chart-top-orgs-freq">Organizaciones más frecuentes</div>
           <div class="chart-card-sub" data-i18n="chart-top10-party">Top 10 entidades con las que se han reunido los MEPs del partido</div>
           <div id="partido-org-list" class="org-list" style="margin-top:.5rem"></div>
-          <button class="btn-sm" id="partido-ver-reuniones" style="margin-top:1rem" data-i18n="btn-ver-partido">Ver todas las reuniones del partido →</button>
+          <button class="btn-sm" id="partido-ver-reuniones" style="margin-top:1rem;background:var(--blue);color:#fff;border-color:var(--blue)" data-i18n="btn-ver-partido">Ver todas las reuniones del partido →</button>
         </div>
       </div>
 
@@ -468,9 +485,37 @@
   </div>
 </div>
 
+<!-- Sobre mí + aviso de datos públicos -->
+<section class="sobre">
+  <div class="sobre-inner">
+    <div class="sobre-text">
+      <div class="sobre-title">Sobre mí</div>
+      <p class="sobre-bio">Politólogo con máster en Estrategias y Tecnologías para el Desarrollo (UCM-UPM). Este portal nació de mi interés en la transparencia política y el lobbying en el Parlamento Europeo. Puedes seguir el proyecto o contactarme en:</p>
+      <div class="sobre-links">
+        <a class="sobre-link" href="https://github.com/huallpaalvarezfrank" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+        <a class="sobre-link" href="https://twitter.com/huallpaalvarez" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X / Twitter
+        </a>
+        <a class="sobre-link" href="https://linkedin.com/in/huallpaalvarez" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+    <div class="data-notice">
+      <strong>ℹ️ Información pública oficial</strong>
+      Todos los datos de este portal son <strong>información pública</strong> obtenida directamente del <a href="https://www.europarl.europa.eu/meps/es/search/advanced?countryCode=ES" target="_blank">portal oficial del Parlamento Europeo</a>. Los eurodiputados están legalmente obligados a declarar sus reuniones con grupos de interés. Este portal únicamente los recopila, organiza y hace más accesibles para periodistas y ciudadanos.
+    </div>
+  </div>
+</section>
+
 <footer>
-  <span data-i18n-html="footer-source">Fuente: <a href="https://europarl.europa.eu" target="_blank">Parlamento Europeo</a> · Actualización diaria · 60 MEPs españoles</span>
-  <span><a href="https://github.com/huallpaalvarezfrank/meps-espanoles" target="_blank" data-i18n="footer-github">Código abierto en GitHub</a></span>
+  <span>Fuente: <a href="https://europarl.europa.eu" target="_blank">Parlamento Europeo</a> · Actualización diaria · 60 MEPs españoles</span>
+  <span><a href="https://github.com/huallpaalvarezfrank/meps-espanoles" target="_blank">Código abierto en GitHub</a></span>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
@@ -486,7 +531,7 @@ const LANG = {
     'logo-sub':                  '· Portal de Transparencia',
     'tab-search':                '🔍 Buscar reuniones',
     'tab-analysis':              '📊 Análisis',
-    'eyebrow':                   '★  Parlamento Europeo · Datos abiertos',
+    'eyebrow':                   '★  Parlamento Europeo',
     'hero-h1':                   '¿Con quién se reúnen los <em>eurodiputados españoles</em>?',
     'hero-p':                    'Portal de transparencia sobre las reuniones de los 60 eurodiputados españoles con empresas, organizaciones e instituciones.',
     'search-ph':                 'Busca por empresa, organización, eurodiputado…',
@@ -572,166 +617,11 @@ const LANG = {
     'no-data-sector':            'Sin datos para este ámbito',
     'full-analysis-btn':         'Ver análisis completo →',
     'by-freq':                   'Por frecuencia de aparición en reuniones',
-  },
-  en: {
-    'loading':                   'Loading database…',
-    'loading-error':             'Error loading database.',
-    'logo-sub':                  '· Transparency Portal',
-    'tab-search':                '🔍 Search meetings',
-    'tab-analysis':              '📊 Analysis',
-    'eyebrow':                   '★  European Parliament · Open data',
-    'hero-h1':                   'Who do <em>Spanish MEPs</em> meet with?',
-    'hero-p':                    'Transparency portal on the meetings of 60 Spanish MEPs with companies, organizations and institutions.',
-    'search-ph':                 'Search by company, organization, MEP…',
-    'an-search-ph':              'Search for an MEP, party or field to see its charts…',
-    'stat-meetings':             'Meetings',
-    'stat-meps':                 'MEPs',
-    'stat-orgs':                 'Organizations',
-    'stat-sectors':              'Fields',
-    'filter-all-sectors':        'All fields',
-    'filter-all-meps':           'All MEPs',
-    'filter-all-parties':        'All parties',
-    'filter-all-types':          'Individual & Group',
-    'tipo-individual':           'Individual',
-    'tipo-grupal':               'Group',
-    'tipo-grupal-badge':         'Group',
-    'btn-clear':                 '✕ Clear',
-    'th-date':                   'Date',
-    'th-mep':                    'MEP',
-    'th-with':                   'With',
-    'th-sector':                 'Field',
-    'th-type':                   'Type',
-    'th-meeting':                'Meeting',
-    'pg-prev':                   '← Prev',
-    'pg-next':                   'Next →',
-    'showing':                   'Showing {from}–{to} of {total} meetings',
-    'no-results':                'No results',
-    'no-rows':                   'No meetings found.',
-    'meetings':                  'meetings',
-    'an-tab-sectors':            '📊 By field',
-    'an-tab-meps':               '👤 By MEP',
-    'an-tab-parties':            '🏛️ By party',
-    'kpi-top-sector-label':      'Most active field',
-    'kpi-grupal-label':          'Group meetings',
-    'kpi-of-total':              'of total',
-    'kpi-orgs-label':            'Unique organizations',
-    'kpi-in-db':                 'in the database',
-    'kpi-nsect-label':           'Distinct fields',
-    'kpi-identified':            'identified',
-    'kpi-top-mep-label':         'Most active MEP',
-    'kpi-top-party-label':       'Most active party',
-    'kpi-avg-mep-label':         'Average per MEP',
-    'kpi-top-group-label':       'Most active group',
-    'kpi-parties-count-label':   'Parties represented',
-    'kpi-in-ep':                 'in the EP',
-    'kpi-avg-party-label':       'Average per party',
-    'kpi-leading-meps-label':    'Leading party MEPs',
-    'btn-back':                  '← Back to ranking',
-    'btn-ver-sector':            'View all meetings in this field →',
-    'btn-ver-reuniones':         'View all meetings →',
-    'btn-ver-partido':           'View all party meetings →',
-    'chart-indiv-vs-grupal':     'Individual vs. Group',
-    'chart-top-orgs-freq':       'Most frequent organizations',
-    'chart-top10-sect':          'Top 10 entities in meetings of this field',
-    'chart-top-meps-sector':     'Most active MEPs in this field',
-    'chart-num-meetings-registered': 'Number of registered meetings',
-    'chart-meetings-by-sector':  'Meetings by field',
-    'chart-click-bar-sector':    'Click a bar to see details · Sorted by number of meetings',
-    'chart-global-dist':         'Global distribution of meeting type',
-    'chart-top-orgs':            'Top organizations',
-    'chart-click-sector-hint':   'Click a field in the chart to see the most frequent organizations',
-    'click-select-sector':       'Select a field in the chart',
-    'chart-evolution-by-year':   'Evolution by year',
-    'chart-top10-mep':           'Top 10 entities the MEP has met with',
-    'chart-most-active-meps':    'Most active MEPs',
-    'chart-click-bar-mep':       'Click a bar to see the detailed profile · 60 Spanish MEPs',
-    'chart-party-meps':          'Party MEPs',
-    'chart-click-bar-party-mep': 'Sorted by number of meetings · Click to see profile',
-    'chart-most-freq-sectors':   'Most frequent fields',
-    'chart-top10-party':         'Top 10 entities that the party\'s MEPs have met with',
-    'chart-meetings-by-party':   'Meetings by political party',
-    'chart-click-bar-party':     'Click a bar to see party details',
-    'footer-source':             'Source: <a href="https://europarl.europa.eu" target="_blank">European Parliament</a> · Updated daily · 60 Spanish MEPs',
-    'footer-github':             'Open source on GitHub',
-    'sugg-meps':                 'MEPs',
-    'sugg-parties':              'Parties',
-    'sugg-sectors':              'Fields',
-    'mep-sector-sub':            'Distribution of {n} meetings by field',
-    'mep-year-sub':              'Number of registered meetings per year',
-    'partido-sector-sub':        'Distribution by field of {n} meetings',
-    'partido-year-sub':          'Registered activity by year',
-    'partido-detail-stats':      '{n} meetings · {meps} MEPs',
-    'kpi-p-meps-n':              'MEPs in {party}',
-    'no-data-sector':            'No data for this field',
-    'full-analysis-btn':         'See full analysis →',
-    'by-freq':                   'By frequency of appearance in meetings',
   }
 };
 
-let lang = localStorage.getItem('lang') || 'es';
-
 function t(key) {
-  return (LANG[lang] && LANG[lang][key]) || (LANG['es'][key]) || key;
-}
-
-function applyLang() {
-  // Update html lang attribute
-  document.documentElement.lang = lang;
-
-  // Update lang toggle button
-  const toggle = document.getElementById('lang-toggle');
-  if (toggle) toggle.textContent = lang === 'es' ? 'EN' : 'ES';
-
-  // Update [data-i18n] elements (textContent)
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    el.textContent = t(key);
-  });
-
-  // Update [data-i18n-html] elements (innerHTML)
-  document.querySelectorAll('[data-i18n-html]').forEach(el => {
-    const key = el.getAttribute('data-i18n-html');
-    el.innerHTML = t(key);
-  });
-
-  // Update placeholders
-  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-    const key = el.getAttribute('data-i18n-ph');
-    el.placeholder = t(key);
-  });
-
-  // Update select first options (filter dropdowns)
-  const fSector = document.getElementById('f-sector');
-  if (fSector && fSector.options[0]) fSector.options[0].textContent = t('filter-all-sectors');
-
-  const fMep = document.getElementById('f-mep');
-  if (fMep && fMep.options[0]) fMep.options[0].textContent = t('filter-all-meps');
-
-  const fPartido = document.getElementById('f-partido');
-  if (fPartido && fPartido.options[0]) fPartido.options[0].textContent = t('filter-all-parties');
-
-  const fTipo = document.getElementById('f-tipo');
-  if (fTipo) {
-    if (fTipo.options[0]) fTipo.options[0].textContent = t('filter-all-types');
-    if (fTipo.options[1]) fTipo.options[1].textContent = t('tipo-individual');
-    if (fTipo.options[2]) fTipo.options[2].textContent = t('tipo-grupal');
-  }
-}
-
-function setLang(l) {
-  lang = l;
-  localStorage.setItem('lang', lang);
-  applyLang();
-  // Re-run search results to update dynamic text
-  if (db) run(0);
-  // Re-render analysis tab if already initialized
-  if (analisisInit) {
-    analisisInit = false;
-    // Destroy all existing charts so they can be re-created
-    Object.keys(charts).forEach(k => { try { charts[k].destroy(); } catch(e){} delete charts[k]; });
-    renderAnalisisTab();
-    analisisInit = true;
-  }
+  return LANG.es[key] || key;
 }
 
 // ── Constants ────────────────────────────────────────────────
@@ -793,7 +683,6 @@ function mkChart(id, config) {
 // ── Boot ─────────────────────────────────────────────────────
 (async () => {
   applyDefaults();
-  applyLang();
   try {
     const SQL = await initSqlJs({ locateFile: f => WASM + f });
     const buf = await (await fetch('meps_es_reuniones.db')).arrayBuffer();
