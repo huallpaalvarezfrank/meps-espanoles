@@ -254,24 +254,55 @@
     footer a{color:var(--t2)}
     footer a:hover{color:var(--t)}
 
-    /* Sobre mí */
-    .sobre{max-width:1200px;margin:0 auto;padding:2.5rem 1.5rem;border-top:1px solid var(--b)}
-    .sobre-inner{background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);padding:2rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start}
-    .sobre-text{flex:1;min-width:220px}
-    .sobre-title{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:var(--t)}
-    .sobre-bio{font-size:.87rem;color:var(--t2);line-height:1.65;margin-bottom:1rem}
-    .sobre-links{display:flex;gap:.6rem;flex-wrap:wrap}
-    .sobre-link{display:inline-flex;align-items:center;gap:.35rem;font-size:.8rem;font-weight:500;color:var(--t2);border:1px solid var(--b);border-radius:var(--rf);padding:.3rem .8rem;transition:all .18s}
+    /* ── Data status bar ── */
+    .data-status-bar{max-width:1200px;margin:0 auto;padding:.9rem 1.5rem;display:flex;align-items:center;gap:0;flex-wrap:wrap;border-top:1px solid var(--b)}
+    .ds-item{display:flex;flex-direction:column;padding:0 1.75rem;border-right:1px solid var(--b)}
+    .ds-item:first-child{padding-left:0}
+    .ds-item:last-child{border-right:none}
+    .ds-label{font-size:.62rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.18rem}
+    .ds-value{font-size:.85rem;font-weight:600;color:var(--t)}
+    .ds-countdown{color:#003399}
+    .ds-source a{color:var(--t2);font-size:.83rem;font-weight:500}
+    .ds-source a:hover{color:var(--blue)}
+    @media(max-width:640px){.data-status-bar{gap:.75rem}.ds-item{border-right:none;padding:0}}
+
+    /* ── Sobre mí redesign ── */
+    .sobre{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+    .sobre-card{background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);padding:2rem;display:grid;grid-template-columns:auto 1fr;gap:1.75rem;align-items:start}
+    .sobre-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#003399 0%,#1d4ed8 100%);color:#fff;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:-.02em}
+    .sobre-body{}
+    .sobre-name{font-size:1.15rem;font-weight:800;letter-spacing:-.025em;color:var(--t);line-height:1.2}
+    .sobre-role{font-size:.82rem;font-weight:500;color:#003399;margin-top:.2rem;margin-bottom:.1rem}
+    .sobre-location{font-size:.77rem;color:var(--t3);margin-bottom:.85rem}
+    .sobre-bio{font-size:.85rem;color:var(--t2);line-height:1.7;margin-bottom:1rem}
+    .sobre-edu-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem}
+    .edu-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.74rem;background:rgba(0,51,153,.06);color:#003399;border:1px solid rgba(0,51,153,.15);border-radius:var(--rm);padding:.3rem .7rem;font-weight:500}
+    .sobre-meta-row{display:flex;align-items:center;flex-wrap:wrap;gap:.85rem;margin-bottom:1rem}
+    .sobre-skills{font-size:.76rem;color:var(--t2);background:var(--card);border:1px solid var(--b);border-radius:var(--rm);padding:.35rem .8rem}
+    .sobre-langs{display:flex;gap:.5rem}
+    .lang-badge{font-size:.74rem;color:var(--t2);border:1px solid var(--b);border-radius:var(--rm);padding:.25rem .65rem}
+    .sobre-links{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+    .sobre-link{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;font-weight:500;color:var(--t2);border:1px solid var(--b);border-radius:var(--rf);padding:.3rem .8rem;transition:all .18s}
     .sobre-link:hover{color:var(--t);border-color:var(--bh)}
-    .data-notice{flex:1;min-width:220px;background:var(--gold-d);border:1px solid rgba(201,168,76,.2);border-radius:var(--rm);padding:1.25rem 1.25rem 1rem;font-size:.83rem;line-height:1.6;color:var(--t2)}
-    .data-notice strong{color:var(--gold);display:block;margin-bottom:.35rem;font-size:.85rem}
-    .data-notice a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(201,168,76,.4)}
-    .data-notice a:hover{color:#e6c56a}
+    @media(max-width:640px){.sobre-card{grid-template-columns:1fr;gap:1rem}.sobre-avatar{display:none}}
+
+    /* ── Información pública standalone ── */
+    .public-info-section{max-width:1200px;margin:0 auto;padding:0 1.5rem 2.5rem}
+    .public-info-card{background:linear-gradient(135deg,rgba(0,51,153,.04) 0%,rgba(0,51,153,.02) 100%);border:1px solid rgba(0,51,153,.15);border-left:4px solid #003399;border-radius:var(--rl);padding:1.5rem 1.75rem;display:flex;align-items:flex-start;gap:1.25rem}
+    .pi-icon-wrap{width:38px;height:38px;border-radius:var(--rm);background:#003399;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+    .pi-title{font-size:.93rem;font-weight:700;color:#003399;margin-bottom:.5rem}
+    .pi-text{font-size:.83rem;color:var(--t2);line-height:1.7;margin-bottom:.75rem}
+    .pi-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;font-weight:600;color:#003399;text-decoration:none;border:1px solid rgba(0,51,153,.25);border-radius:var(--rm);padding:.3rem .8rem;transition:all .18s}
+    .pi-link:hover{background:#003399;color:#fff}
+    @media(max-width:640px){.public-info-card{flex-direction:column;gap:.85rem}.pi-icon-wrap{display:none}}
+
+    /* ── Metodología ── */
+    .sobre-m{max-width:1200px;margin:0 auto;padding:2rem 1.5rem;border-top:1px solid var(--b)}
+    .sobre-m-inner{background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);padding:2rem}
     .metod-card{background:var(--bg);border:1px solid var(--b);border-radius:var(--rm);padding:1.1rem 1.15rem}
     .metod-icon{font-size:1.4rem;margin-bottom:.5rem}
     .metod-title{font-size:.88rem;font-weight:700;color:var(--t);margin-bottom:.4rem}
     .metod-text{font-size:.82rem;color:var(--t2);line-height:1.6;margin:0}
-    @media(max-width:768px){.sobre-inner{flex-direction:column}}
 
     /* Animations */
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -743,72 +774,127 @@
   </div>
 </div>
 
-<!-- Metodología -->
-<section class="sobre" id="metodologia">
-  <div class="sobre-inner" style="flex-direction:column">
-    <div style="width:100%;margin-bottom:1.25rem">
-      <div class="sobre-title" style="font-size:1.1rem;margin-bottom:.35rem">Metodología</div>
-      <p class="sobre-bio" style="margin-bottom:0">Cómo se recopilan, procesan y clasifican los datos de este portal.</p>
+<!-- ── Data status bar ── -->
+<div class="data-status-bar">
+  <div class="ds-item">
+    <span class="ds-label">Última actualización</span>
+    <span class="ds-value" id="last-update-date">—</span>
+  </div>
+  <div class="ds-item">
+    <span class="ds-label">Próxima actualización</span>
+    <span class="ds-value ds-countdown" id="next-update-countdown">calculando…</span>
+  </div>
+  <div class="ds-item">
+    <span class="ds-label">Frecuencia</span>
+    <span class="ds-value">Semanal · cada lunes</span>
+  </div>
+  <div class="ds-item ds-source">
+    <span class="ds-label">Fuente</span>
+    <a href="https://europarl.europa.eu" target="_blank">Parlamento Europeo (oficial)</a>
+  </div>
+</div>
+
+<!-- ── Metodología ── -->
+<section class="sobre-m" id="metodologia">
+  <div class="sobre-m-inner">
+    <div style="margin-bottom:1.25rem">
+      <div style="font-size:1.05rem;font-weight:700;color:var(--t);margin-bottom:.3rem">Metodología</div>
+      <p style="font-size:.83rem;color:var(--t3);margin:0">Cómo se recopilan, procesan y clasifican los datos de este portal.</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;width:100%">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem">
       <div class="metod-card">
         <div class="metod-icon">🕷️</div>
-        <div class="metod-title">Recopilación de datos</div>
-        <p class="metod-text">Un scraper automático (Playwright) extrae diariamente las reuniones declaradas por los 60 eurodiputados españoles en el portal oficial del Parlamento Europeo. Solo se registran las reuniones con grupos de interés externos.</p>
+        <div class="metod-title">Recopilación</div>
+        <p class="metod-text">Un scraper automático extrae semanalmente las reuniones declaradas por los 60 eurodiputados españoles en el portal oficial del Parlamento Europeo. Solo se registran reuniones con grupos de interés externos.</p>
       </div>
       <div class="metod-card">
         <div class="metod-icon">🤖</div>
         <div class="metod-title">Clasificación con IA</div>
-        <p class="metod-text">Cada reunión es clasificada automáticamente mediante la API de Claude (Anthropic). La IA extrae los actores presentes, asigna un ámbito temático (Energía, Banca, ONG…) y determina si la reunión es individual o grupal.</p>
+        <p class="metod-text">Cada reunión es clasificada mediante IA. Se extraen los actores presentes, se asigna un ámbito temático (Energía, Banca, ONG…) y se determina si la reunión es individual o grupal.</p>
       </div>
       <div class="metod-card">
         <div class="metod-icon">🗄️</div>
         <div class="metod-title">Base de datos</div>
-        <p class="metod-text">Los datos se almacenan en SQLite y se cargan directamente en el navegador mediante WebAssembly (sql.js). No hay servidor: todo el procesamiento ocurre en tu dispositivo, lo que garantiza rapidez y privacidad.</p>
+        <p class="metod-text">Los datos se almacenan en SQLite y se cargan en el navegador mediante WebAssembly (sql.js). No hay servidor: todo el procesamiento ocurre en tu dispositivo, garantizando privacidad y rapidez.</p>
       </div>
       <div class="metod-card">
         <div class="metod-icon">⚠️</div>
         <div class="metod-title">Limitaciones</div>
-        <p class="metod-text">Los datos dependen de lo que los propios eurodiputados declaran. La clasificación por IA puede contener errores puntuales. Este portal no pretende ser exhaustivo, sino facilitar el acceso a información ya pública.</p>
+        <p class="metod-text">Los datos dependen de lo que los eurodiputados declaran voluntariamente. La clasificación por IA puede contener errores puntuales. Este portal facilita el acceso a información ya pública, sin ser exhaustivo.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Sobre mí + aviso de datos públicos -->
+<!-- ── Información pública oficial ── -->
+<div class="public-info-section">
+  <div class="public-info-card">
+    <div class="pi-icon-wrap">🇪🇺</div>
+    <div>
+      <div class="pi-title">Datos de fuente oficial del Parlamento Europeo</div>
+      <p class="pi-text">Toda la información publicada en este portal proviene directamente del <strong>Registro de Transparencia del Parlamento Europeo</strong>. Los eurodiputados tienen la obligación legal de declarar sus reuniones con representantes de grupos de interés. Este portal no genera ni interpreta datos: únicamente los recopila, estructura y hace accesibles para periodistas, investigadores y ciudadanos.</p>
+      <a class="pi-link" href="https://www.europarl.europa.eu/meps/es/search/advanced?countryCode=ES" target="_blank">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+        Ver portal oficial del Parlamento Europeo
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Sobre mí ── -->
 <section class="sobre" id="sobre-mi">
-  <div class="sobre-inner">
-    <div class="sobre-text">
-      <div class="sobre-title">Sobre mí</div>
-      <p class="sobre-bio">Politólogo con máster en Estrategias y Tecnologías para el Desarrollo (UCM-UPM). Este portal nació de mi interés en la transparencia política y el lobbying en el Parlamento Europeo. Puedes seguir el proyecto o contactarme en:</p>
+  <div class="sobre-card">
+    <div class="sobre-avatar">FH</div>
+    <div class="sobre-body">
+      <div class="sobre-name">Frank Huallpa Álvarez</div>
+      <div class="sobre-role">Business Intelligence &amp; Public Affairs · Analista Político</div>
+      <div class="sobre-location">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Madrid, España
+      </div>
+      <p class="sobre-bio">Profesional en análisis político y regulatorio, con especialización en inteligencia de datos aplicada a asuntos públicos, gobernanza y entornos regulatorios complejos. Mi trayectoria combina la ciencia política con herramientas avanzadas de análisis de datos, permitiéndome transformar grandes volúmenes de información en insights estratégicos accionables. Creé este portal como ejercicio de transparencia política y análisis de lobbying en el Parlamento Europeo.</p>
+      <div class="sobre-edu-row">
+        <span class="edu-badge">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          Máster Estrategias y Tecnologías para el Desarrollo · UCM-UPM
+        </span>
+        <span class="edu-badge">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          Máster Decision Making &amp; Innovation · UCJC
+        </span>
+        <span class="edu-badge">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          Lic. Ciencia Política · PUCP (con honores)
+        </span>
+      </div>
+      <div class="sobre-meta-row">
+        <div class="sobre-skills">Python · SQL · Power BI · ArcGIS · QGIS · R</div>
+        <div class="sobre-langs">
+          <span class="lang-badge">🇪🇸 Español nativo</span>
+          <span class="lang-badge">🇬🇧 Inglés C1</span>
+        </div>
+      </div>
       <div class="sobre-links">
-        <a class="sobre-link" href="https://github.com/huallpaalvarezfrank" target="_blank">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
-          GitHub
-        </a>
-        <a class="sobre-link" href="https://x.com/huallpa_frank" target="_blank">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          X / Twitter
-        </a>
         <a class="sobre-link" href="https://www.linkedin.com/in/frankhuallpa/" target="_blank">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
           LinkedIn
         </a>
+        <a class="sobre-link" href="https://x.com/huallpa_frank" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X / Twitter
+        </a>
         <a class="sobre-link" href="mailto:frank.huallpa.alvarez@gmail.com">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
-          Email
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+          frank.huallpa.alvarez@gmail.com
         </a>
       </div>
-    </div>
-    <div class="data-notice">
-      <strong>ℹ️ Información pública oficial</strong>
-      Todos los datos de este portal son <strong>información pública</strong> obtenida directamente del <a href="https://www.europarl.europa.eu/meps/es/search/advanced?countryCode=ES" target="_blank">portal oficial del Parlamento Europeo</a>. Los eurodiputados están legalmente obligados a declarar sus reuniones con grupos de interés. Este portal únicamente los recopila, organiza y hace más accesibles para periodistas y ciudadanos.
     </div>
   </div>
 </section>
 
-<footer>
-  <span>Fuente: <a href="https://europarl.europa.eu" target="_blank">Parlamento Europeo</a> · Actualización diaria · 60 MEPs españoles</span>
+<footer style="max-width:1200px;margin:0 auto;padding:1.25rem 1.5rem 2rem;border-top:1px solid var(--b);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;font-size:.75rem;color:var(--t3)">
+  <span>© 2025 Frank Huallpa Álvarez · Portal de Transparencia</span>
+  <span>Datos: <a href="https://europarl.europa.eu" target="_blank" style="color:var(--t2)">Parlamento Europeo</a> · 60 MEPs españoles</span>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
@@ -1110,6 +1196,7 @@ function renderTimeline() {
     initFilters();
     run(0);
     renderTimeline();
+    updateDataStatus();
   } catch(e) {
     clearInterval(prog);
     bar.style.background = '#ef4444';
@@ -1117,18 +1204,63 @@ function renderTimeline() {
   }
 })();
 
+// ── Data status bar ──────────────────────────────────────────
+function updateDataStatus() {
+  // Last update date: from DB
+  try {
+    const rows = db.exec("SELECT MAX(fecha) FROM reuniones WHERE fecha IS NOT NULL AND fecha != ''");
+    const raw = rows[0]?.values[0][0];
+    if (raw) {
+      const d = new Date(raw + 'T00:00:00');
+      const opts = { day: 'numeric', month: 'short', year: 'numeric' };
+      document.getElementById('last-update-date').textContent =
+        d.toLocaleDateString('es-ES', opts);
+    }
+  } catch(e) { /* silently ignore */ }
+
+  // Countdown to next Monday at 08:00 Madrid time (CET/CEST)
+  function tick() {
+    const now = new Date();
+    // Next Monday at 08:00 local
+    const next = new Date(now);
+    const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, ...
+    const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7 || 7;
+    next.setDate(now.getDate() + daysUntilMonday);
+    next.setHours(8, 0, 0, 0);
+    const diff = next - now;
+    if (diff <= 0) {
+      document.getElementById('next-update-countdown').textContent = 'actualizando…';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    let txt = '';
+    if (d > 0) txt += d + 'd ';
+    txt += h + 'h ' + String(m).padStart(2,'0') + 'min';
+    document.getElementById('next-update-countdown').textContent = txt;
+  }
+  tick();
+  setInterval(tick, 60000);
+}
+
 // ── Main tabs ────────────────────────────────────────────────
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
   document.querySelectorAll('[id^="panel-"]').forEach(p => p.hidden = p.id !== 'panel-' + name);
   window.scrollTo(0, 0);
   if (name === 'analisis' && !analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
-  // Metodología y Sobre mí: solo visibles en el tab principal
+  // Sections below content: solo visibles en el tab principal
   const isHome = name === 'search';
   ['metodologia','sobre-mi'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = isHome ? '' : 'none';
   });
+  // Also hide/show data-status-bar and public-info-section
+  const dsBar = document.querySelector('.data-status-bar');
+  if (dsBar) dsBar.style.display = isHome ? '' : 'none';
+  const piSection = document.querySelector('.public-info-section');
+  if (piSection) piSection.style.display = isHome ? '' : 'none';
   const footer = document.querySelector('footer');
   if (footer) footer.style.display = isHome ? '' : 'none';
 }
