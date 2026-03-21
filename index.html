@@ -51,6 +51,9 @@
     .hdr-link{font-size:.8rem;color:var(--t2);padding:.28rem .75rem;border:1px solid var(--b);border-radius:var(--rf);transition:all .2s}
     .hdr-link:hover{color:var(--t);border-color:var(--bh)}
     .hdr-right{display:flex;align-items:center;gap:.5rem}
+    .hdr-nav{display:flex;align-items:center;gap:.25rem}
+    .hdr-nav-link{font-size:.8rem;font-weight:500;color:var(--t2);padding:.3rem .7rem;border-radius:var(--rm);transition:all .18s}
+    .hdr-nav-link:hover{color:var(--blue);background:rgba(37,99,235,.07)}
 
     /* Tab nav */
     .tab-nav{position:sticky;top:60px;z-index:85;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--b);display:flex;padding:0 1.75rem;gap:.25rem}
@@ -207,6 +210,10 @@
     .data-notice strong{color:var(--gold);display:block;margin-bottom:.35rem;font-size:.85rem}
     .data-notice a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(201,168,76,.4)}
     .data-notice a:hover{color:#e6c56a}
+    .metod-card{background:var(--bg);border:1px solid var(--b);border-radius:var(--rm);padding:1.1rem 1.15rem}
+    .metod-icon{font-size:1.4rem;margin-bottom:.5rem}
+    .metod-title{font-size:.88rem;font-weight:700;color:var(--t);margin-bottom:.4rem}
+    .metod-text{font-size:.82rem;color:var(--t2);line-height:1.6;margin:0}
     @media(max-width:768px){.sobre-inner{flex-direction:column}}
 
     /* Animations */
@@ -241,7 +248,12 @@
       <span class="logo-tag">Portal de Transparencia</span>
     </div>
   </div>
-  <div class="hdr-right"></div>
+  <div class="hdr-right">
+    <nav class="hdr-nav">
+      <a class="hdr-nav-link" href="#metodologia">Metodología</a>
+      <a class="hdr-nav-link" href="#sobre-mi">Sobre mí</a>
+    </nav>
+  </div>
 </header>
 
 <!-- Tab nav -->
@@ -489,8 +501,40 @@
   </div>
 </div>
 
+<!-- Metodología -->
+<section class="sobre" id="metodologia">
+  <div class="sobre-inner" style="flex-direction:column">
+    <div style="width:100%;margin-bottom:1.25rem">
+      <div class="sobre-title" style="font-size:1.1rem;margin-bottom:.35rem">Metodología</div>
+      <p class="sobre-bio" style="margin-bottom:0">Cómo se recopilan, procesan y clasifican los datos de este portal.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;width:100%">
+      <div class="metod-card">
+        <div class="metod-icon">🕷️</div>
+        <div class="metod-title">Recopilación de datos</div>
+        <p class="metod-text">Un scraper automático (Playwright) extrae diariamente las reuniones declaradas por los 60 eurodiputados españoles en el portal oficial del Parlamento Europeo. Solo se registran las reuniones con grupos de interés externos.</p>
+      </div>
+      <div class="metod-card">
+        <div class="metod-icon">🤖</div>
+        <div class="metod-title">Clasificación con IA</div>
+        <p class="metod-text">Cada reunión es clasificada automáticamente mediante la API de Claude (Anthropic). La IA extrae los actores presentes, asigna un ámbito temático (Energía, Banca, ONG…) y determina si la reunión es individual o grupal.</p>
+      </div>
+      <div class="metod-card">
+        <div class="metod-icon">🗄️</div>
+        <div class="metod-title">Base de datos</div>
+        <p class="metod-text">Los datos se almacenan en SQLite y se cargan directamente en el navegador mediante WebAssembly (sql.js). No hay servidor: todo el procesamiento ocurre en tu dispositivo, lo que garantiza rapidez y privacidad.</p>
+      </div>
+      <div class="metod-card">
+        <div class="metod-icon">⚠️</div>
+        <div class="metod-title">Limitaciones</div>
+        <p class="metod-text">Los datos dependen de lo que los propios eurodiputados declaran. La clasificación por IA puede contener errores puntuales. Este portal no pretende ser exhaustivo, sino facilitar el acceso a información ya pública.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Sobre mí + aviso de datos públicos -->
-<section class="sobre">
+<section class="sobre" id="sobre-mi">
   <div class="sobre-inner">
     <div class="sobre-text">
       <div class="sobre-title">Sobre mí</div>
