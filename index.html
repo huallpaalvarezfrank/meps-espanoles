@@ -315,6 +315,58 @@
       .an-subnav{flex-wrap:wrap;gap:.3rem}
     }
     @media(max-width:520px){.mep-photo{display:none}}
+
+    /* ── Phase 2: Breadcrumbs ── */
+    .breadcrumb{margin-bottom:1.25rem}
+    .breadcrumb-list{display:flex;align-items:center;list-style:none;font-size:.78rem;color:var(--t3);flex-wrap:wrap;gap:.1rem;padding:0}
+    .breadcrumb-list li{display:flex;align-items:center}
+    .breadcrumb-list li+li::before{content:"›";margin:0 .38rem;color:var(--t3);opacity:.7;font-size:.7rem}
+    .breadcrumb-list a{color:#003399;text-decoration:none}
+    .breadcrumb-list a:hover{text-decoration:underline}
+    .breadcrumb-list .bc-current{color:var(--t);font-weight:500}
+
+    /* ── Phase 2: Stats restyled ── */
+    .stat{background:#f8f9fa;border:.5px solid #e0e0e0;border-radius:10px;padding:1.2rem 1rem;text-align:center}
+    .stat-n{font-size:28px;font-weight:600;color:#003399;letter-spacing:-.02em;line-height:1;margin-bottom:3px}
+    .stat-l{font-size:13px;color:#666;margin-top:.15rem}
+    .stat-filtered{font-size:.68rem;font-weight:600;color:#003399;margin-top:.3rem;min-height:.85rem;opacity:.8}
+
+    /* ── Phase 2: Timeline ── */
+    .timeline-section{max-width:880px;margin:0 auto;padding:0 1.5rem 1.75rem}
+    .timeline-card{background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);padding:1.25rem 1.5rem}
+    .timeline-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+    .timeline-title{font-size:.85rem;font-weight:700;color:var(--t)}
+    .timeline-title span{font-size:.75rem;font-weight:400;color:var(--t3);margin-left:.4rem}
+    .timeline-ranges{display:flex;gap:.3rem}
+    .tlr-btn{font-size:.71rem;padding:.22rem .65rem;border:1px solid var(--b);border-radius:var(--rf);color:var(--t2);transition:all .15s;cursor:pointer}
+    .tlr-btn:hover{border-color:var(--bh);color:var(--t)}
+    .tlr-btn.on{background:#003399;border-color:#003399;color:#fff}
+    .timeline-wrap{height:180px;position:relative}
+
+    /* ── Phase 2: Mobile cards ── */
+    .mobile-cards{display:none}
+    .mobile-card{border:.5px solid #e0e0e0;border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;transition:box-shadow .15s}
+    .mobile-card:active{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .mobile-card-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;gap:.5rem}
+    .mobile-card-mep{font-weight:500;font-size:.85rem;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .mobile-card-date{font-size:.73rem;color:#888;white-space:nowrap;flex-shrink:0}
+    .mobile-card-org{font-size:.83rem;color:#003399;margin-bottom:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .mobile-tag{display:inline-block;font-size:.68rem;padding:.18rem .5rem;border-radius:20px;background:#e8edf7;color:#003399;margin-right:4px}
+    .mobile-tag-grupal{background:#e8f5e9;color:#2e7d32}
+    .mobile-tag-amb{background:rgba(0,0,0,.05);color:#475569}
+
+    /* ── Phase 2: Mobile layout overrides ── */
+    @media(max-width:640px){
+      .hdr-nav{display:none}
+      .tbl-box{display:none}
+      .mobile-cards{display:block}
+      canvas{max-height:280px!important}
+      .timeline-card{padding:.9rem 1rem}
+      .stats{padding:0 1rem 1.5rem}
+    }
+    @media(min-width:641px){
+      .mobile-cards{display:none}
+    }
   </style>
 </head>
 <body>
@@ -367,11 +419,39 @@
   </section>
 
   <div class="stats">
-    <div class="stat fu d1"><div class="stat-n" id="s-r"><span class="skel-num"></span></div><div class="stat-l">Reuniones</div></div>
-    <div class="stat fu d2"><div class="stat-n" id="s-m"><span class="skel-num"></span></div><div class="stat-l">Eurodiputados</div></div>
-    <div class="stat fu d2"><div class="stat-n" id="s-o"><span class="skel-num"></span></div><div class="stat-l">Organizaciones</div></div>
-    <div class="stat fu d3"><div class="stat-n" id="s-s"><span class="skel-num"></span></div><div class="stat-l">Ámbitos</div></div>
+    <div class="stat fu d1">
+      <div class="stat-n" id="s-r"><span class="skel-num"></span></div>
+      <div class="stat-l">reuniones registradas</div>
+      <div class="stat-filtered" id="s-r-filtered" style="display:none"></div>
+    </div>
+    <div class="stat fu d2">
+      <div class="stat-n" id="s-m"><span class="skel-num"></span></div>
+      <div class="stat-l">eurodiputados españoles</div>
+    </div>
+    <div class="stat fu d2">
+      <div class="stat-n" id="s-o"><span class="skel-num"></span></div>
+      <div class="stat-l">organizaciones distintas</div>
+    </div>
+    <div class="stat fu d3">
+      <div class="stat-n" id="s-s"><span class="skel-num"></span></div>
+      <div class="stat-l">ámbitos identificados</div>
+    </div>
   </div>
+
+  <!-- Timeline -->
+  <section class="timeline-section">
+    <div class="timeline-card">
+      <div class="timeline-hdr">
+        <span class="timeline-title">Actividad de reuniones <span id="tl-subtitle"></span></span>
+        <div class="timeline-ranges">
+          <button class="tlr-btn on" data-range="12m">Últimos 12 meses</button>
+          <button class="tlr-btn" data-range="year">Este año</button>
+          <button class="tlr-btn" data-range="all">Histórico</button>
+        </div>
+      </div>
+      <div class="timeline-wrap"><canvas id="c-timeline"></canvas></div>
+    </div>
+  </section>
 
   <!-- Anchor for scroll-to -->
   <div id="explore-anchor" style="scroll-margin-top:108px"></div>
@@ -443,6 +523,9 @@
     <!-- ── Content area ── -->
     <div class="content-area">
       <div class="rbar" id="rbar"></div>
+      <!-- Mobile cards (shown <640px) -->
+      <div id="mobile-cards" class="mobile-cards"></div>
+      <!-- Desktop table (hidden <640px) -->
       <div class="tbl-wrap">
         <div class="tbl-box">
           <table>
@@ -506,7 +589,7 @@
 
       <!-- Sector detail (shown when a sector is selected) -->
       <div id="an-sect-detail" hidden>
-        <button class="btn-back" onclick="clearAnSectorDetail()" data-i18n="btn-back">← Volver al ranking</button>
+        <nav class="breadcrumb" id="bc-sector" aria-label="Ruta de navegación"><ol class="breadcrumb-list"></ol></nav>
         <div class="an-section-hdr">
           <div class="an-section-title" id="an-sect-detail-title">—</div>
           <div class="an-section-sub" id="an-sect-detail-stats"></div>
@@ -571,7 +654,7 @@
 
       <!-- MEP detail (shown when a MEP is selected) -->
       <div id="mep-detail" hidden>
-        <button class="btn-back" onclick="clearMepDetail()" data-i18n="btn-back">← Volver al ranking</button>
+        <nav class="breadcrumb" id="bc-mep" aria-label="Ruta de navegación"><ol class="breadcrumb-list"></ol></nav>
         <div id="mep-detail-hdr"></div>
         <div class="grid-2">
           <div class="chart-card">
@@ -616,7 +699,7 @@
 
       <!-- Partido detail (shown on click) -->
       <div id="partido-detail" hidden>
-        <button class="btn-back" onclick="clearPartidoDetail()" data-i18n="btn-back">← Volver al ranking</button>
+        <nav class="breadcrumb" id="bc-partido" aria-label="Ruta de navegación"><ol class="breadcrumb-list"></ol></nav>
         <div class="an-section-hdr">
           <div class="an-section-title" id="partido-detail-title">—</div>
           <div class="an-section-sub" id="partido-detail-stats"></div>
@@ -872,6 +955,8 @@ let db = null, page = 0, timer = null;
 let analisisInit = false;
 let anSuggData = null;
 const charts = {};
+let totalGlobal = 0;      // total sin filtros, para stat-filtered
+let timelineRange = '12m'; // rango activo del timeline
 
 // ── Chart defaults ───────────────────────────────────────────
 function applyDefaults() {
@@ -888,6 +973,123 @@ function mkChart(id, config) {
   if (charts[id]) charts[id].destroy();
   charts[id] = new Chart(document.getElementById(id).getContext('2d'), config);
   return charts[id];
+}
+
+// ── Breadcrumb helper ─────────────────────────────────────────
+function setBreadcrumb(navId, crumbs) {
+  const nav = document.getElementById(navId);
+  if (!nav) return;
+  const ol = nav.querySelector('.breadcrumb-list');
+  ol.innerHTML = '';
+  crumbs.forEach((c, i) => {
+    const li = document.createElement('li');
+    if (i === crumbs.length - 1) {
+      const span = document.createElement('span');
+      span.className = 'bc-current';
+      span.textContent = c.label;
+      li.appendChild(span);
+    } else if (c.fn) {
+      const a = document.createElement('a');
+      a.href = '#';
+      a.textContent = c.label;
+      a.addEventListener('click', e => { e.preventDefault(); c.fn(); });
+      li.appendChild(a);
+    } else {
+      const span = document.createElement('span');
+      span.textContent = c.label;
+      li.appendChild(span);
+    }
+    ol.appendChild(li);
+  });
+}
+
+// ── Mobile card renderer ──────────────────────────────────────
+function mobileCardHtml([fecha,titulo,actores,sector,tipo,nombre,partido,grupo,foto]) {
+  const d = fecha ? fecha.slice(0,10).split('-').reverse().join('/') : '—';
+  const orgs = actores ? actores.split('|').slice(0,2).map(a=>a.trim()).join(', ') : (titulo||'—');
+  const tipTag = tipo==='Grupal'
+    ? `<span class="mobile-tag mobile-tag-grupal">Grupal</span>`
+    : `<span class="mobile-tag">Individual</span>`;
+  const secTag = sector ? `<span class="mobile-tag mobile-tag-amb">${esc(sector)}</span>` : '';
+  return `<div class="mobile-card">
+    <div class="mobile-card-hdr">
+      <span class="mobile-card-mep">${esc(nombre||'—')}</span>
+      <span class="mobile-card-date">${d}</span>
+    </div>
+    <div class="mobile-card-org">${esc(orgs)}</div>
+    <div>${tipTag}${secTag}</div>
+  </div>`;
+}
+
+// ── Filtered stat sub-text ────────────────────────────────────
+function renderFilteredStat(filteredTotal) {
+  const el = document.getElementById('s-r-filtered');
+  if (!el || !totalGlobal) return;
+  const hasFilters = ['f-sector','f-mep','f-partido','f-tipo'].some(id => document.getElementById(id).value)
+                  || document.getElementById('q').value.trim();
+  if (hasFilters && filteredTotal !== totalGlobal) {
+    el.textContent = `${fmt(filteredTotal)} con filtros activos`;
+    el.style.display = '';
+  } else {
+    el.textContent = '';
+    el.style.display = 'none';
+  }
+}
+
+// ── Timeline ──────────────────────────────────────────────────
+function renderTimeline() {
+  if (!db) return;
+  const text    = document.getElementById('q').value.trim();
+  const sector  = document.getElementById('f-sector').value;
+  const mepId   = document.getElementById('f-mep').value;
+  const partido = document.getElementById('f-partido').value;
+  const tipo    = document.getElementById('f-tipo').value;
+  const conds = ['r.fecha IS NOT NULL', "r.fecha != ''"];
+  const params = [];
+  if (timelineRange === '12m')  conds.push("r.fecha >= date('now', '-12 months')");
+  else if (timelineRange === 'year') conds.push("strftime('%Y', r.fecha) = strftime('%Y', 'now')");
+  if (text)    { const lk=`%${text}%`; conds.push('(r.actores LIKE ? OR r.titulo LIKE ? OR m.nombre LIKE ? OR r.reunion_con LIKE ?)'); params.push(lk,lk,lk,lk); }
+  if (sector)  { conds.push('r.sector=?');          params.push(sector); }
+  if (mepId)   { conds.push('r.mep_id=?');          params.push(mepId); }
+  if (partido) { conds.push('m.partido_nacional=?'); params.push(partido); }
+  if (tipo)    { conds.push('r.tipo_reunion=?');     params.push(tipo); }
+  const rows = db.exec(
+    `SELECT strftime('%Y-%m', r.fecha) as mes, COUNT(*) as total
+     FROM reuniones r JOIN meps m ON r.mep_id = m.mep_id
+     WHERE ${conds.join(' AND ')} GROUP BY mes ORDER BY mes ASC`, params
+  )[0]?.values ?? [];
+  const MESES_SHORT = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const MESES_LONG  = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const labels = rows.map(r => { const [y,m]=r[0].split('-'); return `${MESES_SHORT[+m]} ${y.slice(2)}`; });
+  const data   = rows.map(r => r[1]);
+  // Subtitle
+  const tlSub = document.getElementById('tl-subtitle');
+  if (tlSub) {
+    const hasFilters = sector||mepId||partido||tipo||text;
+    tlSub.textContent = hasFilters ? '(filtrado)' : '';
+  }
+  mkChart('c-timeline', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{ data, borderColor:'#003399', backgroundColor:'rgba(0,51,153,0.07)',
+        fill:true, pointRadius:0, pointHoverRadius:4, borderWidth:2, tension:.3 }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend: { display:false },
+        tooltip: { callbacks: {
+          title: ctx => { const [y,m]=rows[ctx[0].dataIndex][0].split('-'); return `${MESES_LONG[+m]} ${y}`; },
+          label: ctx => ` ${fmt(ctx.raw)} reuniones`
+        }}
+      },
+      scales: {
+        x: { grid:{display:false}, ticks:{color:'#94a3b8',font:{size:11},maxTicksLimit:14,maxRotation:0}, border:{display:false} },
+        y: { beginAtZero:true, grid:{color:'rgba(0,0,0,.06)'}, ticks:{color:'#94a3b8',font:{size:11},precision:0}, border:{display:false} }
+      }
+    }
+  });
 }
 
 // ── Boot ─────────────────────────────────────────────────────
@@ -907,6 +1109,7 @@ function mkChart(id, config) {
     initStats();
     initFilters();
     run(0);
+    renderTimeline();
   } catch(e) {
     clearInterval(prog);
     bar.style.background = '#ef4444';
@@ -943,8 +1146,9 @@ document.querySelectorAll('.an-btn').forEach(b => b.addEventListener('click', ()
 // ── Stats bar ────────────────────────────────────────────────
 function initStats() {
   const q = sql => db.exec(sql)[0]?.values[0][0] ?? 0;
+  totalGlobal = q('SELECT COUNT(*) FROM reuniones');
   const vals = [
-    ['s-r', q('SELECT COUNT(*) FROM reuniones')],
+    ['s-r', totalGlobal],
     ['s-m', q('SELECT COUNT(*) FROM meps')],
     ['s-o', q("SELECT COUNT(DISTINCT reunion_con) FROM reuniones WHERE reunion_con IS NOT NULL AND reunion_con!=''")],
     ['s-s', q("SELECT COUNT(DISTINCT sector) FROM reuniones WHERE sector IS NOT NULL AND sector!=''")]
@@ -1003,6 +1207,7 @@ function run(p = 0) {
   const total = db.exec(`SELECT COUNT(*) ${join}`, params)[0]?.values[0][0] ?? 0;
   const rows  = db.exec(`SELECT r.fecha,r.titulo,r.actores,r.sector,r.tipo_reunion,m.nombre,m.partido_nacional,m.grupo_politico,m.foto_url ${join} ORDER BY r.fecha DESC LIMIT ${PAGE} OFFSET ${p*PAGE}`, params)[0]?.values ?? [];
   render(rows, total, p);
+  if (p === 0) renderTimeline(); // update timeline only on filter change, not pagination
   if (p > 0) window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1041,6 +1246,15 @@ function render(rows, total, p) {
   // Trigger reflow then fade in
   void tbody.offsetWidth;
   tbody.classList.add('data-loaded');
+  // Mobile cards
+  const mc = document.getElementById('mobile-cards');
+  if (mc) {
+    mc.innerHTML = rows.length
+      ? rows.map(mobileCardHtml).join('')
+      : `<div style="padding:2rem;text-align:center;color:var(--t3)">No se encontraron reuniones.</div>`;
+  }
+  // Filtered stat sub-text
+  renderFilteredStat(total);
   paginate(total, p);
 }
 
@@ -1124,6 +1338,29 @@ const sbOv = document.getElementById('sidebar-overlay');
 if (ftBtn)   ftBtn.addEventListener('click', openSidebar);
 if (sbClose) sbClose.addEventListener('click', closeSidebar);
 if (sbOv)    sbOv.addEventListener('click', closeSidebar);
+
+// ── Timeline range toggle ─────────────────────────────────────
+document.querySelectorAll('.tlr-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tlr-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    timelineRange = btn.dataset.range;
+    renderTimeline();
+  });
+});
+
+// ── Browser back button ───────────────────────────────────────
+window.addEventListener('popstate', () => {
+  if (!document.getElementById('an-sect-detail').hidden) {
+    clearAnSectorDetail();
+  } else if (!document.getElementById('mep-detail').hidden) {
+    clearMepDetail();
+  } else if (!document.getElementById('partido-detail').hidden) {
+    clearPartidoDetail();
+  } else {
+    switchTab('search');
+  }
+});
 
 // ══════════════════════════════════════════════════════════════
 // ANÁLISIS TAB — main init
@@ -1264,6 +1501,12 @@ function goToSectorFull(sector) {
   document.getElementById('an-sect-overview').hidden = true;
   document.getElementById('an-sect-detail').hidden   = false;
   document.getElementById('an-sect-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setBreadcrumb('bc-sector', [
+    { label: 'Inicio',    fn: () => switchTab('search') },
+    { label: 'Ámbitos',  fn: () => clearAnSectorDetail() },
+    { label: sector }
+  ]);
+  history.pushState({ view: 'sector-detail', sector }, '');
 }
 
 function clearAnSectorDetail() {
@@ -1394,6 +1637,12 @@ function showMepDetail(mepId) {
   document.getElementById('an-mep-overview').hidden = true;
   document.getElementById('mep-detail').hidden = false;
   document.getElementById('mep-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setBreadcrumb('bc-mep', [
+    { label: 'Inicio',          fn: () => switchTab('search') },
+    { label: 'Eurodiputados',   fn: () => clearMepDetail() },
+    { label: nombre }
+  ]);
+  history.pushState({ view: 'mep-detail', mepId }, '');
 }
 
 function clearMepDetail() {
@@ -1533,6 +1782,12 @@ function showPartidoDetail(partido) {
   document.getElementById('an-partido-overview').hidden = true;
   document.getElementById('partido-detail').hidden = false;
   document.getElementById('partido-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setBreadcrumb('bc-partido', [
+    { label: 'Inicio',   fn: () => switchTab('search') },
+    { label: 'Partidos', fn: () => clearPartidoDetail() },
+    { label: shortParty(partido) || partido }
+  ]);
+  history.pushState({ view: 'partido-detail', partido }, '');
 }
 
 function clearPartidoDetail() {
