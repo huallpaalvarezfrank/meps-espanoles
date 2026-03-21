@@ -1,9 +1,9 @@
-name: Pipeline diario MEPs
+name: Pipeline semanal MEPs
 
 on:
   schedule:
-    - cron: '0 22 * * *'  # 23:00 hora española (UTC+1)
-  workflow_dispatch:       # permite lanzar manualmente desde GitHub
+    - cron: '59 22 * * 0'  # Domingos a las 23:59 hora española (UTC+1 = 22:59 UTC)
+  workflow_dispatch:        # permite lanzar manualmente desde GitHub
 
 jobs:
   actualizar:

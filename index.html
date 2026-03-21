@@ -269,7 +269,7 @@
     /* ── Sobre mí redesign ── */
     .sobre{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
     .sobre-card{background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);padding:2rem;display:grid;grid-template-columns:auto 1fr;gap:1.75rem;align-items:start}
-    .sobre-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#003399 0%,#1d4ed8 100%);color:#fff;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:-.02em}
+    .sobre-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;flex-shrink:0;border:3px solid rgba(0,51,153,.15);box-shadow:0 2px 12px rgba(0,0,0,.10)}
     .sobre-body{}
     .sobre-name{font-size:1.15rem;font-weight:800;letter-spacing:-.025em;color:var(--t);line-height:1.2}
     .sobre-role{font-size:.82rem;font-weight:500;color:#003399;margin-top:.2rem;margin-bottom:.1rem}
@@ -284,7 +284,7 @@
     .sobre-links{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
     .sobre-link{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;font-weight:500;color:var(--t2);border:1px solid var(--b);border-radius:var(--rf);padding:.3rem .8rem;transition:all .18s}
     .sobre-link:hover{color:var(--t);border-color:var(--bh)}
-    @media(max-width:640px){.sobre-card{grid-template-columns:1fr;gap:1rem}.sobre-avatar{display:none}}
+    @media(max-width:640px){.sobre-card{grid-template-columns:1fr;gap:1rem}.sobre-avatar{width:64px;height:64px}}
 
     /* ── Información pública standalone ── */
     .public-info-section{max-width:1200px;margin:0 auto;padding:0 1.5rem 2.5rem}
@@ -296,13 +296,6 @@
     .pi-link:hover{background:#003399;color:#fff}
     @media(max-width:640px){.public-info-card{flex-direction:column;gap:.85rem}.pi-icon-wrap{display:none}}
 
-    /* ── Metodología ── */
-    .sobre-m{max-width:1200px;margin:0 auto;padding:2rem 1.5rem;border-top:1px solid var(--b)}
-    .sobre-m-inner{background:var(--surf);border:1px solid var(--b);border-radius:var(--rl);padding:2rem}
-    .metod-card{background:var(--bg);border:1px solid var(--b);border-radius:var(--rm);padding:1.1rem 1.15rem}
-    .metod-icon{font-size:1.4rem;margin-bottom:.5rem}
-    .metod-title{font-size:.88rem;font-weight:700;color:var(--t);margin-bottom:.4rem}
-    .metod-text{font-size:.82rem;color:var(--t2);line-height:1.6;margin:0}
 
     /* Animations */
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -417,7 +410,6 @@
   </button>
   <div class="hdr-right">
     <nav class="hdr-nav">
-      <a class="hdr-nav-link" href="#metodologia">Metodología</a>
       <a class="hdr-nav-link" href="#sobre-mi">Sobre mí</a>
     </nav>
   </div>
@@ -786,7 +778,7 @@
   </div>
   <div class="ds-item">
     <span class="ds-label">Frecuencia</span>
-    <span class="ds-value">Semanal · cada lunes</span>
+    <span class="ds-value">Semanal · cada domingo 23:59</span>
   </div>
   <div class="ds-item ds-source">
     <span class="ds-label">Fuente</span>
@@ -794,37 +786,6 @@
   </div>
 </div>
 
-<!-- ── Metodología ── -->
-<section class="sobre-m" id="metodologia">
-  <div class="sobre-m-inner">
-    <div style="margin-bottom:1.25rem">
-      <div style="font-size:1.05rem;font-weight:700;color:var(--t);margin-bottom:.3rem">Metodología</div>
-      <p style="font-size:.83rem;color:var(--t3);margin:0">Cómo se recopilan, procesan y clasifican los datos de este portal.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem">
-      <div class="metod-card">
-        <div class="metod-icon">🕷️</div>
-        <div class="metod-title">Recopilación</div>
-        <p class="metod-text">Un scraper automático extrae semanalmente las reuniones declaradas por los 60 eurodiputados españoles en el portal oficial del Parlamento Europeo. Solo se registran reuniones con grupos de interés externos.</p>
-      </div>
-      <div class="metod-card">
-        <div class="metod-icon">🤖</div>
-        <div class="metod-title">Clasificación con IA</div>
-        <p class="metod-text">Cada reunión es clasificada mediante IA. Se extraen los actores presentes, se asigna un ámbito temático (Energía, Banca, ONG…) y se determina si la reunión es individual o grupal.</p>
-      </div>
-      <div class="metod-card">
-        <div class="metod-icon">🗄️</div>
-        <div class="metod-title">Base de datos</div>
-        <p class="metod-text">Los datos se almacenan en SQLite y se cargan en el navegador mediante WebAssembly (sql.js). No hay servidor: todo el procesamiento ocurre en tu dispositivo, garantizando privacidad y rapidez.</p>
-      </div>
-      <div class="metod-card">
-        <div class="metod-icon">⚠️</div>
-        <div class="metod-title">Limitaciones</div>
-        <p class="metod-text">Los datos dependen de lo que los eurodiputados declaran voluntariamente. La clasificación por IA puede contener errores puntuales. Este portal facilita el acceso a información ya pública, sin ser exhaustivo.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ── Información pública oficial ── -->
 <div class="public-info-section">
@@ -844,9 +805,9 @@
 <!-- ── Sobre mí ── -->
 <section class="sobre" id="sobre-mi">
   <div class="sobre-card">
-    <div class="sobre-avatar">FH</div>
+    <img class="sobre-avatar" src="foto-frank.jpg" alt="Frank Huallpa Alvarez">
     <div class="sobre-body">
-      <div class="sobre-name">Frank Huallpa Álvarez</div>
+      <div class="sobre-name">Frank Huallpa Alvarez</div>
       <div class="sobre-role">Business Intelligence &amp; Public Affairs · Analista Político</div>
       <div class="sobre-location">
         <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -893,7 +854,7 @@
 </section>
 
 <footer style="max-width:1200px;margin:0 auto;padding:1.25rem 1.5rem 2rem;border-top:1px solid var(--b);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;font-size:.75rem;color:var(--t3)">
-  <span>© 2025 Frank Huallpa Álvarez · Portal de Transparencia</span>
+  <span>© 2025 Frank Huallpa Alvarez · Portal de Transparencia</span>
   <span>Datos: <a href="https://europarl.europa.eu" target="_blank" style="color:var(--t2)">Parlamento Europeo</a> · 60 MEPs españoles</span>
 </footer>
 
@@ -1218,15 +1179,16 @@ function updateDataStatus() {
     }
   } catch(e) { /* silently ignore */ }
 
-  // Countdown to next Monday at 08:00 Madrid time (CET/CEST)
+  // Countdown to next Sunday at 23:59
   function tick() {
     const now = new Date();
-    // Next Monday at 08:00 local
     const next = new Date(now);
-    const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, ...
-    const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7 || 7;
-    next.setDate(now.getDate() + daysUntilMonday);
-    next.setHours(8, 0, 0, 0);
+    const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+    const daysUntilSunday = (7 - dayOfWeek) % 7; // 0 if today is Sunday
+    next.setDate(now.getDate() + daysUntilSunday);
+    next.setHours(23, 59, 0, 0);
+    // If that moment is already past (or it's Sunday night after 23:59), jump to next Sunday
+    if (next <= now) next.setDate(next.getDate() + 7);
     const diff = next - now;
     if (diff <= 0) {
       document.getElementById('next-update-countdown').textContent = 'actualizando…';
@@ -1252,7 +1214,7 @@ function switchTab(name) {
   if (name === 'analisis' && !analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
   // Sections below content: solo visibles en el tab principal
   const isHome = name === 'search';
-  ['metodologia','sobre-mi'].forEach(id => {
+  ['sobre-mi'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = isHome ? '' : 'none';
   });

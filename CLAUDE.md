@@ -63,7 +63,7 @@ EU/
 
 ## Pipeline semanal (objetivo)
 ```
-Cada lunes (GitHub Actions):
+Cada domingo a las 23:59 (GitHub Actions):
   1. EU.py          → scraping de los 60 MEPs, inserta reuniones nuevas en la BD
   2. clasificar.py  → llama a API de Claude, rellena actores/sector/tipo_reunion en registros nuevos
   3. normalizar.py  → aplica reglas.csv, actualiza reunion_con_normalizado, genera revisar.csv
@@ -81,7 +81,7 @@ Cada lunes (GitHub Actions):
 ## Decisiones de arquitectura tomadas
 - **Hosting**: GitHub Pages (gratuito) con Datasette Lite
 - **Dominio**: subdominio github.io gratuito (tuusuario.github.io/nombre-repo)
-- **Automatización**: GitHub Actions con cron semanal (cada lunes)
+- **Automatización**: GitHub Actions con cron semanal (cada domingo a las 23:59)
 - **Clasificación IA**: API de Claude (claude-sonnet-4-6) vía clasificar.py
 - **BD**: SQLite (sin migrar a PostgreSQL hasta que escale)
 - **Portal**: Datasette Lite en primera fase; Next.js + FastAPI si se necesita más personalización
