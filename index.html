@@ -1,153 +1,568 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reuniones de eurodiputados españoles</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MEPs España · Portal de Transparencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ── Variables ───────────────────────────────────────────── */
+    :root {
+      --bg:           #06091a;
+      --bg-surface:   #0c1228;
+      --bg-card:      rgba(255,255,255,0.03);
+      --bg-card-h:    rgba(255,255,255,0.055);
+      --border:       rgba(255,255,255,0.08);
+      --border-h:     rgba(255,255,255,0.16);
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f5;
-      color: #1a1a1a;
+      --text:         #eef2ff;
+      --text-2:       #8496c0;
+      --text-3:       #4a5580;
+
+      --blue:         #2563eb;
+      --blue-l:       #3b82f6;
+      --blue-dim:     rgba(37,99,235,0.14);
+      --gold:         #c9a84c;
+      --gold-dim:     rgba(201,168,76,0.12);
+
+      --r-sm: 6px;  --r-md: 10px;  --r-lg: 16px;  --r-full: 999px;
+      --font: 'Inter', system-ui, sans-serif;
+      --shadow: 0 4px 32px rgba(0,0,0,0.5);
     }
 
-    header {
-      background: #003399;
-      color: white;
-      padding: 2rem 1.5rem 1.5rem;
-    }
+    /* ── Reset ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 15px; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font: inherit; color: inherit; }
+    select, input { font: inherit; }
 
-    header h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
+    /* ── Loading ─────────────────────────────────────────────── */
+    #loading {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1.25rem; z-index: 1000; transition: opacity 0.5s;
     }
-
-    header p {
-      font-size: 0.95rem;
-      opacity: 0.85;
-      max-width: 680px;
+    #loading.out { opacity: 0; pointer-events: none; }
+    .spinner {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid var(--border); border-top-color: var(--blue);
+      animation: spin 0.75s linear infinite;
     }
+    .loading-stars { color: var(--gold); font-size: 1.2rem; letter-spacing: 5px; animation: pulse 1.6s ease-in-out infinite; }
+    .loading-text  { font-size: 0.85rem; color: var(--text-2); }
 
+    /* ── Header ──────────────────────────────────────────────── */
+    .header {
+      position: sticky; top: 0; z-index: 90;
+      background: rgba(6,9,26,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      height: 54px; padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; font-size: 0.9rem; }
+    .logo-stars { color: var(--gold); font-size: 0.65rem; letter-spacing: 3px; }
+    .logo-sub { color: var(--text-2); font-weight: 400; font-size: 0.82rem; }
+    .header-link {
+      font-size: 0.8rem; color: var(--text-2); padding: 0.28rem 0.75rem;
+      border: 1px solid var(--border); border-radius: var(--r-full); transition: all 0.2s;
+    }
+    .header-link:hover { color: var(--text); border-color: var(--border-h); }
+
+    /* ── Hero ────────────────────────────────────────────────── */
+    .hero {
+      padding: 5rem 1.5rem 3rem; text-align: center; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 500px;
+      background: radial-gradient(ellipse at center, rgba(37,99,235,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.73rem; font-weight: 600; color: var(--gold);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border: 1px solid var(--gold-dim); background: var(--gold-dim);
+      padding: 0.28rem 0.85rem; border-radius: var(--r-full); margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(1.9rem, 5vw, 3.4rem); font-weight: 800;
+      letter-spacing: -0.025em; line-height: 1.12;
+      max-width: 800px; margin: 0 auto 1rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--blue-l) 0%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p { font-size: 0.97rem; color: var(--text-2); max-width: 500px; margin: 0 auto 2.5rem; }
+
+    .search-wrap { position: relative; max-width: 640px; margin: 0 auto; }
+    .search-wrap svg { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-3); }
+    #q {
+      width: 100%; padding: 0.95rem 1rem 0.95rem 2.9rem;
+      font-size: 1rem; background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: var(--r-lg);
+      color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow), 0 0 0 0px transparent;
+    }
+    #q::placeholder { color: var(--text-3); }
+    #q:focus { border-color: var(--blue); box-shadow: var(--shadow), 0 0 0 3px rgba(37,99,235,0.2); }
+
+    /* ── Stats ───────────────────────────────────────────────── */
     .stats {
-      display: flex;
-      gap: 2rem;
-      padding: 1rem 1.5rem;
-      background: #002277;
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.75);
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 0.85rem; max-width: 880px; margin: 0 auto; padding: 0 1.5rem 3rem;
+    }
+    .stat {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-md); padding: 1.2rem 1rem; text-align: center;
+    }
+    .stat-n { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.03em; }
+    .stat-l { font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; }
+
+    /* ── Filters ─────────────────────────────────────────────── */
+    .filters {
+      max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 1.25rem;
+      display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center;
+    }
+    .sel {
+      padding: 0.48rem 2.1rem 0.48rem 0.8rem;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--r-md); color: var(--text); font-size: 0.85rem;
+      outline: none; cursor: pointer; transition: border-color 0.18s;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%238496c0' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 0.65rem center;
+    }
+    .sel option { background: #0c1228; }
+    .sel:hover, .sel:focus { border-color: var(--blue); }
+    .btn-clear {
+      padding: 0.48rem 0.85rem; font-size: 0.85rem; color: var(--text-2);
+      border: 1px solid var(--border); border-radius: var(--r-md); transition: all 0.18s;
+    }
+    .btn-clear:hover { color: var(--text); border-color: var(--border-h); }
+
+    /* ── Results info ────────────────────────────────────────── */
+    .rbar {
+      max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 0.75rem;
+      font-size: 0.8rem; color: var(--text-3);
     }
 
-    .stats span { font-weight: 600; color: white; }
-
-    .search-bar {
-      padding: 1.2rem 1.5rem;
-      background: white;
-      border-bottom: 1px solid #e0e0e0;
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      flex-wrap: wrap;
+    /* ── Table ───────────────────────────────────────────────── */
+    .tbl-wrap {
+      max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;
+      overflow-x: auto;
     }
-
-    .search-bar input {
-      flex: 1;
-      min-width: 220px;
-      padding: 0.55rem 0.9rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 0.95rem;
+    .tbl-box {
+      border: 1px solid var(--border); border-radius: var(--r-lg);
+      background: var(--bg-surface); overflow: hidden;
     }
-
-    .search-bar select {
-      padding: 0.55rem 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      background: white;
+    table { width: 100%; border-collapse: collapse; font-size: 0.865rem; }
+    thead tr { border-bottom: 1px solid var(--border); }
+    th {
+      padding: 0.8rem 1rem; text-align: left;
+      font-size: 0.7rem; font-weight: 600; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap;
     }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.12s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--bg-card-h); }
+    td { padding: 0.85rem 1rem; vertical-align: top; }
 
-    .search-bar button {
-      padding: 0.55rem 1.2rem;
-      background: #003399;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      cursor: pointer;
+    .td-date { color: var(--text-2); font-size: 0.8rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+    .mep-cell { display: flex; align-items: flex-start; gap: 0.5rem; }
+    .mep-photo { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); }
+    .mep-name { font-weight: 500; line-height: 1.3; }
+    .mep-sub  { font-size: 0.74rem; color: var(--text-2); margin-top: 0.1rem; }
+
+    .actors { display: flex; flex-wrap: wrap; gap: 0.28rem; max-width: 260px; }
+    .actor  {
+      padding: 0.18rem 0.55rem; background: var(--blue-dim); color: #93c5fd;
+      border-radius: var(--r-full); font-size: 0.74rem; font-weight: 500;
+      white-space: nowrap; max-width: 210px; overflow: hidden; text-overflow: ellipsis;
     }
+    .actor-more { background: rgba(255,255,255,0.05); color: var(--text-3); }
 
-    .search-bar button:hover { background: #002277; }
-
-    .datasette-link {
-      padding: 0.75rem 1.5rem;
-      background: #fffbea;
-      border-bottom: 1px solid #f0e68c;
-      font-size: 0.85rem;
-      color: #555;
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 0.22rem 0.65rem; border-radius: var(--r-full);
+      font-size: 0.72rem; font-weight: 600; white-space: nowrap;
     }
+    .tipo-i { background: rgba(100,116,139,0.14); color: #94a3b8; }
+    .tipo-g { background: rgba(59,130,246,0.14); color: #60a5fa; }
 
-    .datasette-link a {
-      color: #003399;
-      font-weight: 600;
+    .td-title { max-width: 230px; color: var(--text-2); font-size: 0.81rem; line-height: 1.4; }
+
+    /* ── Pagination ──────────────────────────────────────────── */
+    .pager { display: flex; align-items: center; justify-content: center; gap: 0.28rem; padding: 1.75rem 1.5rem; flex-wrap: wrap; }
+    .pg {
+      padding: 0.38rem 0.7rem; border: 1px solid var(--border); border-radius: var(--r-sm);
+      font-size: 0.85rem; color: var(--text-2); min-width: 34px; text-align: center; transition: all 0.14s;
     }
+    .pg:hover:not([disabled]) { border-color: var(--blue-l); color: var(--text); }
+    .pg.on { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+    .pg[disabled] { opacity: 0.28; cursor: not-allowed; }
+    .pg-gap { color: var(--text-3); padding: 0 0.2rem; font-size: 0.85rem; }
 
-    iframe {
-      width: 100%;
-      height: calc(100vh - 220px);
-      border: none;
-      display: block;
-    }
-
+    /* ── Footer ──────────────────────────────────────────────── */
     footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.8rem;
-      color: #888;
-      border-top: 1px solid #e0e0e0;
+      max-width: 1200px; margin: 2rem auto 0; padding: 1.5rem 1.5rem 2rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
+      font-size: 0.78rem; color: var(--text-3);
+    }
+    footer a { color: var(--text-2); }
+    footer a:hover { color: var(--text); }
+
+    /* ── Animations ──────────────────────────────────────────── */
+    @keyframes spin   { to { transform: rotate(360deg); } }
+    @keyframes pulse  { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+
+    .fu  { animation: fadeUp 0.5s ease both; }
+    .d1  { animation-delay: 0.08s; }
+    .d2  { animation-delay: 0.18s; }
+    .d3  { animation-delay: 0.28s; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .stats { grid-template-columns: repeat(2,1fr); }
+      .td-title { display: none; }
+      .logo-sub { display: none; }
+    }
+    @media (max-width: 520px) {
+      .mep-photo { display: none; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>Reuniones de eurodiputados españoles</h1>
-  <p>Portal de transparencia sobre las reuniones de los 60 eurodiputados españoles
-     con empresas, organizaciones e instituciones. Datos oficiales del Parlamento Europeo.</p>
+<!-- Loading -->
+<div id="loading">
+  <div class="loading-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
+  <div class="spinner"></div>
+  <div class="loading-text">Cargando base de datos…</div>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="logo">
+    <span class="logo-stars">★★★★★★</span>
+    <strong>MEPs España</strong>
+    <span class="logo-sub">· Portal de Transparencia</span>
+  </div>
+  <a class="header-link" href="https://github.com/frankhuallpaalvarez-collab/meps-espanoles" target="_blank">GitHub →</a>
 </header>
 
+<!-- Hero -->
+<section class="hero">
+  <div class="eyebrow fu">★ &nbsp;Parlamento Europeo · Datos abiertos</div>
+  <h1 class="fu d1">¿Con quién se reúnen los <em>eurodiputados españoles</em>?</h1>
+  <p class="fu d2">Portal de transparencia sobre las reuniones de los 60 eurodiputados españoles con empresas, organizaciones e instituciones.</p>
+  <div class="search-wrap fu d3">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+    </svg>
+    <input id="q" type="text" placeholder="Busca por empresa, organización, eurodiputado…" autocomplete="off">
+  </div>
+</section>
+
+<!-- Stats -->
 <div class="stats">
-  Fuente: <span>europarl.europa.eu</span> &nbsp;·&nbsp;
-  Actualización: <span>diaria (23:00)</span> &nbsp;·&nbsp;
-  Cobertura: <span>60 MEPs españoles</span>
+  <div class="stat fu d1"><div class="stat-n" id="s-reuniones">—</div><div class="stat-l">Reuniones</div></div>
+  <div class="stat fu d2"><div class="stat-n" id="s-meps">—</div><div class="stat-l">Eurodiputados</div></div>
+  <div class="stat fu d2"><div class="stat-n" id="s-orgs">—</div><div class="stat-l">Organizaciones</div></div>
+  <div class="stat fu d3"><div class="stat-n" id="s-sect">—</div><div class="stat-l">Sectores</div></div>
 </div>
 
-<div class="datasette-link">
-  Explorador avanzado (filtros, SQL, exportar CSV):
-  <a id="datasette-url" href="#" target="_blank">Abrir en Datasette Lite ↗</a>
+<!-- Filters -->
+<div class="filters">
+  <select class="sel" id="f-sector"><option value="">Todos los sectores</option></select>
+  <select class="sel" id="f-mep"><option value="">Todos los eurodiputados</option></select>
+  <select class="sel" id="f-partido"><option value="">Todos los partidos</option></select>
+  <select class="sel" id="f-tipo">
+    <option value="">Individual y Grupal</option>
+    <option value="Individual">Individual</option>
+    <option value="Grupal">Grupal</option>
+  </select>
+  <button class="btn-clear" onclick="clearAll()">✕ Limpiar</button>
 </div>
 
-<iframe
-  id="datasette-frame"
-  src=""
-  title="Explorador de reuniones MEPs">
-</iframe>
+<!-- Count -->
+<div class="rbar" id="rbar">Cargando…</div>
 
+<!-- Table -->
+<div class="tbl-wrap">
+  <div class="tbl-box">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Eurodiputado</th>
+          <th>Con quién</th>
+          <th>Sector</th>
+          <th>Tipo</th>
+          <th>Reunión</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pagination -->
+<div class="pager" id="pager"></div>
+
+<!-- Footer -->
 <footer>
-  Datos públicos del Parlamento Europeo · Actualización automática diaria ·
-  <a href="https://github.com/frankhuallpaalvarez-collab/meps-espanoles" target="_blank">GitHub</a>
+  <span>Fuente: <a href="https://europarl.europa.eu" target="_blank">Parlamento Europeo</a> · Actualización diaria automática · 60 MEPs españoles</span>
+  <span><a href="https://github.com/frankhuallpaalvarez-collab/meps-espanoles" target="_blank">Código abierto en GitHub</a></span>
 </footer>
 
+<!-- sql.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
 <script>
-  const DB_URL = "https://frankhuallpaalvarez-collab.github.io/meps-espanoles/meps_es_reuniones.db";
-  const BASE   = "https://lite.datasette.io/?url=" + encodeURIComponent(DB_URL);
-  const TABLE  = BASE + "#/meps_es_reuniones/reuniones";
+'use strict';
 
-  document.getElementById("datasette-url").href  = TABLE;
-  document.getElementById("datasette-frame").src = TABLE;
+// ── Config ───────────────────────────────────────────────────
+const PAGE = 25;
+const WASM = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/';
+const COLORS = {
+  'Energía':                    ['rgba(249,115,22,.15)',  '#fb923c'],
+  'Banca':                      ['rgba(34,197,94,.15)',   '#4ade80'],
+  'Tecnología':                 ['rgba(59,130,246,.15)',  '#60a5fa'],
+  'ONG':                        ['rgba(20,184,166,.15)',  '#2dd4bf'],
+  'Transporte':                 ['rgba(234,179,8,.15)',   '#facc15'],
+  'Agricultura':                ['rgba(132,204,22,.15)',  '#a3e635'],
+  'Salud':                      ['rgba(236,72,153,.15)',  '#f472b6'],
+  'Medio ambiente':             ['rgba(16,185,129,.15)',  '#34d399'],
+  'Industria':                  ['rgba(148,163,184,.15)','#94a3b8'],
+  'Educación':                  ['rgba(168,85,247,.15)',  '#c084fc'],
+  'Medios':                     ['rgba(239,68,68,.15)',   '#f87171'],
+  'Defensa':                    ['rgba(127,29,29,.22)',   '#fca5a5'],
+  'Consultoría':                ['rgba(99,102,241,.15)',  '#818cf8'],
+  'Evento':                     ['rgba(139,92,246,.15)',  '#a78bfa'],
+  'Institución pública':        ['rgba(37,99,235,.15)',   '#93c5fd'],
+  'Institución UE':             ['rgba(30,64,175,.22)',   '#bfdbfe'],
+  'Organizaciones empresariales':['rgba(245,158,11,.15)','#fbbf24'],
+  'Sindicatos':                 ['rgba(220,38,38,.15)',   '#fca5a5'],
+  'Think tank':                 ['rgba(147,51,234,.15)',  '#d8b4fe'],
+  'Otros':                      ['rgba(107,114,128,.15)','#9ca3af'],
+};
+
+// ── State ────────────────────────────────────────────────────
+let db = null, page = 0, timer = null;
+
+// ── Boot ─────────────────────────────────────────────────────
+(async () => {
+  try {
+    const SQL = await initSqlJs({ locateFile: f => WASM + f });
+    const buf = await (await fetch('meps_es_reuniones.db')).arrayBuffer();
+    db = new SQL.Database(new Uint8Array(buf));
+    initStats();
+    initFilters();
+    run(0);
+    const ld = document.getElementById('loading');
+    ld.classList.add('out');
+    setTimeout(() => ld.remove(), 600);
+  } catch(e) {
+    document.querySelector('.loading-text').textContent = 'Error cargando la base de datos.';
+    console.error(e);
+  }
+})();
+
+// ── Stats ────────────────────────────────────────────────────
+function initStats() {
+  const q = sql => db.exec(sql)[0]?.values[0][0] ?? 0;
+  tick('s-reuniones', q('SELECT COUNT(*) FROM reuniones'));
+  tick('s-meps',      q('SELECT COUNT(*) FROM meps'));
+  tick('s-orgs',      q("SELECT COUNT(DISTINCT reunion_con) FROM reuniones WHERE reunion_con IS NOT NULL AND reunion_con!=''"));
+  tick('s-sect',      q("SELECT COUNT(DISTINCT sector) FROM reuniones WHERE sector IS NOT NULL AND sector!=''"));
+}
+
+function tick(id, target) {
+  const el = document.getElementById(id);
+  const t0 = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  (function step(now) {
+    const p = Math.min((now - t0) / 1400, 1);
+    el.textContent = Math.round(ease(p) * target).toLocaleString('es-ES');
+    if (p < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+// ── Filters ──────────────────────────────────────────────────
+function initFilters() {
+  populate('f-sector',
+    "SELECT DISTINCT sector FROM reuniones WHERE sector IS NOT NULL AND sector!='' ORDER BY sector",
+    r => [r[0], r[0]]
+  );
+  populate('f-mep',
+    "SELECT mep_id, nombre FROM meps ORDER BY nombre",
+    r => [r[0], r[1]]
+  );
+  populate('f-partido',
+    "SELECT DISTINCT partido_nacional FROM meps WHERE partido_nacional IS NOT NULL ORDER BY partido_nacional",
+    r => [r[0], r[0]]
+  );
+}
+
+function populate(id, sql, mapper) {
+  const sel = document.getElementById(id);
+  (db.exec(sql)[0]?.values ?? []).forEach(row => {
+    const [val, lbl] = mapper(row);
+    const opt = document.createElement('option');
+    opt.value = val; opt.textContent = lbl;
+    sel.appendChild(opt);
+  });
+}
+
+// ── Search ───────────────────────────────────────────────────
+function run(p = 0) {
+  if (!db) return;
+  page = p;
+
+  const text    = document.getElementById('q').value.trim();
+  const sector  = document.getElementById('f-sector').value;
+  const mepId   = document.getElementById('f-mep').value;
+  const partido = document.getElementById('f-partido').value;
+  const tipo    = document.getElementById('f-tipo').value;
+
+  const conds = ['1=1'], params = [];
+
+  if (text) {
+    const lk = `%${text}%`;
+    conds.push('(r.actores LIKE ? OR r.titulo LIKE ? OR m.nombre LIKE ? OR r.reunion_con LIKE ?)');
+    params.push(lk, lk, lk, lk);
+  }
+  if (sector)  { conds.push('r.sector=?');           params.push(sector); }
+  if (mepId)   { conds.push('r.mep_id=?');           params.push(mepId); }
+  if (partido) { conds.push('m.partido_nacional=?');  params.push(partido); }
+  if (tipo)    { conds.push('r.tipo_reunion=?');      params.push(tipo); }
+
+  const where = conds.join(' AND ');
+  const join  = 'FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id WHERE ' + where;
+
+  const total = db.exec(`SELECT COUNT(*) ${join}`, params)[0]?.values[0][0] ?? 0;
+  const rows  = db.exec(
+    `SELECT r.fecha,r.titulo,r.actores,r.sector,r.tipo_reunion,
+            m.nombre,m.partido_nacional,m.grupo_politico,m.foto_url
+     ${join} ORDER BY r.fecha DESC LIMIT ${PAGE} OFFSET ${p * PAGE}`,
+    params
+  )[0]?.values ?? [];
+
+  render(rows, total, p);
+  if (p > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Render ───────────────────────────────────────────────────
+function render(rows, total, p) {
+  const from = total ? p * PAGE + 1 : 0;
+  const to   = Math.min((p + 1) * PAGE, total);
+  document.getElementById('rbar').textContent =
+    total ? `Mostrando ${fmt(from)}–${fmt(to)} de ${fmt(total)} reuniones` : 'Sin resultados';
+
+  document.getElementById('tbody').innerHTML = rows.length
+    ? rows.map(row => rowHtml(row)).join('')
+    : `<tr><td colspan="6" style="padding:3rem;text-align:center;color:var(--text-3)">No se encontraron reuniones con esos criterios.</td></tr>`;
+
+  paginate(total, p);
+}
+
+function rowHtml([fecha, titulo, actores, sector, tipo, nombre, partido, grupo, foto]) {
+  const d = fecha ? fecha.slice(0,10).split('-').reverse().join('/') : '—';
+  const ph = foto
+    ? `<img class="mep-photo" src="${esc(foto)}" alt="" loading="lazy" onerror="this.style.display='none'">`
+    : '';
+  const sub = esc(partido || grupo || '');
+  const ac  = actorBadges(actores);
+  const sc  = sectorBadge(sector);
+  const tp  = tipo === 'Grupal'
+    ? `<span class="badge tipo-g">Grupal</span>`
+    : `<span class="badge tipo-i">Individual</span>`;
+  const tt  = titulo && titulo.length > 80 ? titulo.slice(0,80) + '…' : (titulo || '—');
+
+  return `<tr>
+    <td class="td-date">${d}</td>
+    <td><div class="mep-cell">${ph}<div><div class="mep-name">${esc(nombre||'—')}</div><div class="mep-sub">${sub}</div></div></div></td>
+    <td><div class="actors">${ac}</div></td>
+    <td>${sc}</td>
+    <td>${tp}</td>
+    <td class="td-title" title="${esc(titulo||'')}">${esc(tt)}</td>
+  </tr>`;
+}
+
+function actorBadges(actores) {
+  if (!actores) return `<span style="color:var(--text-3)">—</span>`;
+  const parts = actores.split('|');
+  const shown = parts.slice(0, 3)
+    .map(a => `<span class="actor" title="${esc(a.trim())}">${esc(a.trim())}</span>`)
+    .join('');
+  const more = parts.length > 3
+    ? `<span class="actor actor-more">+${parts.length - 3}</span>`
+    : '';
+  return shown + more;
+}
+
+function sectorBadge(s) {
+  if (!s) return `<span style="color:var(--text-3)">—</span>`;
+  const [bg, color] = COLORS[s] || COLORS['Otros'];
+  return `<span class="badge" style="background:${bg};color:${color}">${esc(s)}</span>`;
+}
+
+// ── Pagination ───────────────────────────────────────────────
+function paginate(total, cur) {
+  const pages = Math.ceil(total / PAGE);
+  const el = document.getElementById('pager');
+  if (pages <= 1) { el.innerHTML = ''; return; }
+
+  const range = pageRange(cur, pages);
+  let h = `<button class="pg" onclick="run(${cur-1})" ${cur===0?'disabled':''}>← Ant.</button>`;
+  range.forEach(n => {
+    h += n === '…'
+      ? `<span class="pg-gap">…</span>`
+      : `<button class="pg ${n===cur?'on':''}" onclick="run(${n})">${n+1}</button>`;
+  });
+  h += `<button class="pg" onclick="run(${cur+1})" ${cur>=pages-1?'disabled':''}>Sig. →</button>`;
+  el.innerHTML = h;
+}
+
+function pageRange(cur, total) {
+  if (total <= 7) return Array.from({length:total},(_,i)=>i);
+  if (cur < 4)         return [0,1,2,3,4,'…',total-1];
+  if (cur > total-5)   return [0,'…',total-5,total-4,total-3,total-2,total-1];
+  return [0,'…',cur-1,cur,cur+1,'…',total-1];
+}
+
+// ── Utils ────────────────────────────────────────────────────
+const fmt = n => n.toLocaleString('es-ES');
+const esc = s => s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : '';
+
+function clearAll() {
+  ['q','f-sector','f-mep','f-partido','f-tipo'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el.tagName === 'INPUT') el.value = ''; else el.value = '';
+  });
+  run(0);
+}
+
+// ── Events ───────────────────────────────────────────────────
+document.getElementById('q').addEventListener('input', () => {
+  clearTimeout(timer);
+  timer = setTimeout(() => run(0), 280);
+});
+
+['f-sector','f-mep','f-partido','f-tipo'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => run(0));
+});
 </script>
-
 </body>
 </html>
