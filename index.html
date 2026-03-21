@@ -1723,8 +1723,9 @@ function renderMepsView() {
   document.getElementById('kpi-top-grupo').textContent   = gData ? shortGroup(gData[0]) : '—';
   document.getElementById('kpi-top-grupo-n').textContent = gData ? `${fmt(gData[1])} ${t('meetings')}` : '';
 
-  // Dynamic height — all 60 MEPs visible
-  const barH = Math.max(500, mepData.length * 22);
+  const isMobile = window.innerWidth < 640;
+  const rowH  = isMobile ? 30 : 22;
+  const barH  = Math.max(isMobile ? 900 : 500, mepData.length * rowH);
   document.getElementById('c-meps-wrap').style.height = barH + 'px';
 
   const mepIds  = mepData.map(r=>r[0]);
@@ -1732,18 +1733,27 @@ function renderMepsView() {
   const counts  = mepData.map(r=>r[4]);
   const parties = mepData.map(r=>r[2]);
 
+  // Truncate long names on mobile so they don't overlap
+  const MAX_LBL = isMobile ? 16 : 999;
+  const displayLabels = labels.map(l => l && l.length > MAX_LBL ? l.slice(0, MAX_LBL - 1) + '…' : l);
+
   mkChart('c-meps', {
     type: 'bar',
-    data: { labels, datasets: [{ data: counts, backgroundColor: parties.map(p=>partyBg(p)), borderColor: parties.map(p=>partyBorder(p)), borderWidth: 1, borderRadius: 3 }] },
+    data: { labels: displayLabels, datasets: [{ data: counts, backgroundColor: parties.map(p=>partyBg(p)), borderColor: parties.map(p=>partyBorder(p)), borderWidth: 1, borderRadius: 3 }] },
     options: {
       indexAxis: 'y', responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')} · ${shortParty(parties[ctx.dataIndex])}` } }
+        tooltip: {
+          callbacks: {
+            title: ctx => labels[ctx[0].dataIndex],  // full name in tooltip
+            label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')} · ${shortParty(parties[ctx.dataIndex])}`
+          }
+        }
       },
       scales: {
-        x: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#94a3b8' }, border: { color: 'rgba(0,0,0,0.06)' } },
-        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 11 }, autoSkip: false }, border: { display: false } }
+        x: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#94a3b8', font: { size: isMobile ? 10 : 11 } }, border: { color: 'rgba(0,0,0,0.06)' } },
+        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: isMobile ? 10 : 11 }, autoSkip: false }, border: { display: false } }
       },
       onClick: (_, els) => { if (els.length) showMepDetail(mepIds[els[0].index]); }
     }
@@ -1872,7 +1882,7 @@ function renderPartidosView() {
       },
       scales: {
         x: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#94a3b8' }, border: { display: false } },
-        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 13 }, autoSkip: false }, border: { display: false } }
+        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: window.innerWidth < 640 ? 11 : 13 }, autoSkip: false }, border: { display: false } }
       },
       onClick: (_, els) => { if (els.length) showPartidoDetail(full[els[0].index]); }
     }
