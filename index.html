@@ -500,6 +500,7 @@
 <nav class="tab-nav">
   <button class="tab-btn on" data-tab="search">Buscar reuniones</button>
   <button class="tab-btn" data-tab="analisis">Análisis</button>
+  <button class="tab-btn" data-tab="mapa">Mapa de intereses</button>
 </nav>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -662,20 +663,11 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- Panel: Análisis (sectores + MEPs unificados) -->
+<!-- Panel: Mapa de intereses -->
 <!-- ═══════════════════════════════════════════════ -->
-<div id="panel-analisis" hidden>
+<div id="panel-mapa" hidden>
   <div class="analysis">
-
-    <!-- Search bar -->
-    <div class="an-srch-wrap" id="an-srch-wrap">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input id="an-q" type="text" placeholder="Busca un eurodiputado o sector para ver sus gráficos…" data-i18n-ph="an-search-ph" autocomplete="off">
-      <div id="an-sugg" class="an-sugg-box" hidden></div>
-    </div>
-
-    <!-- Heatmap: partido × sector -->
-    <section class="hm-section">
+    <section class="hm-section" style="margin-top:1.5rem">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">
         <div>
           <div style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.2rem">Mapa de intereses por partido</div>
@@ -688,6 +680,20 @@
       </div>
       <div id="heatmap-container"><!-- populated by renderHeatmap() --></div>
     </section>
+  </div>
+</div>
+
+<!-- Panel: Análisis (sectores + MEPs unificados) -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="panel-analisis" hidden>
+  <div class="analysis">
+
+    <!-- Search bar -->
+    <div class="an-srch-wrap" id="an-srch-wrap">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input id="an-q" type="text" placeholder="Busca un eurodiputado o sector para ver sus gráficos…" data-i18n-ph="an-search-ph" autocomplete="off">
+      <div id="an-sugg" class="an-sugg-box" hidden></div>
+    </div>
 
     <!-- Sub-nav pills -->
     <div class="an-subnav">
@@ -1294,6 +1300,7 @@ function switchTab(name) {
   document.querySelectorAll('[id^="panel-"]').forEach(p => p.hidden = p.id !== 'panel-' + name);
   window.scrollTo(0, 0);
   if (name === 'analisis' && !analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
+  if (name === 'mapa' && db) { renderHeatmap(hmMode); }
   // Sections below content: solo visibles en el tab principal
   const isHome = name === 'search';
   ['sobre-mi'].forEach(id => {
@@ -1772,7 +1779,7 @@ function showMepDetail(mepId) {
         ${topSect ? `<div style="font-size:.8rem;color:var(--t2);margin-top:.2rem">Top: ${esc(topSect[0])}</div>` : ''}
       </div>
     </div>
-    ${buildMepContextCard(mepId, total)}`;
+    `;
 
   document.getElementById('mep-sector-sub').textContent = t('mep-sector-sub').replace('{n}', fmt(total));
   document.getElementById('mep-year-sub').textContent   = t('mep-year-sub');
@@ -1886,17 +1893,6 @@ function showPartidoDetail(partido) {
   document.getElementById('partido-detail-stats').textContent  = t('partido-detail-stats').replace('{n}', fmt(total)).replace('{meps}', nmeps);
   document.getElementById('partido-sector-sub').textContent    = t('partido-sector-sub').replace('{n}', fmt(total));
   document.getElementById('partido-year-sub').textContent      = t('partido-year-sub');
-
-  // Inject context card after header
-  const pdHeader = document.getElementById('partido-detail').querySelector('.an-section-hdr');
-  if (pdHeader) {
-    let existingCtx = document.getElementById('partido-context-card');
-    if (existingCtx) existingCtx.remove();
-    const ctxDiv = document.createElement('div');
-    ctxDiv.id = 'partido-context-card';
-    ctxDiv.innerHTML = buildPartidoContextCard(partido, total);
-    pdHeader.after(ctxDiv);
-  }
 
   // Bar: MEPs del partido
   const mepRows = db.exec(`
