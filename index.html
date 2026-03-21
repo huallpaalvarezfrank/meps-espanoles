@@ -697,8 +697,8 @@
 
     <!-- Sub-nav pills -->
     <div class="an-subnav">
-      <button class="an-btn on" data-an="sectors">Por ámbito</button>
-      <button class="an-btn" data-an="meps">Por eurodiputado</button>
+      <button class="an-btn on" data-an="meps">Por eurodiputado</button>
+      <button class="an-btn" data-an="sectors">Por ámbito</button>
       <button class="an-btn" data-an="partidos">Por partido</button>
     </div>
 
@@ -1552,9 +1552,10 @@ window.addEventListener('popstate', () => {
 // ANÁLISIS TAB — main init
 // ══════════════════════════════════════════════════════════════
 function renderAnalisisTab() {
-  renderSectorsView();
   renderMepsView();
+  renderSectorsView();
   renderPartidosView();
+  switchAnTab('meps');
 }
 
 // ══════════════════════════════════════════════════════════════
