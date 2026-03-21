@@ -137,8 +137,8 @@
     .filter-count-mobile{font-size:.78rem;color:var(--t3)}
 
     /* Sidebar overlay */
-    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:190;opacity:0;transition:opacity .25s ease}
-    .sidebar-overlay.open{opacity:1}
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:190;opacity:0;transition:opacity .25s ease;pointer-events:none}
+    .sidebar-overlay.open{opacity:1;pointer-events:auto}
 
     /* Content area */
     .content-area{min-width:0}
