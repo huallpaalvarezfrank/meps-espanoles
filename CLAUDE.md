@@ -8,55 +8,49 @@ Portal de transparencia política que recoge, limpia y publica las reuniones de 
 EU/
 ├── EU.py                    ← scraper principal (Playwright)
 ├── normalizar.py            ← normalizador de nombres con reglas.csv
+├── clasificar.py            ← clasificación automática con IA (Claude API)
 ├── reglas.csv               ← diccionario de equivalencias editable
 ├── revisar.csv              ← valores pendientes de revisión manual
-├── meps_es_reuniones.db     ← base de datos SQLite actual
-├── clasificar.py            ← (POR CREAR) clasificación automática con IA
+├── meps_es_reuniones.db     ← base de datos SQLite
+├── index.html               ← portal web (sql.js + Chart.js, sin backend)
 └── CLAUDE.md                ← este archivo
 ```
 
 ## Estado actual del proyecto
 - El scraper EU.py funciona y extrae reuniones de los 60 MEPs españoles
 - La BD tiene ~4.000 registros de reuniones
+- clasificar.py clasifica reuniones con la API de Claude (actores, sector, tipo_reunion)
 - normalizar.py aplica reglas de limpieza y genera revisar.csv con pendientes
-- Falta: script clasificar.py, migración al esquema nuevo, portal web
+- index.html es el portal web que lee la BD directamente en el navegador con sql.js
 
 ## Base de datos — esquema ACTUAL (meps_es_reuniones.db)
 
 ### Tabla `meps`
-- mep_id, nombre, grupo, partido, foto_url, perfil_url, comisiones
+- mep_id TEXT PRIMARY KEY
+- nombre TEXT
+- foto_url TEXT
+- grupo_politico TEXT          ← grupo europeo (PPE, S&D, Renew, etc.)
+- rol_grupo TEXT
+- partido_nacional TEXT        ← partido español (PP, PSOE, etc.)
 
 ### Tabla `reuniones`
-- id, mep_id, titulo, fecha, lugar, comision, reunion_con
-- reunion_con_original (valor bruto del scraper)
-
-## Base de datos — esquema OBJETIVO (v2)
-
-### Tabla `meps` (sin cambios)
-- mep_id INTEGER PRIMARY KEY
-- nombre TEXT
-- partido_nacional TEXT        ← partido español (PP, PSOE, etc.)
-- grupo_europeo TEXT           ← grupo en el PE (PPE, S&D, Renew, etc.)
-- comisiones TEXT              ← separadas por |
-- foto_url TEXT
-- perfil_url TEXT
-
-### Tabla `reuniones` (columnas nuevas marcadas con →)
-- id INTEGER PRIMARY KEY
-- mep_id INTEGER (FK → meps)
-- titulo TEXT                  ← tema o título de la reunión
+- id INTEGER PRIMARY KEY AUTOINCREMENT
+- mep_id TEXT (FK → meps)
+- titulo TEXT
 - fecha TEXT                   ← formato AAAA-MM-DD
 - lugar TEXT
-- comision TEXT                ← comisión del eurodiputado en esa reunión
-- reunion_con_original TEXT    ← valor bruto tal como viene del scraper
-- reunion_con_normalizado TEXT ← nombre limpio y canónico (de normalizar.py)
-- → actores TEXT               ← entidades separadas por | generadas por IA
-- → sector TEXT                ← ej. Energía, Banca, Tecnología, ONG
-- → tipo_reunion TEXT          ← "Individual" o "Grupal"
+- en_su_calidad TEXT
+- comision_codigo TEXT         ← códigos de comisión separados por |
+- reunion_con TEXT             ← nombre limpio/normalizado (actualizado por normalizar.py)
+- reunion_con_original TEXT    ← valor bruto tal como viene del scraper (añadido por normalizar.py/clasificar.py)
+- actores TEXT                 ← entidades separadas por | generadas por clasificar.py
+- sector TEXT                  ← ej. Energía, Banca, Tecnología, ONG
+- tipo_reunion TEXT            ← "Individual" o "Grupal"
+- normalizado INTEGER DEFAULT 0 ← 1 si reunion_con fue normalizado con regla de reglas.csv
 
 ## Diferencia entre columnas clave
 - `reunion_con_original`: texto bruto del scraper, nunca se toca
-- `reunion_con_normalizado`: texto limpio aplicando reglas.csv (ej. "MERCADONA SA" → "Mercadona, S.A.")
+- `reunion_con`: texto limpio aplicando reglas.csv (actualizado in-place por normalizar.py)
 - `actores`: lista estructurada separada por | para búsqueda (ej. "Apple Inc.|Google LLC|Meta Platforms")
 - `tipo_reunion`: Individual si hay 1 actor, Grupal si hay más de uno
 - `actores` se rellena para TODAS las reuniones, no solo las grupales, para poder buscar siempre en una sola columna
@@ -66,7 +60,7 @@ EU/
 Cada domingo a las 23:59 (GitHub Actions):
   1. EU.py          → scraping de los 60 MEPs, inserta reuniones nuevas en la BD
   2. clasificar.py  → llama a API de Claude, rellena actores/sector/tipo_reunion en registros nuevos
-  3. normalizar.py  → aplica reglas.csv, actualiza reunion_con_normalizado, genera revisar.csv
+  3. normalizar.py  → aplica reglas.csv, actualiza reunion_con, genera revisar.csv
   4. commit automático → BD actualizada en GitHub
   5. GitHub Pages   → portal actualizado automáticamente via Datasette Lite
 ```
@@ -100,16 +94,15 @@ Cada domingo a las 23:59 (GitHub Actions):
 - revisar.csv tiene columnas: valor_original, veces_en_bd, sugerencia, similitud_pct, tu_decision, sector
 - Fuzzy matching con difflib (incluido en Python, sin dependencias extra)
 - Lógica: solo se normaliza cuando el campo contiene exactamente una entidad
-- Reuniones con varias entidades juntas se dejan intactas en reunion_con_normalizado
+- Reuniones con varias entidades juntas se dejan intactas en reunion_con
 
-## Scripts por crear
-### clasificar.py
+## Script clasificar.py
 - Lee registros donde actores IS NULL (registros nuevos sin clasificar)
 - Llama a API de Claude (claude-sonnet-4-6) con el texto de reunion_con_original
 - Extrae: actores (separados por |), sector, tipo_reunion (Individual/Grupal)
 - API key en variable de entorno ANTHROPIC_API_KEY, nunca en el código
-- Procesa en lotes para eficiencia
-- La primera ejecución procesa todos los ~4.000 registros históricos
+- Procesa en lotes (por defecto 20 registros por llamada)
+- La primera ejecución procesa todos los registros históricos sin clasificar
 - Las siguientes solo procesan los nuevos de esa semana
 
 ## Dependencias Python

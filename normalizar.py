@@ -370,7 +370,7 @@ def main():
 
     conn.close()
 
-    log("\n═" * 60)
+    log("\n" + "═" * 60)
     log("RESUMEN")
     log("═" * 60)
     if sin_regla:
