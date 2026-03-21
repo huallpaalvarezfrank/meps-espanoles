@@ -38,12 +38,24 @@
     #db-bar.done{width:100%;opacity:0;transition:width .4s ease,opacity .4s ease .1s}
     .spinner{width:28px;height:28px;border-radius:50%;border:2px solid var(--b);border-top-color:var(--blue);animation:spin .75s linear infinite}
 
-    /* Skeleton pulse */
-    @keyframes skel-pulse{0%,100%{opacity:.45}50%{opacity:.9}}
-    .skel-num{display:inline-block;height:1.9rem;width:72px;background:rgba(0,0,0,0.07);border-radius:var(--rf);animation:skel-pulse 1.3s ease infinite;vertical-align:middle}
-    .skel-line{height:13px;border-radius:var(--rf);background:rgba(0,0,0,0.07);animation:skel-pulse 1.3s ease infinite;width:100%}
-    .skel-line.w40{width:40%}.skel-line.w60{width:60%}.skel-line.w80{width:80%}
-    .skel-row td{padding:.9rem 1rem}.skel-row .skel-line{margin:2px 0}
+    /* Skeleton shimmer */
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    .skel-num,.skel-line,.skel-cell{
+      background:linear-gradient(90deg,#e8edf2 25%,#f4f7fa 50%,#e8edf2 75%);
+      background-size:200% 100%;
+      animation:shimmer 1.6s linear infinite;
+      border-radius:4px;
+    }
+    .skel-num{display:inline-block;height:32px;width:60px;vertical-align:middle}
+    .skel-line{height:13px;width:100%}
+    .skel-line.w30{width:30%}.skel-line.w40{width:40%}.skel-line.w60{width:60%}.skel-line.w70{width:70%}.skel-line.w80{width:80%}.skel-line.w90{width:90%}
+    .skel-row td{padding:.9rem 1rem}.skel-row .skel-line{margin:3px 0}
+    /* Fade-in when real data arrives */
+    @keyframes fade-in-data{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+    .data-loaded{animation:fade-in-data .28s ease forwards}
+    /* Fade-in for stats */
+    @keyframes fade-in-stat{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+    .stat-loaded{animation:fade-in-stat .35s ease forwards}
 
     /* Header */
     .hdr{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--b);height:60px;padding:0 1.75rem;display:flex;align-items:center;justify-content:space-between}
@@ -75,8 +87,8 @@
     .hero h1 em{font-style:normal;color:var(--blue)}
     .hero-sub{font-size:.93rem;color:var(--t2);max-width:480px;margin:0 auto 1.75rem}
     .hero-ctas{display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem}
-    .btn-cta{display:inline-flex;align-items:center;gap:.45rem;background:var(--blue);color:#fff;font-weight:600;font-size:.9rem;padding:.65rem 1.4rem;border-radius:var(--rf);border:2px solid var(--blue);transition:all .18s;cursor:pointer}
-    .btn-cta:hover{background:var(--blue-l);border-color:var(--blue-l)}
+    .btn-cta{display:inline-flex;align-items:center;gap:.45rem;background:#003399;color:#fff;font-weight:600;font-size:.9rem;padding:.7rem 1.65rem;border-radius:6px;border:2px solid #003399;transition:all .18s;cursor:pointer;letter-spacing:.01em}
+    .btn-cta:hover{background:#002277;border-color:#002277}
     .btn-cta svg{transition:transform .2s}
     .btn-cta:hover svg{transform:translateY(2px)}
     .srch-wrap{position:relative;max-width:580px;margin:0 auto}
@@ -388,7 +400,8 @@
       </div>
 
       <div class="result-count-sb" id="result-count-sb">
-        <span class="skel-num" style="width:80px;height:1rem"></span>
+        <span class="skel-num" style="width:90px;height:20px"></span>
+        <span class="skel-line w60" style="height:11px;margin-top:6px;display:block"></span>
       </div>
 
       <!-- Tipo toggle pills -->
@@ -449,6 +462,7 @@
               <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td></tr>
               <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w60"></div></td></tr>
               <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w80"></div></td><td><div class="skel-line w60"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w40"></div></td></tr>
+              <tr class="skel-row"><td><div class="skel-line w40"></div></td><td><div class="skel-line w70"></div></td><td><div class="skel-line w90"></div></td><td><div class="skel-line w30"></div></td><td><div class="skel-line w40"></div></td><td><div class="skel-line w70"></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -906,6 +920,14 @@ function switchTab(name) {
   document.querySelectorAll('[id^="panel-"]').forEach(p => p.hidden = p.id !== 'panel-' + name);
   window.scrollTo(0, 0);
   if (name === 'analisis' && !analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
+  // Metodología y Sobre mí: solo visibles en el tab principal
+  const isHome = name === 'search';
+  ['metodologia','sobre-mi'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isHome ? '' : 'none';
+  });
+  const footer = document.querySelector('footer');
+  if (footer) footer.style.display = isHome ? '' : 'none';
 }
 document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
 
@@ -921,10 +943,18 @@ document.querySelectorAll('.an-btn').forEach(b => b.addEventListener('click', ()
 // ── Stats bar ────────────────────────────────────────────────
 function initStats() {
   const q = sql => db.exec(sql)[0]?.values[0][0] ?? 0;
-  tick('s-r', q('SELECT COUNT(*) FROM reuniones'));
-  tick('s-m', q('SELECT COUNT(*) FROM meps'));
-  tick('s-o', q("SELECT COUNT(DISTINCT reunion_con) FROM reuniones WHERE reunion_con IS NOT NULL AND reunion_con!=''"));
-  tick('s-s', q("SELECT COUNT(DISTINCT sector) FROM reuniones WHERE sector IS NOT NULL AND sector!=''"));
+  const vals = [
+    ['s-r', q('SELECT COUNT(*) FROM reuniones')],
+    ['s-m', q('SELECT COUNT(*) FROM meps')],
+    ['s-o', q("SELECT COUNT(DISTINCT reunion_con) FROM reuniones WHERE reunion_con IS NOT NULL AND reunion_con!=''")],
+    ['s-s', q("SELECT COUNT(DISTINCT sector) FROM reuniones WHERE sector IS NOT NULL AND sector!=''")]
+  ];
+  vals.forEach(([id, target]) => {
+    const el = document.getElementById(id);
+    el.classList.remove('stat-loaded');
+    tick(id, target);
+    setTimeout(() => { el.classList.add('stat-loaded'); }, 50);
+  });
 }
 
 function tick(id, target) {
@@ -1003,9 +1033,14 @@ function render(rows, total, p) {
     const el = document.getElementById(id);
     el.classList.toggle('active', !!el.value);
   });
-  document.getElementById('tbody').innerHTML = rows.length
+  const tbody = document.getElementById('tbody');
+  tbody.classList.remove('data-loaded');
+  tbody.innerHTML = rows.length
     ? rows.map(rowHtml).join('')
-    : `<tr><td colspan="6" style="padding:3rem;text-align:center;color:var(--t3)">${t('no-rows')}</td></tr>`;
+    : `<tr><td colspan="6" style="padding:3rem;text-align:center;color:var(--t3)">No se encontraron reuniones.</td></tr>`;
+  // Trigger reflow then fade in
+  void tbody.offsetWidth;
+  tbody.classList.add('data-loaded');
   paginate(total, p);
 }
 
