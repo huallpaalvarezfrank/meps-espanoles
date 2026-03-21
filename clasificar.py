@@ -31,8 +31,9 @@ import anthropic
 # CONFIGURACIÓN
 # ─────────────────────────────────────────────────────────────────────────────
 
-DEFAULT_DB      = "meps_es_reuniones.db"
-DEFAULT_REGLAS  = "reglas.csv"
+_HERE           = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_DB      = os.path.join(_HERE, "meps_es_reuniones.db")
+DEFAULT_REGLAS  = os.path.join(_HERE, "reglas.csv")
 BATCH_SIZE      = 20
 MODEL           = "claude-sonnet-4-6"
 MAX_TOKENS      = 4096

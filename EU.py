@@ -12,6 +12,7 @@
 #   python reuniones_meps_sqlite.py --headless         # sin ventana
 #   python reuniones_meps_sqlite.py --db mireuniones.db
 
+import os
 import re
 import sys
 import sqlite3
@@ -19,7 +20,9 @@ import argparse
 from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright, Error as PWError
 
-LIST_URL = "https://www.europarl.europa.eu/meps/es/search/advanced?countryCode=ES"
+LIST_URL   = "https://www.europarl.europa.eu/meps/es/search/advanced?countryCode=ES"
+_HERE      = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_DB = os.path.join(_HERE, "meps_es_reuniones.db")
 
 DB_SCHEMA = """
 CREATE TABLE IF NOT EXISTS meps (
@@ -349,7 +352,7 @@ def insert_reuniones(conn, rows):
 
 def parse_args():
     ap = argparse.ArgumentParser(description="Scraper reuniones eurodiputados → SQLite")
-    ap.add_argument("--db", default="meps_es_reuniones.db", help="Archivo SQLite de salida")
+    ap.add_argument("--db", default=DEFAULT_DB, help="Archivo SQLite de salida")
     ap.add_argument("--headless", action="store_true")
     ap.add_argument("--limit-meps", type=int, default=0)
     return ap.parse_args()

@@ -28,9 +28,10 @@ from datetime import datetime
 # ─────────────────────────────────────────────────────────────────────────────
 # CONFIGURACIÓN POR DEFECTO
 # ─────────────────────────────────────────────────────────────────────────────
-DEFAULT_DB      = "meps_es_reuniones.db"
-DEFAULT_REGLAS  = "reglas.csv"
-DEFAULT_REVISAR = "revisar.csv"
+_HERE           = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_DB      = os.path.join(_HERE, "meps_es_reuniones.db")
+DEFAULT_REGLAS  = os.path.join(_HERE, "reglas.csv")
+DEFAULT_REVISAR = os.path.join(_HERE, "revisar.csv")
 
 UMBRAL_FUZZY    = 80   # similitud mínima (0-100) para mostrar sugerencia
 SEPARADOR_CSV   = ";"  # separador usado en los CSV
