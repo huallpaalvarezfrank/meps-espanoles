@@ -383,9 +383,10 @@
       .hdr-nav{display:none}
       .tbl-box{display:none}
       .mobile-cards{display:block}
-      canvas{max-height:280px!important}
+      canvas{max-height:280px!important;max-width:100%!important}
       .timeline-card{padding:.9rem 1rem}
       .stats{padding:0 1rem 1.5rem}
+      .chart-wrap-sm{max-width:300px;margin:0 auto}
     }
     @media(min-width:641px){
       .mobile-cards{display:none}
@@ -1572,41 +1573,85 @@ function renderSectorsView() {
   document.getElementById('kpi-orgs').textContent          = fmt(orgs);
   document.getElementById('kpi-nsect').textContent         = sectorData.length;
 
-  // Bar chart: dynamic height so ALL labels show
-  const barH = Math.max(420, sectorData.length * 32);
-  document.getElementById('c-sectors-wrap').style.height = barH + 'px';
+  const isMobile = window.innerWidth < 640;
+  const allSectors = sectorData; // full dataset reference
+  const displaySectors = isMobile ? sectorData.slice(0, 10) : sectorData;
 
-  const labels  = sectorData.map(r=>r[0]);
-  const counts  = sectorData.map(r=>r[1]);
-  const bgC     = labels.map(s=>(C[s]||C['Otros'])[0]);
-  const borderC = labels.map(s=>(C[s]||C['Otros'])[1]);
+  // Dynamic height based on displayed bars
+  const wrapEl = document.getElementById('c-sectors-wrap');
+  wrapEl.style.height = (displaySectors.length * 30 + 60) + 'px';
 
-  mkChart('c-sectors', {
-    type: 'bar',
-    data: { labels, datasets: [{ data: counts, backgroundColor: bgC, borderColor: borderC, borderWidth: 1, borderRadius: 4 }] },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')} (${Math.round(ctx.raw/totalR*100)}%)` } }
+  const labels  = displaySectors.map(r=>r[0]);
+  const counts  = displaySectors.map(r=>r[1]);
+
+  function buildSectorsChartConfig(sectData) {
+    return {
+      type: 'bar',
+      data: {
+        labels: sectData.map(r=>r[0]),
+        datasets: [{
+          data: sectData.map(r=>r[1]),
+          backgroundColor: 'rgba(0,51,153,0.75)',
+          hoverBackgroundColor: 'rgba(0,51,153,1)',
+          borderWidth: 0,
+          borderRadius: 3
+        }]
       },
-      scales: {
-        x: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#94a3b8' }, border: { color: 'rgba(0,0,0,0.06)' } },
-        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 12 }, autoSkip: false }, border: { display: false } }
-      },
-      onClick: (_, els) => { if (els.length) showSectorDetail(labels[els[0].index]); }
-    }
-  });
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')} (${Math.round(ctx.raw/totalR*100)}%)` } }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#94a3b8', font: { size: 11 } }, border: { display: false } },
+          y: {
+            grid: { display: false },
+            ticks: {
+              color: '#475569',
+              font: { size: 11 },
+              autoSkip: false,
+              callback: function(value) {
+                const label = typeof value === 'string' ? value : this.getLabelForValue(value);
+                return label && label.length > 18 ? label.substring(0, 17) + '…' : label;
+              }
+            },
+            border: { display: false }
+          }
+        },
+        onClick: (_, els) => { if (els.length) showSectorDetail(sectData[els[0].index][0]); }
+      }
+    };
+  }
+
+  mkChart('c-sectors', buildSectorsChartConfig(displaySectors));
+
+  // Mobile "show all" button
+  const existingBtn = document.getElementById('btn-ver-todos-ambitos');
+  if (existingBtn) existingBtn.remove();
+  if (isMobile && allSectors.length > 10) {
+    const btn = document.createElement('button');
+    btn.id = 'btn-ver-todos-ambitos';
+    btn.textContent = `Ver los ${allSectors.length} ámbitos completos`;
+    btn.style.cssText = 'width:100%;padding:10px;background:#f0f4ff;border:0.5px solid #c5d0f0;border-radius:8px;color:#003399;font-size:14px;cursor:pointer;margin-top:8px;display:block';
+    btn.onclick = () => {
+      btn.remove();
+      wrapEl.style.height = (allSectors.length * 30 + 60) + 'px';
+      mkChart('c-sectors', buildSectorsChartConfig(allSectors));
+    };
+    wrapEl.parentElement.appendChild(btn);
+  }
 
   // Donut: individual vs grupal
   const tipos = db.exec("SELECT tipo_reunion, COUNT(*) FROM reuniones WHERE tipo_reunion IS NOT NULL GROUP BY tipo_reunion ORDER BY COUNT(*) DESC")[0]?.values ?? [];
+  const legendPos = window.innerWidth < 640 ? 'bottom' : 'right';
   mkChart('c-tipos', {
     type: 'doughnut',
     data: {
       labels: tipos.map(r=>r[0]),
       datasets: [{ data: tipos.map(r=>r[1]), backgroundColor: ['rgba(37,99,235,.65)','rgba(201,168,76,.65)','rgba(107,114,128,.5)'], borderColor: ['#2563eb','#c9a84c','#6b7280'], borderWidth: 1, hoverOffset: 6 }]
     },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'right', labels: { color: '#475569' } }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} (${Math.round(ctx.raw/totalR*100)}%)` } } } }
+    options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: legendPos, labels: { color: '#475569' } }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} (${Math.round(ctx.raw/totalR*100)}%)` } } } }
   });
 }
 
@@ -1648,7 +1693,7 @@ function goToSectorFull(sector) {
   mkChart('c-sect-tipos', {
     type: 'doughnut',
     data: { labels: tipos.map(r=>r[0]), datasets: [{ data: tipos.map(r=>r[1]), backgroundColor: ['rgba(37,99,235,.65)','rgba(201,168,76,.65)','rgba(107,114,128,.5)'], borderColor: ['#2563eb','#c9a84c','#6b7280'], borderWidth: 1, hoverOffset: 6 }] },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'right', labels: { color: '#475569' } }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} (${Math.round(ctx.raw/totalSect*100)}%)` } } } }
+    options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: window.innerWidth < 640 ? 'bottom' : 'right', labels: { color: '#475569' } }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} (${Math.round(ctx.raw/totalSect*100)}%)` } } } }
   });
 
   // Top orgs
@@ -1727,40 +1772,96 @@ function renderMepsView() {
   document.getElementById('kpi-top-grupo-n').textContent = gData ? `${fmt(gData[1])} ${t('meetings')}` : '';
 
   const isMobile = window.innerWidth < 640;
-  const rowH  = isMobile ? 30 : 22;
-  const barH  = Math.max(isMobile ? 900 : 500, mepData.length * rowH);
-  document.getElementById('c-meps-wrap').style.height = barH + 'px';
 
   const mepIds  = mepData.map(r=>r[0]);
   const labels  = mepData.map(r=>r[1]);
   const counts  = mepData.map(r=>r[4]);
   const parties = mepData.map(r=>r[2]);
 
-  // Truncate long names on mobile so they don't overlap
-  const MAX_LBL = isMobile ? 16 : 999;
-  const displayLabels = labels.map(l => l && l.length > MAX_LBL ? l.slice(0, MAX_LBL - 1) + '…' : l);
+  if (isMobile) {
+    // Hide canvas, show HTML list instead
+    const wrap = document.getElementById('c-meps-wrap');
+    wrap.style.height = 'auto';
+    const canvas = document.getElementById('c-meps');
+    canvas.style.display = 'none';
 
-  mkChart('c-meps', {
-    type: 'bar',
-    data: { labels: displayLabels, datasets: [{ data: counts, backgroundColor: parties.map(p=>partyBg(p)), borderColor: parties.map(p=>partyBorder(p)), borderWidth: 1, borderRadius: 3 }] },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            title: ctx => labels[ctx[0].dataIndex],  // full name in tooltip
-            label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')} · ${shortParty(parties[ctx.dataIndex])}`
-          }
-        }
-      },
-      scales: {
-        x: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#94a3b8', font: { size: isMobile ? 10 : 11 } }, border: { color: 'rgba(0,0,0,0.06)' } },
-        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: isMobile ? 10 : 11 }, autoSkip: false }, border: { display: false } }
-      },
-      onClick: (_, els) => { if (els.length) showMepDetail(mepIds[els[0].index]); }
+    // Build mobile list container
+    let listDiv = document.getElementById('mep-mobile-list');
+    if (!listDiv) {
+      listDiv = document.createElement('div');
+      listDiv.id = 'mep-mobile-list';
+      wrap.parentElement.insertBefore(listDiv, wrap);
     }
-  });
+
+    const allMeps = mepIds.map((id, i) => ({ id, name: labels[i], count: counts[i], party: parties[i] }));
+    const maxCount = allMeps[0]?.count || 1;
+
+    function renderMepBatch(container, batch, startIdx) {
+      batch.forEach((mep, i) => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid #f0f0f0;cursor:pointer';
+        div.innerHTML = `
+          <span style="font-size:12px;color:#999;min-width:20px;text-align:right">${startIdx + i + 1}</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:500;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px">${esc(mep.name)}</div>
+            <div style="height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden">
+              <div style="height:100%;border-radius:3px;background:#003399;width:${(mep.count/maxCount*100).toFixed(1)}%"></div>
+            </div>
+          </div>
+          <span style="font-size:13px;font-weight:600;color:#003399;flex-shrink:0">${fmt(mep.count)}</span>`;
+        div.addEventListener('click', () => showMepDetail(mep.id));
+        container.appendChild(div);
+      });
+    }
+
+    listDiv.innerHTML = '';
+    renderMepBatch(listDiv, allMeps.slice(0, 15), 0);
+
+    // "Load more" button
+    let loadedSoFar = 15;
+    if (allMeps.length > 15) {
+      const moreBtn = document.createElement('button');
+      moreBtn.style.cssText = 'width:100%;padding:12px;margin-top:8px;background:#f0f4ff;border:0.5px solid #c5d0f0;border-radius:8px;color:#003399;font-size:14px;cursor:pointer';
+      moreBtn.textContent = `Ver ${allMeps.length - 15} eurodiputados más`;
+      moreBtn.onclick = () => {
+        const nextBatch = allMeps.slice(loadedSoFar, loadedSoFar + 15);
+        renderMepBatch(listDiv, nextBatch, loadedSoFar);
+        loadedSoFar += 15;
+        if (loadedSoFar >= allMeps.length) moreBtn.remove();
+        else moreBtn.textContent = `Ver ${allMeps.length - loadedSoFar} eurodiputados más`;
+      };
+      listDiv.appendChild(moreBtn);
+    }
+  } else {
+    const rowH  = 22;
+    const barH  = Math.max(500, mepData.length * rowH);
+    document.getElementById('c-meps-wrap').style.height = barH + 'px';
+
+    // Truncate long names on desktop tooltips
+    const displayLabels = labels.map(l => l && l.length > 999 ? l.slice(0, 998) + '…' : l);
+
+    mkChart('c-meps', {
+      type: 'bar',
+      data: { labels: displayLabels, datasets: [{ data: counts, backgroundColor: parties.map(p=>partyBg(p)), borderColor: parties.map(p=>partyBorder(p)), borderWidth: 1, borderRadius: 3 }] },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: ctx => labels[ctx[0].dataIndex],  // full name in tooltip
+              label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')} · ${shortParty(parties[ctx.dataIndex])}`
+            }
+          }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#94a3b8', font: { size: 11 } }, border: { color: 'rgba(0,0,0,0.06)' } },
+          y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 11 }, autoSkip: false }, border: { display: false } }
+        },
+        onClick: (_, els) => { if (els.length) showMepDetail(mepIds[els[0].index]); }
+      }
+    });
+  }
 }
 
 function showMepDetail(mepId) {
