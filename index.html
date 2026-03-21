@@ -247,11 +247,11 @@
     <div class="stat fu d1"><div class="stat-n" id="s-r">—</div><div class="stat-l" data-i18n="stat-meetings">Reuniones</div></div>
     <div class="stat fu d2"><div class="stat-n" id="s-m">—</div><div class="stat-l" data-i18n="stat-meps">Eurodiputados</div></div>
     <div class="stat fu d2"><div class="stat-n" id="s-o">—</div><div class="stat-l" data-i18n="stat-orgs">Organizaciones</div></div>
-    <div class="stat fu d3"><div class="stat-n" id="s-s">—</div><div class="stat-l" data-i18n="stat-sectors">Sectores</div></div>
+    <div class="stat fu d3"><div class="stat-n" id="s-s">—</div><div class="stat-l" data-i18n="stat-sectors">Ámbitos</div></div>
   </div>
 
   <div class="filters">
-    <select class="sel" id="f-sector"><option value="" data-i18n="filter-all-sectors">Todos los sectores</option></select>
+    <select class="sel" id="f-sector"><option value="" data-i18n="filter-all-sectors">Todos los ámbitos</option></select>
     <select class="sel" id="f-mep"><option value="" data-i18n="filter-all-meps">Todos los eurodiputados</option></select>
     <select class="sel" id="f-partido"><option value="" data-i18n="filter-all-parties">Todos los partidos</option></select>
     <select class="sel" id="f-tipo">
@@ -270,7 +270,7 @@
           <th data-i18n="th-date">Fecha</th>
           <th data-i18n="th-mep">Eurodiputado</th>
           <th data-i18n="th-with">Con quién</th>
-          <th data-i18n="th-sector">Sector</th>
+          <th data-i18n="th-sector">Ámbito</th>
           <th data-i18n="th-type">Tipo</th>
           <th data-i18n="th-meeting">Reunión</th>
         </tr></thead>
@@ -296,7 +296,7 @@
 
     <!-- Sub-nav pills -->
     <div class="an-subnav">
-      <button class="an-btn on" data-an="sectors" data-i18n="an-tab-sectors">📊 Por sector</button>
+      <button class="an-btn on" data-an="sectors" data-i18n="an-tab-sectors">📊 Por ámbito</button>
       <button class="an-btn" data-an="meps" data-i18n="an-tab-meps">👤 Por eurodiputado</button>
       <button class="an-btn" data-an="partidos" data-i18n="an-tab-parties">🏛️ Por partido</button>
     </div>
@@ -306,10 +306,10 @@
 
       <!-- KPIs -->
       <div class="kpi-grid">
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-sector-label">Sector más activo</div><div class="kpi-val" id="kpi-top-sector">—</div><div class="kpi-sub" id="kpi-top-sector-n"></div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-sector-label">Ámbito más activo</div><div class="kpi-val" id="kpi-top-sector">—</div><div class="kpi-sub" id="kpi-top-sector-n"></div></div>
         <div class="kpi"><div class="kpi-label" data-i18n="kpi-grupal-label">Reuniones grupales</div><div class="kpi-val" id="kpi-grupal-pct">—</div><div class="kpi-sub" data-i18n="kpi-of-total">del total</div></div>
         <div class="kpi"><div class="kpi-label" data-i18n="kpi-orgs-label">Organizaciones únicas</div><div class="kpi-val" id="kpi-orgs">—</div><div class="kpi-sub" data-i18n="kpi-in-db">en la base de datos</div></div>
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-nsect-label">Sectores distintos</div><div class="kpi-val" id="kpi-nsect">—</div><div class="kpi-sub" data-i18n="kpi-identified">identificados</div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-nsect-label">Ámbitos distintos</div><div class="kpi-val" id="kpi-nsect">—</div><div class="kpi-sub" data-i18n="kpi-identified">identificados</div></div>
       </div>
 
       <!-- Sector detail (shown when a sector is selected) -->
@@ -322,27 +322,27 @@
         <div class="grid-2">
           <div class="chart-card">
             <div class="chart-card-title" data-i18n="chart-indiv-vs-grupal">Individual vs. Grupal</div>
-            <div class="chart-card-sub" id="an-sect-tipo-sub">Este sector</div>
+            <div class="chart-card-sub" id="an-sect-tipo-sub">Este ámbito</div>
             <div class="chart-wrap chart-wrap-sm"><canvas id="c-sect-tipos"></canvas></div>
           </div>
           <div class="chart-card">
             <div class="chart-card-title" data-i18n="chart-top-orgs-freq">Organizaciones más frecuentes</div>
-            <div class="chart-card-sub" data-i18n="chart-top10-sect">Top 10 entidades en reuniones de este sector</div>
+            <div class="chart-card-sub" data-i18n="chart-top10-sect">Top 10 entidades en reuniones de este ámbito</div>
             <div id="an-sect-org-list" class="org-list"></div>
           </div>
         </div>
         <div class="chart-card">
-          <div class="chart-card-title" data-i18n="chart-top-meps-sector">Eurodiputados más activos en este sector</div>
+          <div class="chart-card-title" data-i18n="chart-top-meps-sector">Eurodiputados más activos en este ámbito</div>
           <div class="chart-card-sub" data-i18n="chart-num-meetings-registered">Número de reuniones registradas</div>
           <div class="chart-wrap chart-wrap-md"><canvas id="c-sect-meps"></canvas></div>
         </div>
-        <button class="btn-sm" id="btn-ver-sector" style="margin-bottom:1rem" data-i18n="btn-ver-sector">Ver todas las reuniones de este sector →</button>
+        <button class="btn-sm" id="btn-ver-sector" style="margin-bottom:1rem" data-i18n="btn-ver-sector">Ver todas las reuniones de este ámbito →</button>
       </div>
 
       <!-- Global overview (shown by default) -->
       <div id="an-sect-overview">
         <div class="chart-card">
-          <div class="chart-card-title" data-i18n="chart-meetings-by-sector">Reuniones por sector</div>
+          <div class="chart-card-title" data-i18n="chart-meetings-by-sector">Reuniones por ámbito</div>
           <div class="chart-card-sub" data-i18n="chart-click-bar-sector">Haz clic en una barra para ver el detalle · Ordenado por número de reuniones</div>
           <div class="chart-wrap" id="c-sectors-wrap"><canvas id="c-sectors"></canvas></div>
         </div>
@@ -354,11 +354,11 @@
           </div>
           <div class="chart-card" id="sector-detail-card">
             <div class="chart-card-title" id="sector-detail-title" data-i18n="chart-top-orgs">Top organizaciones</div>
-            <div class="chart-card-sub" id="sector-detail-sub" data-i18n="chart-click-sector-hint">Haz clic en un sector del gráfico para ver las organizaciones más frecuentes</div>
+            <div class="chart-card-sub" id="sector-detail-sub" data-i18n="chart-click-sector-hint">Haz clic en un ámbito del gráfico para ver las organizaciones más frecuentes</div>
             <div id="sector-detail-body">
               <div class="click-hint">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 15l6 6M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14z"/></svg>
-                <span data-i18n="click-select-sector">Selecciona un sector en el gráfico</span>
+                <span data-i18n="click-select-sector">Selecciona un ámbito en el gráfico</span>
               </div>
             </div>
           </div>
@@ -383,7 +383,7 @@
         <div id="mep-detail-hdr"></div>
         <div class="grid-2">
           <div class="chart-card">
-            <div class="chart-card-title" data-i18n="chart-meetings-by-sector">Reuniones por sector</div>
+            <div class="chart-card-title" data-i18n="chart-meetings-by-sector">Reuniones por ámbito</div>
             <div class="chart-card-sub" id="mep-sector-sub"></div>
             <div class="chart-wrap chart-wrap-md"><canvas id="c-mep-sector"></canvas></div>
           </div>
@@ -437,7 +437,7 @@
         </div>
         <div class="grid-2">
           <div class="chart-card">
-            <div class="chart-card-title" data-i18n="chart-most-freq-sectors">Sectores más frecuentes</div>
+            <div class="chart-card-title" data-i18n="chart-most-freq-sectors">Ámbitos más frecuentes</div>
             <div class="chart-card-sub" id="partido-sector-sub"></div>
             <div class="chart-wrap chart-wrap-md"><canvas id="c-partido-sector"></canvas></div>
           </div>
@@ -490,12 +490,12 @@ const LANG = {
     'hero-h1':                   '¿Con quién se reúnen los <em>eurodiputados españoles</em>?',
     'hero-p':                    'Portal de transparencia sobre las reuniones de los 60 eurodiputados españoles con empresas, organizaciones e instituciones.',
     'search-ph':                 'Busca por empresa, organización, eurodiputado…',
-    'an-search-ph':              'Busca un eurodiputado o sector para ver sus gráficos…',
+    'an-search-ph':              'Busca un eurodiputado o ámbito para ver sus gráficos…',
     'stat-meetings':             'Reuniones',
     'stat-meps':                 'Eurodiputados',
     'stat-orgs':                 'Organizaciones',
-    'stat-sectors':              'Sectores',
-    'filter-all-sectors':        'Todos los sectores',
+    'stat-sectors':              'Ámbitos',
+    'filter-all-sectors':        'Todos los ámbitos',
     'filter-all-meps':           'Todos los eurodiputados',
     'filter-all-parties':        'Todos los partidos',
     'filter-all-types':          'Individual y Grupal',
@@ -506,7 +506,7 @@ const LANG = {
     'th-date':                   'Fecha',
     'th-mep':                    'Eurodiputado',
     'th-with':                   'Con quién',
-    'th-sector':                 'Sector',
+    'th-sector':                 'Ámbito',
     'th-type':                   'Tipo',
     'th-meeting':                'Reunión',
     'pg-prev':                   '← Ant.',
@@ -515,15 +515,15 @@ const LANG = {
     'no-results':                'Sin resultados',
     'no-rows':                   'No se encontraron reuniones.',
     'meetings':                  'reuniones',
-    'an-tab-sectors':            '📊 Por sector',
+    'an-tab-sectors':            '📊 Por ámbito',
     'an-tab-meps':               '👤 Por eurodiputado',
     'an-tab-parties':            '🏛️ Por partido',
-    'kpi-top-sector-label':      'Sector más activo',
+    'kpi-top-sector-label':      'Ámbito más activo',
     'kpi-grupal-label':          'Reuniones grupales',
     'kpi-of-total':              'del total',
     'kpi-orgs-label':            'Organizaciones únicas',
     'kpi-in-db':                 'en la base de datos',
-    'kpi-nsect-label':           'Sectores distintos',
+    'kpi-nsect-label':           'Ámbitos distintos',
     'kpi-identified':            'identificados',
     'kpi-top-mep-label':         'MEP más activo',
     'kpi-top-party-label':       'Partido más activo',
@@ -534,27 +534,27 @@ const LANG = {
     'kpi-avg-party-label':       'Media por partido',
     'kpi-leading-meps-label':    'MEPs del partido líder',
     'btn-back':                  '← Volver al ranking',
-    'btn-ver-sector':            'Ver todas las reuniones de este sector →',
+    'btn-ver-sector':            'Ver todas las reuniones de este ámbito →',
     'btn-ver-reuniones':         'Ver todas las reuniones →',
     'btn-ver-partido':           'Ver todas las reuniones del partido →',
     'chart-indiv-vs-grupal':     'Individual vs. Grupal',
     'chart-top-orgs-freq':       'Organizaciones más frecuentes',
-    'chart-top10-sect':          'Top 10 entidades en reuniones de este sector',
-    'chart-top-meps-sector':     'Eurodiputados más activos en este sector',
+    'chart-top10-sect':          'Top 10 entidades en reuniones de este ámbito',
+    'chart-top-meps-sector':     'Eurodiputados más activos en este ámbito',
     'chart-num-meetings-registered': 'Número de reuniones registradas',
-    'chart-meetings-by-sector':  'Reuniones por sector',
+    'chart-meetings-by-sector':  'Reuniones por ámbito',
     'chart-click-bar-sector':    'Haz clic en una barra para ver el detalle · Ordenado por número de reuniones',
     'chart-global-dist':         'Distribución global del tipo de reunión',
     'chart-top-orgs':            'Top organizaciones',
-    'chart-click-sector-hint':   'Haz clic en un sector del gráfico para ver las organizaciones más frecuentes',
-    'click-select-sector':       'Selecciona un sector en el gráfico',
+    'chart-click-sector-hint':   'Haz clic en un ámbito del gráfico para ver las organizaciones más frecuentes',
+    'click-select-sector':       'Selecciona un ámbito en el gráfico',
     'chart-evolution-by-year':   'Evolución por año',
     'chart-top10-mep':           'Top 10 entidades con las que se ha reunido',
     'chart-most-active-meps':    'Eurodiputados más activos',
     'chart-click-bar-mep':       'Haz clic en una barra para ver el perfil detallado · Los 60 eurodiputados españoles',
     'chart-party-meps':          'Eurodiputados del partido',
     'chart-click-bar-party-mep': 'Ordenados por número de reuniones · Haz clic para ver su perfil',
-    'chart-most-freq-sectors':   'Sectores más frecuentes',
+    'chart-most-freq-sectors':   'Ámbitos más frecuentes',
     'chart-top10-party':         'Top 10 entidades con las que se han reunido los MEPs del partido',
     'chart-meetings-by-party':   'Reuniones por partido político',
     'chart-click-bar-party':     'Haz clic en una barra para ver el detalle del partido',
@@ -562,14 +562,14 @@ const LANG = {
     'footer-github':             'Código abierto en GitHub',
     'sugg-meps':                 'Eurodiputados',
     'sugg-parties':              'Partidos',
-    'sugg-sectors':              'Sectores',
-    'mep-sector-sub':            'Distribución de las {n} reuniones por sector',
+    'sugg-sectors':              'Ámbitos',
+    'mep-sector-sub':            'Distribución de las {n} reuniones por ámbito',
     'mep-year-sub':              'Número de reuniones registradas por año',
-    'partido-sector-sub':        'Distribución sectorial de las {n} reuniones',
+    'partido-sector-sub':        'Distribución por ámbito de las {n} reuniones',
     'partido-year-sub':          'Actividad registrada por año',
     'partido-detail-stats':      '{n} reuniones · {meps} eurodiputados',
     'kpi-p-meps-n':              'eurodiputados en {party}',
-    'no-data-sector':            'Sin datos para este sector',
+    'no-data-sector':            'Sin datos para este ámbito',
     'full-analysis-btn':         'Ver análisis completo →',
     'by-freq':                   'Por frecuencia de aparición en reuniones',
   },
@@ -583,12 +583,12 @@ const LANG = {
     'hero-h1':                   'Who do <em>Spanish MEPs</em> meet with?',
     'hero-p':                    'Transparency portal on the meetings of 60 Spanish MEPs with companies, organizations and institutions.',
     'search-ph':                 'Search by company, organization, MEP…',
-    'an-search-ph':              'Search for an MEP, party or sector to see its charts…',
+    'an-search-ph':              'Search for an MEP, party or field to see its charts…',
     'stat-meetings':             'Meetings',
     'stat-meps':                 'MEPs',
     'stat-orgs':                 'Organizations',
-    'stat-sectors':              'Sectors',
-    'filter-all-sectors':        'All sectors',
+    'stat-sectors':              'Fields',
+    'filter-all-sectors':        'All fields',
     'filter-all-meps':           'All MEPs',
     'filter-all-parties':        'All parties',
     'filter-all-types':          'Individual & Group',
@@ -599,7 +599,7 @@ const LANG = {
     'th-date':                   'Date',
     'th-mep':                    'MEP',
     'th-with':                   'With',
-    'th-sector':                 'Sector',
+    'th-sector':                 'Field',
     'th-type':                   'Type',
     'th-meeting':                'Meeting',
     'pg-prev':                   '← Prev',
@@ -608,15 +608,15 @@ const LANG = {
     'no-results':                'No results',
     'no-rows':                   'No meetings found.',
     'meetings':                  'meetings',
-    'an-tab-sectors':            '📊 By sector',
+    'an-tab-sectors':            '📊 By field',
     'an-tab-meps':               '👤 By MEP',
     'an-tab-parties':            '🏛️ By party',
-    'kpi-top-sector-label':      'Most active sector',
+    'kpi-top-sector-label':      'Most active field',
     'kpi-grupal-label':          'Group meetings',
     'kpi-of-total':              'of total',
     'kpi-orgs-label':            'Unique organizations',
     'kpi-in-db':                 'in the database',
-    'kpi-nsect-label':           'Distinct sectors',
+    'kpi-nsect-label':           'Distinct fields',
     'kpi-identified':            'identified',
     'kpi-top-mep-label':         'Most active MEP',
     'kpi-top-party-label':       'Most active party',
@@ -627,27 +627,27 @@ const LANG = {
     'kpi-avg-party-label':       'Average per party',
     'kpi-leading-meps-label':    'Leading party MEPs',
     'btn-back':                  '← Back to ranking',
-    'btn-ver-sector':            'View all meetings in this sector →',
+    'btn-ver-sector':            'View all meetings in this field →',
     'btn-ver-reuniones':         'View all meetings →',
     'btn-ver-partido':           'View all party meetings →',
     'chart-indiv-vs-grupal':     'Individual vs. Group',
     'chart-top-orgs-freq':       'Most frequent organizations',
-    'chart-top10-sect':          'Top 10 entities in meetings of this sector',
-    'chart-top-meps-sector':     'Most active MEPs in this sector',
+    'chart-top10-sect':          'Top 10 entities in meetings of this field',
+    'chart-top-meps-sector':     'Most active MEPs in this field',
     'chart-num-meetings-registered': 'Number of registered meetings',
-    'chart-meetings-by-sector':  'Meetings by sector',
+    'chart-meetings-by-sector':  'Meetings by field',
     'chart-click-bar-sector':    'Click a bar to see details · Sorted by number of meetings',
     'chart-global-dist':         'Global distribution of meeting type',
     'chart-top-orgs':            'Top organizations',
-    'chart-click-sector-hint':   'Click a sector in the chart to see the most frequent organizations',
-    'click-select-sector':       'Select a sector in the chart',
+    'chart-click-sector-hint':   'Click a field in the chart to see the most frequent organizations',
+    'click-select-sector':       'Select a field in the chart',
     'chart-evolution-by-year':   'Evolution by year',
     'chart-top10-mep':           'Top 10 entities the MEP has met with',
     'chart-most-active-meps':    'Most active MEPs',
     'chart-click-bar-mep':       'Click a bar to see the detailed profile · 60 Spanish MEPs',
     'chart-party-meps':          'Party MEPs',
     'chart-click-bar-party-mep': 'Sorted by number of meetings · Click to see profile',
-    'chart-most-freq-sectors':   'Most frequent sectors',
+    'chart-most-freq-sectors':   'Most frequent fields',
     'chart-top10-party':         'Top 10 entities that the party\'s MEPs have met with',
     'chart-meetings-by-party':   'Meetings by political party',
     'chart-click-bar-party':     'Click a bar to see party details',
@@ -655,14 +655,14 @@ const LANG = {
     'footer-github':             'Open source on GitHub',
     'sugg-meps':                 'MEPs',
     'sugg-parties':              'Parties',
-    'sugg-sectors':              'Sectors',
-    'mep-sector-sub':            'Distribution of {n} meetings by sector',
+    'sugg-sectors':              'Fields',
+    'mep-sector-sub':            'Distribution of {n} meetings by field',
     'mep-year-sub':              'Number of registered meetings per year',
-    'partido-sector-sub':        'Sector distribution of {n} meetings',
+    'partido-sector-sub':        'Distribution by field of {n} meetings',
     'partido-year-sub':          'Registered activity by year',
     'partido-detail-stats':      '{n} meetings · {meps} MEPs',
     'kpi-p-meps-n':              'MEPs in {party}',
-    'no-data-sector':            'No data for this sector',
+    'no-data-sector':            'No data for this field',
     'full-analysis-btn':         'See full analysis →',
     'by-freq':                   'By frequency of appearance in meetings',
   }
