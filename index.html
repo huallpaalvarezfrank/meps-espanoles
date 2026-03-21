@@ -71,6 +71,10 @@
     .hdr-nav{display:flex;align-items:center;gap:.25rem}
     .hdr-nav-link{font-size:.8rem;font-weight:500;color:var(--t2);padding:.3rem .7rem;border-radius:var(--rm);transition:all .18s}
     .hdr-nav-link:hover{color:var(--blue);background:rgba(37,99,235,.07)}
+    .lang-switcher{display:flex;align-items:center;gap:.2rem}
+    .lang-btn{font-size:.7rem;font-weight:600;padding:.22rem .55rem;border:1px solid var(--b);border-radius:var(--rm);background:transparent;color:var(--t3);cursor:pointer;transition:all .18s;line-height:1}
+    .lang-btn:hover{color:var(--t);border-color:var(--bh)}
+    .lang-btn.on{background:var(--blue);color:#fff;border-color:var(--blue)}
     .mep-cell[onclick]:hover .mep-name{text-decoration:underline}
     td[onclick]:hover{background:rgba(0,51,153,.04)}
     .btn-apoya-footer{display:inline-flex;align-items:center;font-size:.75rem;color:var(--t2);background:transparent;border:1px solid var(--bh);border-radius:var(--rm);padding:.35rem .85rem;text-decoration:none;transition:border-color .18s,color .18s;white-space:nowrap;min-height:44px;cursor:pointer}
@@ -495,6 +499,11 @@
     </div>
   </button>
   <div class="hdr-right">
+    <div class="lang-switcher" aria-label="Language selector">
+      <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" data-lang="pt" onclick="setLang('pt')">PT</button>
+    </div>
     <nav class="hdr-nav" role="navigation" aria-label="Navegación principal">
       <a class="hdr-nav-link" href="#sobre-mi">Sobre mí</a>
     </nav>
@@ -524,7 +533,7 @@
     </div>
     <div class="srch-wrap fu" style="animation-delay:.38s">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input id="q" type="text" placeholder="Busca por empresa, organización, eurodiputado…" autocomplete="off" aria-label="Buscar eurodiputados, organizaciones o ámbitos">
+      <input id="q" type="text" placeholder="Busca por empresa, organización, eurodiputado…" data-i18n-ph="search-ph" autocomplete="off" aria-label="Buscar eurodiputados, organizaciones o ámbitos">
       <div class="autocomplete-dropdown" id="ac-dropdown" style="display:none"></div>
     </div>
   </section>
@@ -969,6 +978,7 @@
 'use strict';
 
 // ── i18n ─────────────────────────────────────────────────────
+let currentLang = localStorage.getItem('lang') || 'es';
 const LANG = {
   es: {
     'loading':                   'Cargando base de datos…',
@@ -1063,10 +1073,222 @@ const LANG = {
     'full-analysis-btn':         'Ver análisis completo →',
     'by-freq':                   'Por frecuencia de aparición en reuniones',
   }
+  ,en: {
+    'loading':                   'Loading database…',
+    'loading-error':             'Error loading the database.',
+    'logo-sub':                  '· Transparency Portal',
+    'tab-search':                '🔍 Search meetings',
+    'tab-analysis':              '📊 Analysis',
+    'eyebrow':                   '★  European Parliament',
+    'hero-h1':                   'Who do <em>Spanish MEPs</em> meet with?',
+    'hero-p':                    'Transparency portal on the meetings of 60 Spanish MEPs with companies, organizations and institutions.',
+    'search-ph':                 'Search by company, organization, MEP…',
+    'an-search-ph':              'Search an MEP or sector to see their charts…',
+    'stat-meetings':             'Meetings',
+    'stat-meps':                 'MEPs',
+    'stat-orgs':                 'Organizations',
+    'stat-sectors':              'Sectors',
+    'filter-all-sectors':        'All sectors',
+    'filter-all-meps':           'All MEPs',
+    'filter-all-parties':        'All parties',
+    'filter-all-types':          'Individual & Group',
+    'tipo-individual':           'Individual',
+    'tipo-grupal':               'Group',
+    'tipo-grupal-badge':         'Group',
+    'btn-clear':                 '✕ Clear',
+    'th-date':                   'Date',
+    'th-mep':                    'MEP',
+    'th-with':                   'Met with',
+    'th-sector':                 'Sector',
+    'th-type':                   'Type',
+    'th-meeting':                'Meeting',
+    'pg-prev':                   '← Prev.',
+    'pg-next':                   'Next →',
+    'showing':                   'Showing {from}–{to} of {total} meetings',
+    'no-results':                'No results',
+    'no-rows':                   'No meetings found.',
+    'meetings':                  'meetings',
+    'an-tab-sectors':            '📊 By sector',
+    'an-tab-meps':               '👤 By MEP',
+    'an-tab-parties':            '🏛️ By party',
+    'kpi-top-sector-label':      'Most active sector',
+    'kpi-grupal-label':          'Group meetings',
+    'kpi-of-total':              'of total',
+    'kpi-orgs-label':            'Unique organizations',
+    'kpi-in-db':                 'in the database',
+    'kpi-nsect-label':           'Distinct sectors',
+    'kpi-identified':            'identified',
+    'kpi-top-mep-label':         'Most active MEP',
+    'kpi-top-party-label':       'Most active party',
+    'kpi-avg-mep-label':         'Average per MEP',
+    'kpi-top-group-label':       'Most active group',
+    'kpi-parties-count-label':   'Parties represented',
+    'kpi-in-ep':                 'in the EP',
+    'kpi-avg-party-label':       'Average per party',
+    'kpi-leading-meps-label':    'MEPs from leading party',
+    'btn-back':                  '← Back to ranking',
+    'btn-ver-sector':            'View all meetings in this sector →',
+    'btn-ver-reuniones':         'View all meetings →',
+    'btn-ver-partido':           'View all party meetings →',
+    'chart-indiv-vs-grupal':     'Individual vs. Group',
+    'chart-top-orgs-freq':       'Most frequent organizations',
+    'chart-top10-sect':          'Top 10 entities in this sector\'s meetings',
+    'chart-top-meps-sector':     'Most active MEPs in this sector',
+    'chart-num-meetings-registered': 'Number of registered meetings',
+    'chart-meetings-by-sector':  'Meetings by sector',
+    'chart-click-bar-sector':    'Click a bar to see details · Sorted by number of meetings',
+    'chart-global-dist':         'Global distribution of meeting type',
+    'chart-top-orgs':            'Top organizations',
+    'chart-click-sector-hint':   'Click a sector in the chart to see the most frequent organizations',
+    'click-select-sector':       'Select a sector in the chart',
+    'chart-evolution-by-year':   'Evolution by year',
+    'chart-top10-mep':           'Top 10 entities met with',
+    'chart-most-active-meps':    'Most active MEPs',
+    'chart-click-bar-mep':       'Click a bar to see the detailed profile · 60 Spanish MEPs',
+    'chart-party-meps':          'Party MEPs',
+    'chart-click-bar-party-mep': 'Sorted by number of meetings · Click to see profile',
+    'chart-most-freq-sectors':   'Most frequent sectors',
+    'chart-top10-party':         'Top 10 entities met by party MEPs',
+    'chart-meetings-by-party':   'Meetings by political party',
+    'chart-click-bar-party':     'Click a bar to see the party detail',
+    'footer-source':             'Source: <a href="https://europarl.europa.eu" target="_blank">European Parliament</a> · Weekly updates · 60 Spanish MEPs',
+    'footer-github':             'Open source on GitHub',
+    'sugg-meps':                 'MEPs',
+    'sugg-parties':              'Parties',
+    'sugg-sectors':              'Sectors',
+    'mep-sector-sub':            'Distribution of {n} meetings by sector',
+    'mep-year-sub':              'Number of registered meetings per year',
+    'partido-sector-sub':        'Distribution by sector of {n} meetings',
+    'partido-year-sub':          'Recorded activity by year',
+    'partido-detail-stats':      '{n} meetings · {meps} MEPs',
+    'kpi-p-meps-n':              'MEPs in {party}',
+    'no-data-sector':            'No data for this sector',
+    'full-analysis-btn':         'See full analysis →',
+    'by-freq':                   'By frequency of appearance in meetings',
+  }
+  ,pt: {
+    'loading':                   'Carregando base de dados…',
+    'loading-error':             'Erro ao carregar a base de dados.',
+    'logo-sub':                  '· Portal de Transparência',
+    'tab-search':                '🔍 Pesquisar reuniões',
+    'tab-analysis':              '📊 Análise',
+    'eyebrow':                   '★  Parlamento Europeu',
+    'hero-h1':                   'Com quem se reúnem os <em>eurodeputados espanhóis</em>?',
+    'hero-p':                    'Portal de transparência sobre as reuniões dos 60 eurodeputados espanhóis com empresas, organizações e instituições.',
+    'search-ph':                 'Pesquisar por empresa, organização, eurodeputado…',
+    'an-search-ph':              'Pesquise um eurodeputado ou setor para ver os gráficos…',
+    'stat-meetings':             'Reuniões',
+    'stat-meps':                 'Eurodeputados',
+    'stat-orgs':                 'Organizações',
+    'stat-sectors':              'Setores',
+    'filter-all-sectors':        'Todos os setores',
+    'filter-all-meps':           'Todos os eurodeputados',
+    'filter-all-parties':        'Todos os partidos',
+    'filter-all-types':          'Individual e Grupal',
+    'tipo-individual':           'Individual',
+    'tipo-grupal':               'Grupal',
+    'tipo-grupal-badge':         'Grupal',
+    'btn-clear':                 '✕ Limpar',
+    'th-date':                   'Data',
+    'th-mep':                    'Eurodeputado',
+    'th-with':                   'Com quem',
+    'th-sector':                 'Setor',
+    'th-type':                   'Tipo',
+    'th-meeting':                'Reunião',
+    'pg-prev':                   '← Ant.',
+    'pg-next':                   'Próx. →',
+    'showing':                   'Mostrando {from}–{to} de {total} reuniões',
+    'no-results':                'Sem resultados',
+    'no-rows':                   'Nenhuma reunião encontrada.',
+    'meetings':                  'reuniões',
+    'an-tab-sectors':            '📊 Por setor',
+    'an-tab-meps':               '👤 Por eurodeputado',
+    'an-tab-parties':            '🏛️ Por partido',
+    'kpi-top-sector-label':      'Setor mais ativo',
+    'kpi-grupal-label':          'Reuniões grupais',
+    'kpi-of-total':              'do total',
+    'kpi-orgs-label':            'Organizações únicas',
+    'kpi-in-db':                 'na base de dados',
+    'kpi-nsect-label':           'Setores distintos',
+    'kpi-identified':            'identificados',
+    'kpi-top-mep-label':         'MEP mais ativo',
+    'kpi-top-party-label':       'Partido mais ativo',
+    'kpi-avg-mep-label':         'Média por MEP',
+    'kpi-top-group-label':       'Grupo mais ativo',
+    'kpi-parties-count-label':   'Partidos representados',
+    'kpi-in-ep':                 'no PE',
+    'kpi-avg-party-label':       'Média por partido',
+    'kpi-leading-meps-label':    'MEPs do partido líder',
+    'btn-back':                  '← Voltar ao ranking',
+    'btn-ver-sector':            'Ver todas as reuniões deste setor →',
+    'btn-ver-reuniones':         'Ver todas as reuniões →',
+    'btn-ver-partido':           'Ver todas as reuniões do partido →',
+    'chart-indiv-vs-grupal':     'Individual vs. Grupal',
+    'chart-top-orgs-freq':       'Organizações mais frequentes',
+    'chart-top10-sect':          'Top 10 entidades nas reuniões deste setor',
+    'chart-top-meps-sector':     'Eurodeputados mais ativos neste setor',
+    'chart-num-meetings-registered': 'Número de reuniões registradas',
+    'chart-meetings-by-sector':  'Reuniões por setor',
+    'chart-click-bar-sector':    'Clique numa barra para ver detalhes · Ordenado por número de reuniões',
+    'chart-global-dist':         'Distribuição global do tipo de reunião',
+    'chart-top-orgs':            'Top organizações',
+    'chart-click-sector-hint':   'Clique num setor do gráfico para ver as organizações mais frequentes',
+    'click-select-sector':       'Selecione um setor no gráfico',
+    'chart-evolution-by-year':   'Evolução por ano',
+    'chart-top10-mep':           'Top 10 entidades com as quais se reuniu',
+    'chart-most-active-meps':    'Eurodeputados mais ativos',
+    'chart-click-bar-mep':       'Clique numa barra para ver o perfil detalhado · Os 60 eurodeputados espanhóis',
+    'chart-party-meps':          'Eurodeputados do partido',
+    'chart-click-bar-party-mep': 'Ordenados por número de reuniões · Clique para ver o perfil',
+    'chart-most-freq-sectors':   'Setores mais frequentes',
+    'chart-top10-party':         'Top 10 entidades com as quais se reuniram os MEPs do partido',
+    'chart-meetings-by-party':   'Reuniões por partido político',
+    'chart-click-bar-party':     'Clique numa barra para ver o detalhe do partido',
+    'footer-source':             'Fonte: <a href="https://europarl.europa.eu" target="_blank">Parlamento Europeu</a> · Atualização semanal · 60 eurodeputados espanhóis',
+    'footer-github':             'Código aberto no GitHub',
+    'sugg-meps':                 'Eurodeputados',
+    'sugg-parties':              'Partidos',
+    'sugg-sectors':              'Setores',
+    'mep-sector-sub':            'Distribuição das {n} reuniões por setor',
+    'mep-year-sub':              'Número de reuniões registradas por ano',
+    'partido-sector-sub':        'Distribuição por setor das {n} reuniões',
+    'partido-year-sub':          'Atividade registrada por ano',
+    'partido-detail-stats':      '{n} reuniões · {meps} eurodeputados',
+    'kpi-p-meps-n':              'eurodeputados em {party}',
+    'no-data-sector':            'Sem dados para este setor',
+    'full-analysis-btn':         'Ver análise completa →',
+    'by-freq':                   'Por frequência de aparição nas reuniões',
+  }
 };
 
 function t(key) {
-  return LANG.es[key] || key;
+  return LANG[currentLang]?.[key] || LANG.es[key] || key;
+}
+
+function applyLang() {
+  const HTML_KEYS = new Set(['hero-h1','footer-source']);
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const val = t(key);
+    if (HTML_KEYS.has(key)) el.innerHTML = val;
+    else el.textContent = val;
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPh);
+  });
+  const qInput = document.getElementById('q');
+  if (qInput) qInput.placeholder = t('search-ph');
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('on', b.dataset.lang === currentLang)
+  );
+}
+function setLang(lang) {
+  if (!LANG[lang]) return;
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  applyLang();
+  if (db) run(0);
+  if (analisisInit) { analisisInit = false; renderAnalisisTab(); }
 }
 
 // ── Constants ────────────────────────────────────────────────
@@ -1261,6 +1483,7 @@ function renderTimeline() {
     setTimeout(() => bar.classList.add('done'), 100);
     initStats();
     initFilters();
+    applyLang();
     run(0);
     renderTimeline();
     updateDataStatus();
