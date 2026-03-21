@@ -42,8 +42,28 @@ VALID_SECTORS = [
     "Energía", "Banca", "Tecnología", "ONG", "Transporte", "Agricultura",
     "Salud", "Medio ambiente", "Industria", "Educación", "Medios", "Defensa",
     "Consultoría", "Evento", "Institución pública", "Institución UE",
-    "Organizaciones empresariales", "Sindicatos", "Think tank", "Otros",
+    "Organizaciones empresariales", "Sindicatos", "Think tank",
+    "Automoción", "Tabaco", "Distribución", "Deporte", "Cosméticos y perfumería",
+    "Turismo", "Otros",
 ]
+
+# Mapa de normalización: si reglas.csv o Claude devuelven un sector no canónico,
+# se reemplaza por su equivalente canónico antes de escribir en la BD.
+SECTOR_NORMALIZE = {
+    "Banca y finanzas":            "Banca",
+    "Consultoría y comunicación":  "Consultoría",
+    "Administración pública":      "Institución pública",
+    "Telecomunicaciones":          "Tecnología",
+    "Medios de comunicación":      "Medios",
+    "Farmacéutica":                "Salud",
+    "Agricultura y alimentación":  "Agricultura",
+    "Aeronáutica y defensa":       "Defensa",
+    "Discapacidad y social":       "ONG",
+    "ONG y derechos humanos":      "ONG",
+    "Academia e investigación":    "Educación",
+    "Partidos políticos":          "Institución pública",
+    "Diplomacia":                  "Institución pública",
+}
 
 SYSTEM_PROMPT = f"""Eres un asistente especializado en transparencia política del Parlamento Europeo.
 
@@ -219,7 +239,8 @@ def parse_response(raw_text, batch_ids):
                 sector       = str(item.get("sector", "Otros")).strip()
                 tipo_reunion = str(item.get("tipo_reunion", "Individual")).strip()
 
-                # Validar sector
+                # Normalizar sector (elimina variantes no canónicas)
+                sector = SECTOR_NORMALIZE.get(sector, sector)
                 if sector not in VALID_SECTORS:
                     sector = "Otros"
                 # Validar tipo_reunion
@@ -256,6 +277,11 @@ def write_results(conn, results, reglas_sector, batch_records):
         # El sector de reglas.csv tiene prioridad sobre el de Claude
         texto_original = texto_por_id.get(rid, "")
         sector_manual  = reglas_sector.get(texto_original.lower(), "")
+        # Normalizar sector de reglas.csv también (puede tener variantes antiguas)
+        if sector_manual:
+            sector_manual = SECTOR_NORMALIZE.get(sector_manual, sector_manual)
+            if sector_manual not in VALID_SECTORS:
+                sector_manual = ""
         sector_final   = sector_manual if sector_manual else fields["sector"]
 
         cur.execute(

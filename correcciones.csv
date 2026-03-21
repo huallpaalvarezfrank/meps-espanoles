@@ -1,0 +1,6 @@
+﻿reunion_con;sector_correcto
+# Añade filas para corregir clasificaciones incorrectas.
+# reunion_con es el texto exacto del campo reunion_con en la BD.
+# Ejemplo:
+# Oposición venezolana;ONG
+# Plataforma Unitaria Democrática;ONG
