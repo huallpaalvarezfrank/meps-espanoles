@@ -115,13 +115,30 @@
     .pg[disabled]{opacity:.28;cursor:not-allowed}
     .pg-gap{color:var(--t3);padding:0 .2rem;font-size:.85rem}
 
-    /* Analysis sections */
+    /* Analysis layout */
     .analysis{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
-    .analysis-title{font-size:1.35rem;font-weight:700;margin-bottom:.3rem}
-    .analysis-sub{font-size:.875rem;color:var(--t2);margin-bottom:2rem}
+
+    /* Analysis search bar */
+    .an-srch-wrap{position:relative;max-width:540px;margin-bottom:1.5rem}
+    .an-srch-wrap svg{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none}
+    #an-q{width:100%;padding:.7rem 1rem .7rem 2.5rem;font-size:.9rem;background:var(--surf);border:1px solid var(--b);border-radius:var(--rm);color:var(--t);outline:none;transition:border-color .2s}
+    #an-q::placeholder{color:var(--t3)}
+    #an-q:focus{border-color:var(--blue)}
+    .an-sugg-box{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surf);border:1px solid var(--bh);border-radius:var(--rm);z-index:200;max-height:320px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.65)}
+    .an-sugg-group{padding:.45rem .85rem .2rem;font-size:.68rem;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;border-top:1px solid var(--b)}
+    .an-sugg-group:first-child{border-top:none}
+    .an-sugg-item{padding:.55rem .85rem;cursor:pointer;font-size:.87rem;display:flex;align-items:center;gap:.6rem;transition:background .1s}
+    .an-sugg-item:hover{background:var(--card-h)}
+    .an-sugg-tag{font-size:.67rem;padding:.13rem .5rem;border-radius:var(--rf);flex-shrink:0;font-weight:600}
+
+    /* Analysis sub-nav (pill tabs) */
+    .an-subnav{display:flex;gap:.4rem;margin-bottom:1.75rem;border-bottom:1px solid var(--b);padding-bottom:1.25rem}
+    .an-btn{padding:.42rem 1.05rem;font-size:.875rem;font-weight:500;color:var(--t2);background:var(--card);border:1px solid var(--b);border-radius:var(--rf);transition:all .18s}
+    .an-btn:hover{color:var(--t);border-color:var(--bh)}
+    .an-btn.on{background:var(--blue);border-color:var(--blue);color:#fff}
 
     /* KPI cards */
-    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:2rem}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:1.75rem}
     .kpi{background:var(--card);border:1px solid var(--b);border-radius:var(--rm);padding:1.2rem}
     .kpi-label{font-size:.72rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
     .kpi-val{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
@@ -132,11 +149,19 @@
     .chart-card-title{font-size:.95rem;font-weight:600;margin-bottom:.25rem}
     .chart-card-sub{font-size:.78rem;color:var(--t3);margin-bottom:1.25rem}
     .chart-wrap{position:relative}
-    .chart-wrap-lg{height:500px}
     .chart-wrap-md{height:300px}
     .chart-wrap-sm{height:250px}
 
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+
+    /* Section header within analysis */
+    .an-section-hdr{display:flex;align-items:baseline;gap:.75rem;margin-bottom:1.5rem}
+    .an-section-title{font-size:1.25rem;font-weight:700}
+    .an-section-sub{font-size:.875rem;color:var(--t2)}
+
+    /* Back button */
+    .btn-back{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--t3);border:1px solid var(--b);border-radius:var(--rm);padding:.35rem .75rem;margin-bottom:1.25rem;transition:all .18s}
+    .btn-back:hover{color:var(--t);border-color:var(--bh)}
 
     /* Top orgs list */
     .org-list{display:flex;flex-direction:column;gap:.4rem;margin-top:.5rem}
@@ -197,11 +222,12 @@
 <!-- Tab nav -->
 <nav class="tab-nav">
   <button class="tab-btn on" data-tab="search">🔍 Buscar reuniones</button>
-  <button class="tab-btn" data-tab="sector">📊 Análisis por sector</button>
-  <button class="tab-btn" data-tab="mep">👤 Por eurodiputado</button>
+  <button class="tab-btn" data-tab="analisis">📊 Análisis</button>
 </nav>
 
+<!-- ═══════════════════════════════════════════════ -->
 <!-- Panel: Buscar -->
+<!-- ═══════════════════════════════════════════════ -->
 <div id="panel-search">
   <section class="hero">
     <div class="eyebrow fu">★ &nbsp;Parlamento Europeo · Datos abiertos</div>
@@ -240,85 +266,135 @@
   <div class="pager" id="pager"></div>
 </div>
 
-<!-- Panel: Sector -->
-<div id="panel-sector" hidden>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- Panel: Análisis (sectores + MEPs unificados) -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="panel-analisis" hidden>
   <div class="analysis">
-    <div class="analysis-title">Análisis por sector</div>
-    <div class="analysis-sub">¿Qué sectores tienen más peso en la agenda de los eurodiputados españoles?</div>
 
-    <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-label">Sector más activo</div><div class="kpi-val" id="kpi-top-sector">—</div><div class="kpi-sub" id="kpi-top-sector-n"></div></div>
-      <div class="kpi"><div class="kpi-label">Reuniones grupales</div><div class="kpi-val" id="kpi-grupal-pct">—</div><div class="kpi-sub">del total</div></div>
-      <div class="kpi"><div class="kpi-label">Organizaciones únicas</div><div class="kpi-val" id="kpi-orgs">—</div><div class="kpi-sub">en la base de datos</div></div>
-      <div class="kpi"><div class="kpi-label">Sectores distintos</div><div class="kpi-val" id="kpi-nsect">—</div><div class="kpi-sub">identificados</div></div>
+    <!-- Search bar -->
+    <div class="an-srch-wrap" id="an-srch-wrap">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input id="an-q" type="text" placeholder="Busca un eurodiputado o sector para ver sus gráficos…" autocomplete="off">
+      <div id="an-sugg" class="an-sugg-box" hidden></div>
     </div>
 
-    <div class="chart-card">
-      <div class="chart-card-title">Reuniones por sector</div>
-      <div class="chart-card-sub">Haz clic en una barra para ver el detalle · Ordenado por número de reuniones</div>
-      <div class="chart-wrap chart-wrap-lg"><canvas id="c-sectors"></canvas></div>
+    <!-- Sub-nav pills -->
+    <div class="an-subnav">
+      <button class="an-btn on" data-an="sectors">📊 Por sector</button>
+      <button class="an-btn" data-an="meps">👤 Por eurodiputado</button>
     </div>
 
-    <div class="grid-2">
-      <div class="chart-card">
-        <div class="chart-card-title">Individual vs. Grupal</div>
-        <div class="chart-card-sub">Distribución global del tipo de reunión</div>
-        <div class="chart-wrap chart-wrap-sm"><canvas id="c-tipos"></canvas></div>
+    <!-- ─── Sectores view ─── -->
+    <div id="an-sectors">
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Sector más activo</div><div class="kpi-val" id="kpi-top-sector">—</div><div class="kpi-sub" id="kpi-top-sector-n"></div></div>
+        <div class="kpi"><div class="kpi-label">Reuniones grupales</div><div class="kpi-val" id="kpi-grupal-pct">—</div><div class="kpi-sub">del total</div></div>
+        <div class="kpi"><div class="kpi-label">Organizaciones únicas</div><div class="kpi-val" id="kpi-orgs">—</div><div class="kpi-sub">en la base de datos</div></div>
+        <div class="kpi"><div class="kpi-label">Sectores distintos</div><div class="kpi-val" id="kpi-nsect">—</div><div class="kpi-sub">identificados</div></div>
       </div>
-      <div class="chart-card" id="sector-detail-card">
-        <div class="chart-card-title" id="sector-detail-title">Top organizaciones</div>
-        <div class="chart-card-sub" id="sector-detail-sub">Haz clic en un sector del gráfico para ver las organizaciones más frecuentes</div>
-        <div id="sector-detail-body">
-          <div class="click-hint">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 15l6 6M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14z"/></svg>
-            Selecciona un sector en el gráfico
+
+      <!-- Sector detail (shown when a sector is selected) -->
+      <div id="an-sect-detail" hidden>
+        <button class="btn-back" onclick="clearAnSectorDetail()">← Volver al ranking</button>
+        <div class="an-section-hdr">
+          <div class="an-section-title" id="an-sect-detail-title">—</div>
+          <div class="an-section-sub" id="an-sect-detail-stats"></div>
+        </div>
+        <div class="grid-2">
+          <div class="chart-card">
+            <div class="chart-card-title">Individual vs. Grupal</div>
+            <div class="chart-card-sub" id="an-sect-tipo-sub">Este sector</div>
+            <div class="chart-wrap chart-wrap-sm"><canvas id="c-sect-tipos"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Organizaciones más frecuentes</div>
+            <div class="chart-card-sub">Top 10 entidades en reuniones de este sector</div>
+            <div id="an-sect-org-list" class="org-list"></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Eurodiputados más activos en este sector</div>
+          <div class="chart-card-sub">Número de reuniones registradas</div>
+          <div class="chart-wrap chart-wrap-md"><canvas id="c-sect-meps"></canvas></div>
+        </div>
+        <button class="btn-sm" id="btn-ver-sector" style="margin-bottom:1rem">Ver todas las reuniones de este sector →</button>
+      </div>
+
+      <!-- Global overview (shown by default) -->
+      <div id="an-sect-overview">
+        <div class="chart-card">
+          <div class="chart-card-title">Reuniones por sector</div>
+          <div class="chart-card-sub">Haz clic en una barra para ver el detalle · Ordenado por número de reuniones</div>
+          <div class="chart-wrap" id="c-sectors-wrap"><canvas id="c-sectors"></canvas></div>
+        </div>
+        <div class="grid-2">
+          <div class="chart-card">
+            <div class="chart-card-title">Individual vs. Grupal</div>
+            <div class="chart-card-sub">Distribución global del tipo de reunión</div>
+            <div class="chart-wrap chart-wrap-sm"><canvas id="c-tipos"></canvas></div>
+          </div>
+          <div class="chart-card" id="sector-detail-card">
+            <div class="chart-card-title" id="sector-detail-title">Top organizaciones</div>
+            <div class="chart-card-sub" id="sector-detail-sub">Haz clic en un sector del gráfico para ver las organizaciones más frecuentes</div>
+            <div id="sector-detail-body">
+              <div class="click-hint">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 15l6 6M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14z"/></svg>
+                Selecciona un sector en el gráfico
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Panel: MEP -->
-<div id="panel-mep" hidden>
-  <div class="analysis">
-    <div class="analysis-title">Análisis por eurodiputado</div>
-    <div class="analysis-sub">¿Quiénes son los eurodiputados más activos y con quién se reúnen?</div>
+    <!-- ─── Eurodiputados view ─── -->
+    <div id="an-meps" hidden>
 
-    <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-label">MEP más activo</div><div class="kpi-val" id="kpi-top-mep">—</div><div class="kpi-sub" id="kpi-top-mep-n"></div></div>
-      <div class="kpi"><div class="kpi-label">Partido más activo</div><div class="kpi-val" id="kpi-top-partido">—</div><div class="kpi-sub" id="kpi-top-partido-n"></div></div>
-      <div class="kpi"><div class="kpi-label">Media por MEP</div><div class="kpi-val" id="kpi-avg">—</div><div class="kpi-sub">reuniones</div></div>
-      <div class="kpi"><div class="kpi-label">Grupo más activo</div><div class="kpi-val" id="kpi-top-grupo">—</div><div class="kpi-sub" id="kpi-top-grupo-n"></div></div>
-    </div>
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">MEP más activo</div><div class="kpi-val" id="kpi-top-mep">—</div><div class="kpi-sub" id="kpi-top-mep-n"></div></div>
+        <div class="kpi"><div class="kpi-label">Partido más activo</div><div class="kpi-val" id="kpi-top-partido">—</div><div class="kpi-sub" id="kpi-top-partido-n"></div></div>
+        <div class="kpi"><div class="kpi-label">Media por MEP</div><div class="kpi-val" id="kpi-avg">—</div><div class="kpi-sub">reuniones</div></div>
+        <div class="kpi"><div class="kpi-label">Grupo más activo</div><div class="kpi-val" id="kpi-top-grupo">—</div><div class="kpi-sub" id="kpi-top-grupo-n"></div></div>
+      </div>
 
-    <div class="chart-card">
-      <div class="chart-card-title">Eurodiputados más activos</div>
-      <div class="chart-card-sub">Haz clic en una barra para ver el perfil detallado · Los 60 eurodiputados españoles</div>
-      <div class="chart-wrap" style="height:900px"><canvas id="c-meps"></canvas></div>
-    </div>
-
-    <div id="mep-detail" hidden>
-      <div id="mep-detail-hdr"></div>
-      <div class="grid-2">
-        <div class="chart-card">
-          <div class="chart-card-title">Reuniones por sector</div>
-          <div class="chart-card-sub" id="mep-sector-sub"></div>
-          <div class="chart-wrap chart-wrap-md"><canvas id="c-mep-sector"></canvas></div>
+      <!-- MEP detail (shown when a MEP is selected) -->
+      <div id="mep-detail" hidden>
+        <button class="btn-back" onclick="clearMepDetail()">← Volver al ranking</button>
+        <div id="mep-detail-hdr"></div>
+        <div class="grid-2">
+          <div class="chart-card">
+            <div class="chart-card-title">Reuniones por sector</div>
+            <div class="chart-card-sub" id="mep-sector-sub"></div>
+            <div class="chart-wrap chart-wrap-md"><canvas id="c-mep-sector"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Evolución por año</div>
+            <div class="chart-card-sub" id="mep-year-sub"></div>
+            <div class="chart-wrap chart-wrap-md"><canvas id="c-mep-year"></canvas></div>
+          </div>
         </div>
         <div class="chart-card">
-          <div class="chart-card-title">Evolución por año</div>
-          <div class="chart-card-sub" id="mep-year-sub"></div>
-          <div class="chart-wrap chart-wrap-md"><canvas id="c-mep-year"></canvas></div>
+          <div class="chart-card-title">Organizaciones más frecuentes</div>
+          <div class="chart-card-sub">Top 10 entidades con las que se ha reunido</div>
+          <div id="mep-org-list" class="org-list" style="margin-top:.5rem"></div>
+          <button class="btn-sm" id="mep-ver-reuniones" style="margin-top:1rem">Ver todas las reuniones →</button>
         </div>
       </div>
-      <div class="chart-card">
-        <div class="chart-card-title">Organizaciones más frecuentes</div>
-        <div class="chart-card-sub">Top 10 entidades con las que se ha reunido</div>
-        <div id="mep-org-list" class="org-list" style="margin-top:.5rem"></div>
-        <button class="btn-sm" id="mep-ver-reuniones" style="margin-top:1rem">Ver todas las reuniones →</button>
+
+      <!-- Global bar chart -->
+      <div id="an-mep-overview">
+        <div class="chart-card">
+          <div class="chart-card-title">Eurodiputados más activos</div>
+          <div class="chart-card-sub">Haz clic en una barra para ver el perfil detallado · Los 60 eurodiputados españoles</div>
+          <div class="chart-wrap" id="c-meps-wrap"><canvas id="c-meps"></canvas></div>
+        </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -379,20 +455,10 @@ const C = { // Sector colors [bg, text]
   'Administración pública':      ['rgba(37,99,235,.14)',   '#bfdbfe'],
 };
 
-const PARTY_COLORS = {
-  'PP':    ['rgba(29,78,216,.6)',   '#1d4ed8'],
-  'PSOE':  ['rgba(185,28,28,.6)',   '#b91c1c'],
-  'VOX':   ['rgba(21,128,61,.6)',   '#15803d'],
-  'PODE':  ['rgba(109,40,217,.6)', '#6d28d9'],
-  'Sumar': ['rgba(109,40,217,.6)', '#6d28d9'],
-  'ERC':   ['rgba(161,98,7,.6)',    '#a16207'],
-  'PNV':   ['rgba(5,150,105,.6)',   '#059669'],
-  'BNG':   ['rgba(124,58,237,.6)', '#7c3aed'],
-};
-
 // ── State ────────────────────────────────────────────────────
 let db = null, page = 0, timer = null;
-let sectorInit = false, mepInit = false;
+let analisisInit = false;
+let anSuggData = null;
 const charts = {};
 
 // ── Chart defaults ───────────────────────────────────────────
@@ -431,15 +497,22 @@ function mkChart(id, config) {
   }
 })();
 
-// ── Tabs ─────────────────────────────────────────────────────
+// ── Main tabs ────────────────────────────────────────────────
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
   document.querySelectorAll('[id^="panel-"]').forEach(p => p.hidden = p.id !== 'panel-' + name);
   window.scrollTo(0, 0);
-  if (name === 'sector' && !sectorInit && db) { renderSectorTab(); sectorInit = true; }
-  if (name === 'mep'    && !mepInit    && db) { renderMepTab();    mepInit    = true; }
+  if (name === 'analisis' && !analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
 }
 document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+// ── Analysis sub-tabs (Sectores / Eurodiputados) ─────────────
+function switchAnTab(name) {
+  document.querySelectorAll('.an-btn').forEach(b => b.classList.toggle('on', b.dataset.an === name));
+  document.getElementById('an-sectors').hidden = name !== 'sectors';
+  document.getElementById('an-meps').hidden    = name !== 'meps';
+}
+document.querySelectorAll('.an-btn').forEach(b => b.addEventListener('click', () => switchAnTab(b.dataset.an)));
 
 // ── Stats bar ────────────────────────────────────────────────
 function initStats() {
@@ -476,7 +549,7 @@ function populate(id, sql, m) {
   });
 }
 
-// ── Search ───────────────────────────────────────────────────
+// ── Search (tab 1) ───────────────────────────────────────────
 function run(p = 0) {
   if (!db) return;
   page = p;
@@ -545,15 +618,21 @@ function clearAll() {
   run(0);
 }
 
-// ── Search events ────────────────────────────────────────────
 document.getElementById('q').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(()=>run(0), 280); });
 ['f-sector','f-mep','f-partido','f-tipo'].forEach(id => document.getElementById(id).addEventListener('change', ()=>run(0)));
 
 // ══════════════════════════════════════════════════════════════
-// SECTOR TAB
+// ANÁLISIS TAB — main init
 // ══════════════════════════════════════════════════════════════
-function renderSectorTab() {
-  // KPIs
+function renderAnalisisTab() {
+  renderSectorsView();
+  renderMepsView();
+}
+
+// ══════════════════════════════════════════════════════════════
+// SECTOR VIEW
+// ══════════════════════════════════════════════════════════════
+function renderSectorsView() {
   const sectorData = db.exec("SELECT sector, COUNT(*) n FROM reuniones WHERE sector IS NOT NULL AND sector!='' GROUP BY sector ORDER BY n DESC")[0]?.values ?? [];
   const totalR   = db.exec('SELECT COUNT(*) FROM reuniones')[0]?.values[0][0] ?? 1;
   const grupal   = db.exec("SELECT COUNT(*) FROM reuniones WHERE tipo_reunion='Grupal'")[0]?.values[0][0] ?? 0;
@@ -566,7 +645,10 @@ function renderSectorTab() {
   document.getElementById('kpi-orgs').textContent          = fmt(orgs);
   document.getElementById('kpi-nsect').textContent         = sectorData.length;
 
-  // Bar chart: sectors
+  // Bar chart: dynamic height so ALL labels show
+  const barH = Math.max(420, sectorData.length * 32);
+  document.getElementById('c-sectors-wrap').style.height = barH + 'px';
+
   const labels  = sectorData.map(r=>r[0]);
   const counts  = sectorData.map(r=>r[1]);
   const bgC     = labels.map(s=>(C[s]||C['Otros'])[0]);
@@ -583,7 +665,7 @@ function renderSectorTab() {
       },
       scales: {
         x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8496c0' }, border: { color: 'rgba(255,255,255,0.05)' } },
-        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 12 } }, border: { display: false } }
+        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 12 }, autoSkip: false }, border: { display: false } }
       },
       onClick: (_, els) => { if (els.length) showSectorDetail(labels[els[0].index]); }
     }
@@ -602,16 +684,14 @@ function renderSectorTab() {
 }
 
 function showSectorDetail(sector) {
+  // Quick detail in the sidebar (right side of grid-2)
   document.getElementById('sector-detail-title').textContent = `Top organizaciones · ${sector}`;
   document.getElementById('sector-detail-sub').textContent   = 'Por frecuencia de aparición en reuniones';
-
-  // Get all actores for this sector and split by pipe
   const rows  = db.exec("SELECT actores FROM reuniones WHERE sector=? AND actores IS NOT NULL", [sector])[0]?.values ?? [];
   const count = {};
   rows.forEach(([a]) => a.split('|').forEach(x => { const k=x.trim(); if(k) count[k]=(count[k]||0)+1; }));
   const top = Object.entries(count).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const max = top[0]?.[1] || 1;
-
   document.getElementById('sector-detail-body').innerHTML = top.length
     ? `<div class="org-list">${top.map(([name,n],i)=>`
         <div class="org-item">
@@ -620,20 +700,76 @@ function showSectorDetail(sector) {
           <div class="org-bar-wrap"><div class="org-bar" style="width:${Math.round(n/max*100)}%"></div></div>
           <span class="org-count">${n}</span>
         </div>`).join('')}</div>
-      <button class="btn-sm" onclick="filterBySector('${esc(sector)}')" style="margin-top:1rem;font-size:.8rem">Ver reuniones en este sector →</button>`
+      <button class="btn-sm" onclick="goToSectorFull('${esc(sector)}')" style="margin-top:1rem;font-size:.8rem">Ver análisis completo →</button>`
     : `<div class="click-hint">Sin datos para este sector</div>`;
 }
 
-function filterBySector(sector) {
-  document.getElementById('f-sector').value = sector;
-  switchTab('search');
-  run(0);
+// Show full sector detail view (replaces bar chart area)
+function goToSectorFull(sector) {
+  const totalSect = db.exec("SELECT COUNT(*) FROM reuniones WHERE sector=?", [sector])[0]?.values[0][0] ?? 0;
+  document.getElementById('an-sect-detail-title').textContent  = sector;
+  document.getElementById('an-sect-detail-stats').textContent  = `${fmt(totalSect)} reuniones`;
+  document.getElementById('btn-ver-sector').onclick = () => {
+    document.getElementById('f-sector').value = sector;
+    switchTab('search');
+    run(0);
+  };
+
+  // Tipo donut for this sector
+  const tipos = db.exec("SELECT tipo_reunion, COUNT(*) FROM reuniones WHERE sector=? AND tipo_reunion IS NOT NULL GROUP BY tipo_reunion ORDER BY COUNT(*) DESC",[sector])[0]?.values ?? [];
+  document.getElementById('an-sect-tipo-sub').textContent = `${sector}`;
+  mkChart('c-sect-tipos', {
+    type: 'doughnut',
+    data: { labels: tipos.map(r=>r[0]), datasets: [{ data: tipos.map(r=>r[1]), backgroundColor: ['rgba(37,99,235,.65)','rgba(201,168,76,.65)','rgba(107,114,128,.5)'], borderColor: ['#2563eb','#c9a84c','#6b7280'], borderWidth: 1, hoverOffset: 6 }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'right', labels: { color: '#8496c0' } }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} (${Math.round(ctx.raw/totalSect*100)}%)` } } } }
+  });
+
+  // Top orgs
+  const rows = db.exec("SELECT actores FROM reuniones WHERE sector=? AND actores IS NOT NULL",[sector])[0]?.values ?? [];
+  const cnt = {};
+  rows.forEach(([a]) => a.split('|').forEach(x => { const k=x.trim(); if(k) cnt[k]=(cnt[k]||0)+1; }));
+  const top10 = Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const mx = top10[0]?.[1] || 1;
+  document.getElementById('an-sect-org-list').innerHTML = top10.map(([name,n],i)=>`
+    <div class="org-item">
+      <span class="org-rank">${i+1}</span>
+      <span class="org-name" title="${esc(name)}">${esc(name)}</span>
+      <div class="org-bar-wrap"><div class="org-bar" style="width:${Math.round(n/mx*100)}%"></div></div>
+      <span class="org-count">${n}</span>
+    </div>`).join('');
+
+  // Top MEPs for this sector
+  const mepSect = db.exec(`
+    SELECT m.nombre, COUNT(*) n FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
+    WHERE r.sector=? GROUP BY r.mep_id ORDER BY n DESC LIMIT 15
+  `, [sector])[0]?.values ?? [];
+  mkChart('c-sect-meps', {
+    type: 'bar',
+    data: { labels: mepSect.map(r=>r[0]), datasets: [{ data: mepSect.map(r=>r[1]), backgroundColor: 'rgba(37,99,235,.5)', borderColor: '#2563eb', borderWidth: 1, borderRadius: 4 }] },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} reuniones` } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8496c0' }, border: { display: false } },
+        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 12 }, autoSkip: false }, border: { display: false } }
+      }
+    }
+  });
+
+  document.getElementById('an-sect-overview').hidden = true;
+  document.getElementById('an-sect-detail').hidden   = false;
+  document.getElementById('an-sect-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearAnSectorDetail() {
+  document.getElementById('an-sect-detail').hidden   = true;
+  document.getElementById('an-sect-overview').hidden = false;
 }
 
 // ══════════════════════════════════════════════════════════════
-// MEP TAB
+// MEP VIEW
 // ══════════════════════════════════════════════════════════════
-function renderMepTab() {
+function renderMepsView() {
   const mepData = db.exec(`
     SELECT r.mep_id, m.nombre, m.partido_nacional, m.grupo_politico, COUNT(*) n
     FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
@@ -642,12 +778,10 @@ function renderMepTab() {
 
   const totalR = db.exec('SELECT COUNT(*) FROM reuniones')[0]?.values[0][0] ?? 1;
 
-  // KPIs
   const topMep = mepData[0];
   document.getElementById('kpi-top-mep').textContent   = topMep ? shortName(topMep[1]) : '—';
   document.getElementById('kpi-top-mep-n').textContent = topMep ? `${topMep[4]} reuniones` : '';
 
-  // Most active party
   const pData = db.exec(`SELECT m.partido_nacional, COUNT(*) n FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id WHERE m.partido_nacional IS NOT NULL GROUP BY m.partido_nacional ORDER BY n DESC LIMIT 1`)[0]?.values[0];
   document.getElementById('kpi-top-partido').textContent   = pData ? shortParty(pData[0]) : '—';
   document.getElementById('kpi-top-partido-n').textContent = pData ? `${fmt(pData[1])} reuniones` : '';
@@ -655,22 +789,22 @@ function renderMepTab() {
   const avg = Math.round(totalR / Math.max(mepData.length, 1));
   document.getElementById('kpi-avg').textContent = fmt(avg);
 
-  // Most active group
   const gData = db.exec(`SELECT m.grupo_politico, COUNT(*) n FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id WHERE m.grupo_politico IS NOT NULL GROUP BY m.grupo_politico ORDER BY n DESC LIMIT 1`)[0]?.values[0];
   document.getElementById('kpi-top-grupo').textContent   = gData ? shortGroup(gData[0]) : '—';
   document.getElementById('kpi-top-grupo-n').textContent = gData ? `${fmt(gData[1])} reuniones` : '';
 
-  // Horizontal bar chart: all MEPs
+  // Dynamic height — all 60 MEPs visible
+  const barH = Math.max(500, mepData.length * 22);
+  document.getElementById('c-meps-wrap').style.height = barH + 'px';
+
   const mepIds  = mepData.map(r=>r[0]);
   const labels  = mepData.map(r=>r[1]);
   const counts  = mepData.map(r=>r[4]);
   const parties = mepData.map(r=>r[2]);
-  const bgC     = parties.map(p=>partyBg(p));
-  const bdC     = parties.map(p=>partyBorder(p));
 
   mkChart('c-meps', {
     type: 'bar',
-    data: { labels, datasets: [{ data: counts, backgroundColor: bgC, borderColor: bdC, borderWidth: 1, borderRadius: 3 }] },
+    data: { labels, datasets: [{ data: counts, backgroundColor: parties.map(p=>partyBg(p)), borderColor: parties.map(p=>partyBorder(p)), borderWidth: 1, borderRadius: 3 }] },
     options: {
       indexAxis: 'y', responsive: true, maintainAspectRatio: false,
       plugins: {
@@ -679,7 +813,7 @@ function renderMepTab() {
       },
       scales: {
         x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8496c0' }, border: { color: 'rgba(255,255,255,0.05)' } },
-        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 11 } }, border: { display: false } }
+        y: { grid: { display: false }, ticks: { color: '#eef2ff', font: { size: 11 }, autoSkip: false }, border: { display: false } }
       },
       onClick: (_, els) => { if (els.length) showMepDetail(mepIds[els[0].index]); }
     }
@@ -693,7 +827,6 @@ function showMepDetail(mepId) {
   const total = db.exec('SELECT COUNT(*) FROM reuniones WHERE mep_id=?',[mepId])[0]?.values[0][0] ?? 0;
   const topSect = db.exec("SELECT sector, COUNT(*) n FROM reuniones WHERE mep_id=? AND sector IS NOT NULL AND sector!='' GROUP BY sector ORDER BY n DESC LIMIT 1",[mepId])[0]?.values[0];
 
-  // Header
   const ph = foto ? `<img class="mep-detail-photo" src="${esc(foto)}" alt="" onerror="this.style.display='none'">` : '';
   const pc = partyBg(partido);
   const bc = partyBorder(partido);
@@ -717,7 +850,6 @@ function showMepDetail(mepId) {
   document.getElementById('mep-sector-sub').textContent = `Distribución de las ${fmt(total)} reuniones por sector`;
   document.getElementById('mep-year-sub').textContent   = `Número de reuniones registradas por año`;
 
-  // Sector donut
   const sects = db.exec("SELECT sector, COUNT(*) n FROM reuniones WHERE mep_id=? AND sector IS NOT NULL AND sector!='' GROUP BY sector ORDER BY n DESC",[mepId])[0]?.values ?? [];
   mkChart('c-mep-sector', {
     type: 'doughnut',
@@ -728,7 +860,6 @@ function showMepDetail(mepId) {
     options: { responsive: true, maintainAspectRatio: false, cutout: '58%', plugins: { legend: { position: 'right', labels: { color: '#8496c0', font: { size: 11 }, padding: 10 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} (${Math.round(ctx.raw/total*100)}%)` } } } }
   });
 
-  // Year bar
   const years = db.exec("SELECT substr(fecha,1,4) yr, COUNT(*) n FROM reuniones WHERE mep_id=? AND fecha IS NOT NULL GROUP BY yr ORDER BY yr",[mepId])[0]?.values ?? [];
   mkChart('c-mep-year', {
     type: 'bar',
@@ -736,7 +867,6 @@ function showMepDetail(mepId) {
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} reuniones` } } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8496c0' }, border: { display: false } }, x: { grid: { display: false }, ticks: { color: '#8496c0' }, border: { display: false } } } }
   });
 
-  // Top orgs
   const rows = db.exec("SELECT actores FROM reuniones WHERE mep_id=? AND actores IS NOT NULL",[mepId])[0]?.values ?? [];
   const cnt = {};
   rows.forEach(([a]) => a.split('|').forEach(x => { const k=x.trim(); if(k) cnt[k]=(cnt[k]||0)+1; }));
@@ -750,15 +880,89 @@ function showMepDetail(mepId) {
       <span class="org-count">${n}</span>
     </div>`).join('');
 
-  // Button: ver reuniones
   document.getElementById('mep-ver-reuniones').onclick = () => {
     document.getElementById('f-mep').value = mepId;
     switchTab('search');
     run(0);
   };
 
+  document.getElementById('an-mep-overview').hidden = true;
   document.getElementById('mep-detail').hidden = false;
-  setTimeout(() => document.getElementById('mep-detail').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  document.getElementById('mep-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearMepDetail() {
+  document.getElementById('mep-detail').hidden     = true;
+  document.getElementById('an-mep-overview').hidden = false;
+}
+
+// ══════════════════════════════════════════════════════════════
+// ANALYSIS SEARCH / AUTOCOMPLETE
+// ══════════════════════════════════════════════════════════════
+function initAnSuggData() {
+  if (anSuggData || !db) return;
+  const sectors = (db.exec("SELECT DISTINCT sector FROM reuniones WHERE sector IS NOT NULL AND sector!='' ORDER BY sector")[0]?.values ?? [])
+    .map(r => ({ type: 'sector', label: r[0] }));
+  const meps = (db.exec("SELECT mep_id, nombre FROM meps ORDER BY nombre")[0]?.values ?? [])
+    .map(r => ({ type: 'mep', label: r[1], id: r[0] }));
+  anSuggData = { sectors, meps };
+}
+
+document.getElementById('an-q').addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  const box = document.getElementById('an-sugg');
+  if (!q) { box.hidden = true; return; }
+  initAnSuggData();
+  const matchM = anSuggData.meps.filter(m => m.label.toLowerCase().includes(q)).slice(0, 7);
+  const matchS = anSuggData.sectors.filter(s => s.label.toLowerCase().includes(q)).slice(0, 6);
+  if (!matchM.length && !matchS.length) { box.hidden = true; return; }
+  let html = '';
+  if (matchM.length) {
+    html += `<div class="an-sugg-group">Eurodiputados</div>`;
+    html += matchM.map(m => `<div class="an-sugg-item" onclick="selectAnMep(${m.id})">
+      <span class="an-sugg-tag" style="background:${partyBg('')};color:#94a3b8">MEP</span>
+      ${esc(m.label)}
+    </div>`).join('');
+  }
+  if (matchS.length) {
+    html += `<div class="an-sugg-group">Sectores</div>`;
+    html += matchS.map(s => `<div class="an-sugg-item" onclick="selectAnSector('${esc(s.label).replace(/'/g,"\\'")}')">
+      <span class="an-sugg-tag" style="background:${(C[s.label]||C['Otros'])[0]};color:${(C[s.label]||C['Otros'])[1]}">${esc(s.label)}</span>
+    </div>`).join('');
+  }
+  box.innerHTML = html;
+  box.hidden = false;
+});
+
+function selectAnMep(mepId) {
+  document.getElementById('an-q').value = '';
+  document.getElementById('an-sugg').hidden = true;
+  // Make sure analisis tab is init
+  if (!analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
+  switchAnTab('meps');
+  showMepDetail(mepId);
+}
+
+function selectAnSector(sector) {
+  document.getElementById('an-q').value = '';
+  document.getElementById('an-sugg').hidden = true;
+  if (!analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
+  switchAnTab('sectors');
+  goToSectorFull(sector);
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('#an-srch-wrap')) {
+    document.getElementById('an-sugg').hidden = true;
+  }
+});
+
+// Cross-tab navigation from search tab
+function filterBySector(sector) {
+  document.getElementById('f-sector').value = sector;
+  switchTab('search');
+  run(0);
 }
 
 // ── Helpers ──────────────────────────────────────────────────
