@@ -68,6 +68,7 @@
       border-radius:4px;
     }
     .skel-num{display:inline-block;height:32px;width:60px;vertical-align:middle}
+    .skel-kpi{display:inline-block;height:1.6rem;width:48px;vertical-align:middle;border-radius:4px;background:linear-gradient(90deg,#e8edf2 25%,#f4f7fa 50%,#e8edf2 75%);background-size:200% 100%;animation:shimmer 1.6s linear infinite}
     .skel-line{height:13px;width:100%}
     .skel-line.w30{width:30%}.skel-line.w40{width:40%}.skel-line.w60{width:60%}.skel-line.w70{width:70%}.skel-line.w80{width:80%}.skel-line.w90{width:90%}
     .skel-row td{padding:.9rem 1rem}.skel-row .skel-line{margin:3px 0}
@@ -81,6 +82,7 @@
     /* Header */
     .hdr{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--b);height:60px;padding:0 1.75rem;display:flex;align-items:center;justify-content:space-between}
     .logo{display:flex;align-items:center;gap:.85rem}
+    .logo:hover{opacity:.8}.logo:active{opacity:.65}
     .logo-divider{width:1px;height:28px;background:var(--b)}
     .logo-flag{font-size:1.45rem;line-height:1;flex-shrink:0}
     .logo-text{display:flex;flex-direction:column;gap:.05rem}
@@ -763,10 +765,10 @@
 
       <!-- KPIs -->
       <div class="kpi-grid">
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-sector-label">Ámbito más activo</div><div class="kpi-val" id="kpi-top-sector">—</div><div class="kpi-sub" id="kpi-top-sector-n"></div></div>
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-grupal-label">Reuniones grupales</div><div class="kpi-val" id="kpi-grupal-pct">—</div><div class="kpi-sub" data-i18n="kpi-of-total">del total</div></div>
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-orgs-label">Organizaciones únicas</div><div class="kpi-val" id="kpi-orgs">—</div><div class="kpi-sub" data-i18n="kpi-in-db">en la base de datos</div></div>
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-nsect-label">Ámbitos distintos</div><div class="kpi-val" id="kpi-nsect">—</div><div class="kpi-sub" data-i18n="kpi-identified">identificados</div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-sector-label">Ámbito más activo</div><div class="kpi-val" id="kpi-top-sector"><span class="skel-kpi"></span></div><div class="kpi-sub" id="kpi-top-sector-n"></div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-grupal-label">Reuniones grupales</div><div class="kpi-val" id="kpi-grupal-pct"><span class="skel-kpi"></span></div><div class="kpi-sub" data-i18n="kpi-of-total">del total</div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-orgs-label">Organizaciones únicas</div><div class="kpi-val" id="kpi-orgs"><span class="skel-kpi"></span></div><div class="kpi-sub" data-i18n="kpi-in-db">en la base de datos</div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-nsect-label">Ámbitos distintos</div><div class="kpi-val" id="kpi-nsect"><span class="skel-kpi"></span></div><div class="kpi-sub" data-i18n="kpi-identified">identificados</div></div>
       </div>
 
       <!-- Sector detail (shown when a sector is selected) -->
@@ -828,10 +830,10 @@
 
       <!-- KPIs -->
       <div class="kpi-grid">
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-mep-label">MEP más activo</div><div class="kpi-val" id="kpi-top-mep">—</div><div class="kpi-sub" id="kpi-top-mep-n"></div></div>
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-party-label">Partido más activo</div><div class="kpi-val" id="kpi-top-partido">—</div><div class="kpi-sub" id="kpi-top-partido-n"></div></div>
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-avg-mep-label">Media por MEP</div><div class="kpi-val" id="kpi-avg">—</div><div class="kpi-sub" data-i18n="meetings">reuniones</div></div>
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-group-label">Grupo más activo</div><div class="kpi-val" id="kpi-top-grupo">—</div><div class="kpi-sub" id="kpi-top-grupo-n"></div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-mep-label">MEP más activo</div><div class="kpi-val" id="kpi-top-mep"><span class="skel-kpi"></span></div><div class="kpi-sub" id="kpi-top-mep-n"></div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-party-label">Partido más activo</div><div class="kpi-val" id="kpi-top-partido"><span class="skel-kpi"></span></div><div class="kpi-sub" id="kpi-top-partido-n"></div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-avg-mep-label">Media por MEP</div><div class="kpi-val" id="kpi-avg"><span class="skel-kpi"></span></div><div class="kpi-sub" data-i18n="meetings">reuniones</div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-group-label">Grupo más activo</div><div class="kpi-val" id="kpi-top-grupo"><span class="skel-kpi"></span></div><div class="kpi-sub" id="kpi-top-grupo-n"></div></div>
       </div>
 
       <!-- MEP detail (shown when a MEP is selected) -->
@@ -873,10 +875,10 @@
 
       <!-- KPIs -->
       <div class="kpi-grid">
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-party-label">Partido más activo</div><div class="kpi-val" id="kpi-p-top">—</div><div class="kpi-sub" id="kpi-p-top-n"></div></div>
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-parties-count-label">Partidos representados</div><div class="kpi-val" id="kpi-p-count">—</div><div class="kpi-sub" data-i18n="kpi-in-ep">en el PE</div></div>
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-avg-party-label">Media por partido</div><div class="kpi-val" id="kpi-p-avg">—</div><div class="kpi-sub" data-i18n="meetings">reuniones</div></div>
-        <div class="kpi"><div class="kpi-label" data-i18n="kpi-leading-meps-label">MEPs del partido líder</div><div class="kpi-val" id="kpi-p-meps">—</div><div class="kpi-sub" id="kpi-p-meps-n"></div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-top-party-label">Partido más activo</div><div class="kpi-val" id="kpi-p-top"><span class="skel-kpi"></span></div><div class="kpi-sub" id="kpi-p-top-n"></div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-parties-count-label">Partidos representados</div><div class="kpi-val" id="kpi-p-count"><span class="skel-kpi"></span></div><div class="kpi-sub" data-i18n="kpi-in-ep">en el PE</div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-avg-party-label">Media por partido</div><div class="kpi-val" id="kpi-p-avg"><span class="skel-kpi"></span></div><div class="kpi-sub" data-i18n="meetings">reuniones</div></div>
+        <div class="kpi"><div class="kpi-label" data-i18n="kpi-leading-meps-label">MEPs del partido líder</div><div class="kpi-val" id="kpi-p-meps"><span class="skel-kpi"></span></div><div class="kpi-sub" id="kpi-p-meps-n"></div></div>
       </div>
 
       <!-- Partido detail (shown on click) -->
