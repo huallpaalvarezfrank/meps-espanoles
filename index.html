@@ -523,7 +523,7 @@
 <div id="panel-search">
   <section class="hero">
     <div class="hero-label fu" data-i18n="hero-label">Parlamento Europeo · Datos abiertos</div>
-    <h1 class="fu d1">Transparencia<br><em>parlamentaria europea</em></h1>
+    <h1 class="fu d1" data-i18n="hero-h1-main">Transparencia<br><em>parlamentaria europea</em></h1>
     <p class="hero-sub fu d2" data-i18n="hero-p">Descubre con quién se reúnen los 60 eurodiputados españoles</p>
     <div class="hero-ctas fu d3">
       <button class="btn-cta" onclick="document.getElementById('explore-anchor').scrollIntoView({behavior:'smooth',block:'start'})">
@@ -886,11 +886,11 @@
 <!-- ── Data status bar ── -->
 <div class="data-status-bar">
   <div class="ds-item">
-    <span class="ds-label">Última actualización</span>
+    <span class="ds-label" data-i18n="ds-last-update">Última actualización</span>
     <span class="ds-value" id="last-update-date">—</span>
   </div>
   <div class="ds-item">
-    <span class="ds-label">Próxima actualización</span>
+    <span class="ds-label" data-i18n="ds-next-update">Próxima actualización</span>
     <span class="ds-value ds-countdown" id="next-update-countdown">calculando…</span>
   </div>
 </div>
@@ -1126,6 +1126,10 @@ const LANG = {
     'pi-title':                  'Datos de fuente oficial del Parlamento Europeo',
     'pi-text':                   'Toda la información publicada en este portal proviene directamente del <strong>Registro de Transparencia del Parlamento Europeo</strong>. Los eurodiputados tienen la obligación legal de declarar sus reuniones con representantes de grupos de interés. Este portal no genera ni interpreta datos: únicamente los recopila, estructura y hace accesibles para periodistas, investigadores y ciudadanos.',
     'pi-link':                   'Ver portal oficial del Parlamento Europeo',
+    'hero-h1-main':              'Transparencia<br><em>parlamentaria europea</em>',
+    'ds-last-update':            'Última actualización',
+    'ds-next-update':            'Próxima actualización',
+    'calculating':               'calculando…',
   }
   ,en: {
     'loading':                   'Loading database…',
@@ -1273,6 +1277,10 @@ const LANG = {
     'pi-title':                  'Data from the official European Parliament source',
     'pi-text':                   'All information published on this portal comes directly from the <strong>European Parliament Transparency Register</strong>. MEPs are legally required to declare their meetings with interest group representatives. This portal does not generate or interpret data: it only collects, structures and makes it accessible to journalists, researchers and citizens.',
     'pi-link':                   'View official European Parliament portal',
+    'hero-h1-main':              'European<br><em>parliamentary transparency</em>',
+    'ds-last-update':            'Last update',
+    'ds-next-update':            'Next update',
+    'calculating':               'calculating…',
   }
   ,pt: {
     'loading':                   'Carregando base de dados…',
@@ -1420,6 +1428,10 @@ const LANG = {
     'pi-title':                  'Dados da fonte oficial do Parlamento Europeu',
     'pi-text':                   'Toda a informação publicada neste portal provém diretamente do <strong>Registo de Transparência do Parlamento Europeu</strong>. Os eurodeputados têm a obrigação legal de declarar as suas reuniões com representantes de grupos de interesse. Este portal não gera nem interpreta dados: apenas os recolhe, estrutura e disponibiliza para jornalistas, investigadores e cidadãos.',
     'pi-link':                   'Ver portal oficial do Parlamento Europeu',
+    'hero-h1-main':              'Transparência<br><em>parlamentar europeia</em>',
+    'ds-last-update':            'Última atualização',
+    'ds-next-update':            'Próxima atualização',
+    'calculating':               'calculando…',
   }
 };
 
@@ -1429,7 +1441,7 @@ function t(key) {
 
 function applyLang() {
   document.documentElement.lang = currentLang;
-  const HTML_KEYS = new Set(['hero-h1','footer-source','pi-text']);
+  const HTML_KEYS = new Set(['hero-h1','hero-h1-main','footer-source','pi-text']);
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     const val = t(key);
