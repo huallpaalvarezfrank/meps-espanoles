@@ -25,20 +25,20 @@ jobs:
           python -m playwright install-deps chromium
 
       - name: Scraping (EU.py)
-        run: python EU.py --headless
+        run: python etl/EU.py --headless
 
       - name: Clasificar reuniones nuevas (clasificar.py)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python -X utf8 clasificar.py
+        run: python -X utf8 etl/clasificar.py
 
       - name: Normalizar nombres (normalizar.py)
-        run: python -X utf8 normalizar.py
+        run: python -X utf8 etl/normalizar.py
 
       - name: Commit y push BD actualizada
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add meps_es_reuniones.db revisar.csv
+          git add meps_es_reuniones.db etl/revisar.csv
           git diff --staged --quiet || git commit -m "Actualización automática $(date +'%Y-%m-%d')"
           git push
