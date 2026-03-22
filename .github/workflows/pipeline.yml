@@ -8,6 +8,8 @@ on:
 jobs:
   actualizar:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # necesario para git push al repo
 
     steps:
       - name: Checkout repositorio
