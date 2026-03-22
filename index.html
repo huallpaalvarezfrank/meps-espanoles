@@ -702,35 +702,6 @@
 <div id="panel-analisis" hidden>
   <div class="analysis">
 
-    <!-- ─── Org detail (overlays sub-tabs) ─── -->
-    <div id="an-org-detail" hidden>
-      <nav class="breadcrumb" id="bc-org" aria-label="Ruta de navegación"><ol class="breadcrumb-list"></ol></nav>
-      <div class="mep-detail-hdr" id="org-detail-hdr"></div>
-      <div id="org-variants-bar" style="display:none;background:#fef9c3;border:1px solid #fde68a;border-radius:var(--rm);padding:.6rem 1rem;font-size:.82rem;color:#92400e;margin-bottom:1rem"></div>
-      <div class="grid-2">
-        <div class="chart-card">
-          <div class="chart-card-title" data-i18n="chart-meetings-by-sector">Reuniones por ámbito</div>
-          <div class="chart-card-sub" id="org-sector-sub"></div>
-          <div class="chart-wrap chart-wrap-md"><canvas id="c-org-sector"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title" data-i18n="chart-evolution-by-year">Evolución por año</div>
-          <div class="chart-card-sub" id="org-year-sub"></div>
-          <div class="chart-wrap chart-wrap-md"><canvas id="c-org-year"></canvas></div>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-card-title" data-i18n="org-top-meps">Eurodiputados que se han reunido</div>
-        <div class="chart-card-sub" data-i18n="org-top-meps-sub">Haz clic para ver su perfil</div>
-        <div id="org-mep-list" style="margin-top:.5rem"></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-card-title" data-i18n="org-recent-meetings">Reuniones recientes</div>
-        <div id="org-meeting-list" class="org-list" style="margin-top:.5rem"></div>
-        <button class="btn-sm" id="org-ver-reuniones" style="margin-top:1rem;background:var(--blue);color:#fff;border-color:var(--blue)" data-i18n="btn-ver-reuniones">Ver todas las reuniones →</button>
-      </div>
-    </div>
-
     <!-- Search bar -->
     <div class="an-srch-wrap" id="an-srch-wrap">
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -743,6 +714,7 @@
       <button class="an-btn on" data-an="meps" data-i18n="an-nav-meps">Por eurodiputado</button>
       <button class="an-btn" data-an="sectors" data-i18n="an-nav-sectors">Por ámbito</button>
       <button class="an-btn" data-an="partidos" data-i18n="an-nav-parties">Por partido</button>
+      <button class="an-btn" data-an="orgs" data-i18n="an-nav-orgs">Por organización</button>
     </div>
 
     <!-- ─── Sectores view ─── -->
@@ -905,6 +877,46 @@
           <div class="chart-card-title" data-i18n="chart-meetings-by-party">Reuniones por partido político</div>
           <div class="chart-card-sub" data-i18n="chart-click-bar-party">Haz clic en una barra para ver el detalle del partido</div>
           <div class="chart-wrap" id="c-partidos-wrap"><canvas id="c-partidos"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Organizaciones view ─── -->
+    <div id="an-orgs" hidden>
+      <!-- Overview: top 30 orgs -->
+      <div id="an-org-overview">
+        <div class="chart-card">
+          <div class="chart-card-title" data-i18n="org-overview-title">Organizaciones más activas</div>
+          <div class="chart-card-sub" data-i18n="org-overview-sub">Top 30 por número de reuniones · Haz clic para ver su ficha</div>
+          <div id="c-orgs-wrap" style="position:relative;height:900px"><canvas id="c-orgs"></canvas></div>
+        </div>
+      </div>
+      <!-- Detail: ficha de org -->
+      <div id="an-org-detail" hidden>
+        <nav class="breadcrumb" id="bc-org" aria-label="Ruta de navegación"><ol class="breadcrumb-list"></ol></nav>
+        <div class="mep-detail-hdr" id="org-detail-hdr"></div>
+        <div id="org-variants-bar" style="display:none;background:#fef9c3;border:1px solid #fde68a;border-radius:var(--rm);padding:.6rem 1rem;font-size:.82rem;color:#92400e;margin-bottom:1rem"></div>
+        <div class="grid-2">
+          <div class="chart-card">
+            <div class="chart-card-title" data-i18n="chart-meetings-by-sector">Reuniones por ámbito</div>
+            <div class="chart-card-sub" id="org-sector-sub"></div>
+            <div class="chart-wrap chart-wrap-md"><canvas id="c-org-sector"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title" data-i18n="chart-evolution-by-year">Evolución por año</div>
+            <div class="chart-card-sub" id="org-year-sub"></div>
+            <div class="chart-wrap chart-wrap-md"><canvas id="c-org-year"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title" data-i18n="org-top-meps">Eurodiputados que se han reunido</div>
+          <div class="chart-card-sub" data-i18n="org-top-meps-sub">Haz clic para ver su perfil</div>
+          <div id="org-mep-list" style="margin-top:.5rem"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title" data-i18n="org-recent-meetings">Reuniones recientes</div>
+          <div id="org-meeting-list" class="org-list" style="margin-top:.5rem"></div>
+          <button class="btn-sm" id="org-ver-reuniones" style="margin-top:1rem;background:var(--blue);color:#fff;border-color:var(--blue)" data-i18n="btn-ver-reuniones">Ver todas las reuniones →</button>
         </div>
       </div>
     </div>
@@ -1145,6 +1157,9 @@ const LANG = {
     'an-nav-meps':               'Por eurodiputado',
     'an-nav-sectors':            'Por ámbito',
     'an-nav-parties':            'Por partido',
+    'an-nav-orgs':               'Por organización',
+    'org-overview-title':        'Organizaciones más activas',
+    'org-overview-sub':          'Top 30 por número de reuniones · Haz clic para ver su ficha',
     'hm-title':                  'Mapa de intereses por partido',
     'hm-sub':                    'Cruza qué partidos se reúnen más con cada ámbito temático',
     'hm-abs':                    'Número absoluto',
@@ -1303,6 +1318,9 @@ const LANG = {
     'an-nav-meps':               'By MEP',
     'an-nav-sectors':            'By sector',
     'an-nav-parties':            'By party',
+    'an-nav-orgs':               'By organization',
+    'org-overview-title':        'Most active organizations',
+    'org-overview-sub':          'Top 30 by meeting count · Click to view profile',
     'hm-title':                  'Interest map by party',
     'hm-sub':                    'Cross which parties meet most with each thematic sector',
     'hm-abs':                    'Absolute number',
@@ -1461,6 +1479,9 @@ const LANG = {
     'an-nav-meps':               'Por eurodeputado',
     'an-nav-sectors':            'Por setor',
     'an-nav-parties':            'Por partido',
+    'an-nav-orgs':               'Por organização',
+    'org-overview-title':        'Organizações mais ativas',
+    'org-overview-sub':          'Top 30 por número de reuniões · Clique para ver o perfil',
     'hm-title':                  'Mapa de interesses por partido',
     'hm-sub':                    'Cruzar quais partidos se reúnem mais com cada setor temático',
     'hm-abs':                    'Número absoluto',
@@ -1796,6 +1817,7 @@ function switchAnTab(name) {
   document.getElementById('an-sectors').hidden  = name !== 'sectors';
   document.getElementById('an-meps').hidden     = name !== 'meps';
   document.getElementById('an-partidos').hidden = name !== 'partidos';
+  document.getElementById('an-orgs').hidden     = name !== 'orgs';
 }
 document.querySelectorAll('.an-btn').forEach(b => b.addEventListener('click', () => switchAnTab(b.dataset.an)));
 
@@ -2025,10 +2047,75 @@ window.addEventListener('popstate', () => {
 // ══════════════════════════════════════════════════════════════
 // ANÁLISIS TAB — main init
 // ══════════════════════════════════════════════════════════════
+function renderOrgsView() {
+  const allActores = db.exec('SELECT actores FROM reuniones WHERE actores IS NOT NULL')[0]?.values ?? [];
+  const cnt = {}, canonical = {};
+  allActores.forEach(([a]) => a.split('|').forEach(x => {
+    const raw = x.trim(); const k = raw.toLowerCase();
+    if (!raw) return;
+    cnt[k] = (cnt[k] || 0) + 1;
+    if (!canonical[k]) canonical[k] = raw;
+  }));
+  const top30 = Object.entries(cnt).sort((a,b) => b[1]-a[1]).slice(0,30)
+    .map(([k,n]) => [canonical[k], n]);
+
+  const wrap = document.getElementById('c-orgs-wrap');
+  const prevList = document.getElementById('org-mobile-list');
+  if (prevList) prevList.remove();
+
+  if (window.innerWidth < 640) {
+    const canvas = document.getElementById('c-orgs');
+    canvas.style.display = 'none';
+    wrap.style.height = 'auto';
+    const listDiv = document.createElement('div');
+    listDiv.id = 'org-mobile-list';
+    const maxN = top30[0]?.[1] || 1;
+    top30.forEach(([name, n], i) => {
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid #f0f0f0;cursor:pointer';
+      div.innerHTML = `
+        <span style="font-size:12px;color:#999;min-width:22px;text-align:right">${i+1}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:500;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px">${esc(name)}</div>
+          <div style="height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden">
+            <div style="height:100%;border-radius:3px;background:#003399;width:${(n/maxN*100).toFixed(1)}%"></div>
+          </div>
+        </div>
+        <span style="font-size:13px;font-weight:600;color:#003399;flex-shrink:0">${fmt(n)}</span>`;
+      div.addEventListener('click', () => showOrgDetail(name));
+      listDiv.appendChild(div);
+    });
+    wrap.parentElement.appendChild(listDiv);
+  } else {
+    const canvas = document.getElementById('c-orgs');
+    canvas.style.display = '';
+    wrap.style.height = Math.max(300, top30.length * 30) + 'px';
+    mkChart('c-orgs', {
+      type: 'bar',
+      data: {
+        labels: top30.map(r => r[0]),
+        datasets: [{ data: top30.map(r => r[1]),
+          backgroundColor: 'rgba(0,51,153,.45)', borderColor: '#003399', borderWidth: 1, borderRadius: 3 }]
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}` } } },
+        scales: {
+          x: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { color: '#94a3b8' }, border: { display: false } },
+          y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 11 }, autoSkip: false }, border: { display: false } }
+        },
+        onClick: (_, els) => { if (els.length) showOrgDetail(top30[els[0].index][0]); }
+      }
+    });
+  }
+}
+
 function renderAnalisisTab() {
   renderMepsView();
   renderSectorsView();
   renderPartidosView();
+  renderOrgsView();
   switchAnTab('meps');
 }
 
@@ -2599,19 +2686,11 @@ function clearPartidoDetail() {
 }
 
 // ── Org detail ────────────────────────────────────────────────
-let _prevAnTab = 'meps';
-
 function showOrgDetail(orgName, extraOrgs) {
-  // Track previous sub-tab for restoring on back
-  const activeBtn = document.querySelector('.an-btn.on');
-  if (activeBtn) _prevAnTab = activeBtn.dataset.an;
-
-  // Show org panel, hide rest of analysis
-  document.getElementById('an-org-detail').hidden = false;
-  document.getElementById('an-srch-wrap').hidden  = true;
-  document.querySelector('.an-subnav').hidden      = true;
-  ['an-sectors','an-meps','an-partidos'].forEach(id =>
-    document.getElementById(id).hidden = true);
+  // Activate orgs sub-tab and show detail within it
+  switchAnTab('orgs');
+  document.getElementById('an-org-overview').hidden = true;
+  document.getElementById('an-org-detail').hidden   = false;
 
   // Build list of all org names to query (main + variants)
   const allOrgs = extraOrgs ? [orgName, ...extraOrgs] : [orgName];
@@ -2790,11 +2869,8 @@ function showOrgDetail(orgName, extraOrgs) {
 }
 
 function clearOrgDetail() {
-  document.getElementById('an-org-detail').hidden = true;
-  document.getElementById('an-srch-wrap').hidden  = false;
-  document.querySelector('.an-subnav').hidden      = false;
-  ['an-sectors','an-meps','an-partidos'].forEach(id =>
-    document.getElementById(id).hidden = id !== 'an-' + _prevAnTab);
+  document.getElementById('an-org-detail').hidden   = true;
+  document.getElementById('an-org-overview').hidden = false;
 }
 
 function navigateToOrg(orgName) {
