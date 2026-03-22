@@ -2733,20 +2733,18 @@ function showOrgDetail(orgName, extraOrgs) {
 
   // Variants detection (only when not already expanded)
   if (!extraOrgs) {
-    const allActores = db.exec(
-      `SELECT DISTINCT actores FROM reuniones
-       WHERE LOWER(actores) LIKE LOWER('%'||?||'%') AND actores IS NOT NULL`, [orgName]
-    )[0]?.values ?? [];
-    const variants = new Set();
-    allActores.forEach(([a]) =>
-      a.split('|').forEach(x => {
-        const k = x.trim();
-        if (k && k.toLowerCase() !== orgName.toLowerCase()) variants.add(k);
-      })
+    const allRows = db.exec('SELECT actores FROM reuniones WHERE actores IS NOT NULL')[0]?.values ?? [];
+    const allActorNames = new Set();
+    allRows.forEach(([a]) =>
+      a.split('|').forEach(x => { const k = x.trim(); if (k) allActorNames.add(k); })
     );
+    const nl = orgName.toLowerCase();
+    const varList = [...allActorNames].filter(k => {
+      const kl = k.toLowerCase();
+      return kl !== nl && (kl.includes(nl) || nl.includes(kl));
+    }).slice(0, 5);
     const vBar = document.getElementById('org-variants-bar');
-    if (variants.size > 0) {
-      const varList = [...variants].slice(0, 5);
+    if (varList.length > 0) {
       vBar.style.display = '';
       vBar.innerHTML = `<strong>${t('org-variants')}</strong> ${varList.map(v => `<em>${esc(v)}</em>`).join(', ')}
         <button onclick="showOrgDetail('${orgName.replace(/'/g,"\\'")}', ${JSON.stringify(varList)})"
