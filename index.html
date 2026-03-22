@@ -100,7 +100,7 @@
     td[onclick]:hover{background:rgba(0,51,153,.04)}
     .btn-apoya-footer{display:inline-flex;align-items:center;font-size:.75rem;color:var(--t2);background:transparent;border:1px solid var(--bh);border-radius:var(--rm);padding:.35rem .85rem;text-decoration:none;transition:border-color .18s,color .18s;white-space:nowrap;min-height:44px;cursor:pointer}
     .btn-apoya-footer:hover{border-color:var(--bh);color:var(--t)}
-    @media(max-width:640px){.btn-apoya-footer{width:100%;justify-content:center;margin-bottom:.25rem}}
+    @media(max-width:640px){.btn-apoya-footer{align-self:flex-start}}
     .footer-gh-link{color:var(--t3);text-decoration:none;display:flex;align-items:center;gap:.35rem}
     .footer-gh-link:hover{color:#003399}
     /* Modal apoya */
@@ -296,9 +296,12 @@
     /* (overrides inline style below) */
 
     /* Footer */
-    footer{max-width:1200px;margin:2rem auto 0;padding:1.5rem 1.5rem 2rem;border-top:1px solid var(--b);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-size:.78rem;color:var(--t3)}
+    footer{max-width:1200px;margin:2rem auto 0;padding:1.5rem 1.5rem 2rem;border-top:1px solid var(--b);display:flex;flex-direction:column;gap:.6rem;font-size:.78rem;color:var(--t3)}
     footer a{color:var(--t2)}
     footer a:hover{color:var(--t)}
+    .footer-row1{display:flex;align-items:center;justify-content:space-between;width:100%;gap:.75rem;flex-wrap:wrap}
+    .footer-row2{display:flex;align-items:center;justify-content:center;gap:1.25rem;width:100%;font-size:.7rem;opacity:.75;flex-wrap:wrap}
+    @media(max-width:640px){.footer-row1{flex-direction:column;align-items:flex-start}.footer-row2{justify-content:flex-start}}
 
     /* ── Data status bar ── */
     .data-status-bar{max-width:1200px;margin:0 auto;padding:.9rem 1.5rem;display:flex;align-items:center;gap:0;flex-wrap:wrap;border-top:1px solid var(--b)}
@@ -1042,14 +1045,18 @@
 </section>
 </main>
 
-<footer style="max-width:1200px;margin:0 auto;padding:1.25rem 1.5rem 2rem;border-top:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-size:.75rem;color:var(--t3)">
-  <button onclick="openApoyaModal()" class="btn-apoya-footer" aria-label="Apoya Eurodiputómetro" data-i18n="btn-apoya">Apoya el proyecto</button>
-  <span style="font-size:.7rem;opacity:.75">Este sitio usa Google Fonts (dato externo). <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style="color:inherit">Sin cookies propias.</a></span>
-  <span>© 2026 Frank Huallpa Alvarez · <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer" title="Licencia Creative Commons BY-NC 4.0" style="color:inherit;text-decoration:none">CC BY-NC 4.0</a></span>
-<a href="https://github.com/huallpaalvarezfrank/meps-espanoles" target="_blank" rel="noopener noreferrer" class="footer-gh-link">
-    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-    <span data-i18n="footer-github">Eurodiputómetro en GitHub</span>
-  </a>
+<footer>
+  <div class="footer-row1">
+    <span>© 2026 Frank Huallpa Alvarez · <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer" title="Licencia Creative Commons BY-NC 4.0">CC BY-NC 4.0</a></span>
+    <button onclick="openApoyaModal()" class="btn-apoya-footer" aria-label="Apoya Eurodiputómetro" data-i18n="btn-apoya">Apoya el proyecto</button>
+  </div>
+  <div class="footer-row2">
+    <a href="https://github.com/huallpaalvarezfrank/meps-espanoles" target="_blank" rel="noopener noreferrer" class="footer-gh-link">
+      <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      <span data-i18n="footer-github">Eurodiputómetro en GitHub</span>
+    </a>
+    <span>Este sitio usa Google Fonts (dato externo). <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style="color:inherit">Sin cookies propias.</a></span>
+  </div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
