@@ -702,6 +702,35 @@
 <div id="panel-analisis" hidden>
   <div class="analysis">
 
+    <!-- ─── Org detail (overlays sub-tabs) ─── -->
+    <div id="an-org-detail" hidden>
+      <nav class="breadcrumb" id="bc-org" aria-label="Ruta de navegación"><ol class="breadcrumb-list"></ol></nav>
+      <div class="mep-detail-hdr" id="org-detail-hdr"></div>
+      <div id="org-variants-bar" style="display:none;background:#fef9c3;border:1px solid #fde68a;border-radius:var(--rm);padding:.6rem 1rem;font-size:.82rem;color:#92400e;margin-bottom:1rem"></div>
+      <div class="grid-2">
+        <div class="chart-card">
+          <div class="chart-card-title" data-i18n="chart-meetings-by-sector">Reuniones por ámbito</div>
+          <div class="chart-card-sub" id="org-sector-sub"></div>
+          <div class="chart-wrap chart-wrap-md"><canvas id="c-org-sector"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title" data-i18n="chart-evolution-by-year">Evolución por año</div>
+          <div class="chart-card-sub" id="org-year-sub"></div>
+          <div class="chart-wrap chart-wrap-md"><canvas id="c-org-year"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title" data-i18n="org-top-meps">Eurodiputados que se han reunido</div>
+        <div class="chart-card-sub" data-i18n="org-top-meps-sub">Haz clic para ver su perfil</div>
+        <div id="org-mep-list" style="margin-top:.5rem"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title" data-i18n="org-recent-meetings">Reuniones recientes</div>
+        <div id="org-meeting-list" class="org-list" style="margin-top:.5rem"></div>
+        <button class="btn-sm" id="org-ver-reuniones" style="margin-top:1rem;background:var(--blue);color:#fff;border-color:var(--blue)" data-i18n="btn-ver-reuniones">Ver todas las reuniones →</button>
+      </div>
+    </div>
+
     <!-- Search bar -->
     <div class="an-srch-wrap" id="an-srch-wrap">
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -1129,6 +1158,14 @@ const LANG = {
     'calculating':               'calculando…',
     'nav-about':                 'Sobre mí',
     'logo-tag':                  'MEPs España',
+    'org-top-meps':              'Eurodiputados que se han reunido',
+    'org-top-meps-sub':          'Haz clic para ver su perfil',
+    'org-recent-meetings':       'Reuniones recientes',
+    'org-distinct-meps':         'MEPs distintos',
+    'org-distinct-parties':      'Partidos',
+    'org-variants':              'También encontrado como:',
+    'org-expand':                'Ampliar búsqueda',
+    'bc-orgs':                   'Organizaciones',
   }
   ,en: {
     'loading':                   'Loading database…',
@@ -1279,6 +1316,14 @@ const LANG = {
     'calculating':               'calculating…',
     'nav-about':                 'About me',
     'logo-tag':                  'Spanish MEPs',
+    'org-top-meps':              'MEPs who met with this org',
+    'org-top-meps-sub':          'Click to view their profile',
+    'org-recent-meetings':       'Recent meetings',
+    'org-distinct-meps':         'Distinct MEPs',
+    'org-distinct-parties':      'Parties',
+    'org-variants':              'Also found as:',
+    'org-expand':                'Expand search',
+    'bc-orgs':                   'Organizations',
   }
   ,pt: {
     'loading':                   'Carregando base de dados…',
@@ -1429,6 +1474,14 @@ const LANG = {
     'calculating':               'calculando…',
     'nav-about':                 'Sobre mim',
     'logo-tag':                  'MEPs Espanha',
+    'org-top-meps':              'Eurodeputados que se reuniram',
+    'org-top-meps-sub':          'Clique para ver o perfil',
+    'org-recent-meetings':       'Reuniões recentes',
+    'org-distinct-meps':         'Eurodeputados distintos',
+    'org-distinct-parties':      'Partidos',
+    'org-variants':              'Também encontrado como:',
+    'org-expand':                'Expandir pesquisa',
+    'bc-orgs':                   'Organizações',
   }
 };
 
@@ -1558,7 +1611,9 @@ function setBreadcrumb(navId, crumbs) {
 // ── Mobile card renderer ──────────────────────────────────────
 function mobileCardHtml([fecha,titulo,actores,sector,tipo,nombre,partido,grupo,foto,mepId]) {
   const d = fecha ? fecha.slice(0,10).split('-').reverse().join('/') : '—';
-  const orgs = actores ? actores.split('|').slice(0,2).map(a=>a.trim()).join(', ') : (titulo||'—');
+  const orgTags = actores
+    ? actores.split('|').slice(0,2).map(a=>{const k=a.trim();return `<span style="cursor:pointer;color:var(--blue);text-decoration:underline" onclick="navigateToOrg(this.dataset.org)" data-org="${esc(k)}">${esc(k)}</span>`;}).join(', ')
+    : `<span>${esc(titulo||'—')}</span>`;
   const tipTag = tipo==='Grupal'
     ? `<span class="mobile-tag mobile-tag-grupal">${t('tipo-grupal')}</span>`
     : `<span class="mobile-tag">${t('tipo-individual')}</span>`;
@@ -1569,7 +1624,7 @@ function mobileCardHtml([fecha,titulo,actores,sector,tipo,nombre,partido,grupo,f
       <span class="mobile-card-mep" ${mepClick}>${esc(nombre||'—')}</span>
       <span class="mobile-card-date">${d}</span>
     </div>
-    <div class="mobile-card-org">${esc(orgs)}</div>
+    <div class="mobile-card-org">${orgTags}</div>
     <div>${tipTag}${secTag}</div>
   </div>`;
 }
@@ -1876,7 +1931,7 @@ function rowHtml([fecha,titulo,actores,sector,tipo,nombre,partido,grupo,foto,mep
 function actorBadges(a) {
   if (!a) return `<span style="color:var(--t3)">—</span>`;
   const p = a.split('|');
-  return p.slice(0,3).map(x=>`<span class="actor" title="${esc(x.trim())}">${esc(x.trim())}</span>`).join('')
+  return p.slice(0,3).map(x=>`<span class="actor" style="cursor:pointer" title="${esc(x.trim())}" onclick="navigateToOrg(this.dataset.org)" data-org="${esc(x.trim())}">${esc(x.trim())}</span>`).join('')
     + (p.length>3 ? `<span class="actor actor-more">+${p.length-3}</span>` : '');
 }
 function sectorBadge(s) {
@@ -1954,7 +2009,9 @@ document.querySelectorAll('.tlr-btn').forEach(btn => {
 
 // ── Browser back button ───────────────────────────────────────
 window.addEventListener('popstate', () => {
-  if (!document.getElementById('an-sect-detail').hidden) {
+  if (!document.getElementById('an-org-detail').hidden) {
+    clearOrgDetail();
+  } else if (!document.getElementById('an-sect-detail').hidden) {
     clearAnSectorDetail();
   } else if (!document.getElementById('mep-detail').hidden) {
     clearMepDetail();
@@ -2121,7 +2178,7 @@ function goToSectorFull(sector) {
   const top10 = Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const mx = top10[0]?.[1] || 1;
   document.getElementById('an-sect-org-list').innerHTML = top10.map(([name,n],i)=>`
-    <div class="org-item">
+    <div class="org-item" style="cursor:pointer" onclick="navigateToOrg(this.dataset.org)" data-org="${esc(name)}">
       <span class="org-rank">${i+1}</span>
       <span class="org-name" title="${esc(name)}">${esc(name)}</span>
       <div class="org-bar-wrap"><div class="org-bar" style="width:${Math.round(n/mx*100)}%"></div></div>
@@ -2337,7 +2394,7 @@ function showMepDetail(mepId) {
   const top10 = Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const mx = top10[0]?.[1] || 1;
   document.getElementById('mep-org-list').innerHTML = top10.map(([name,n],i)=>`
-    <div class="org-item">
+    <div class="org-item" style="cursor:pointer" onclick="navigateToOrg(this.dataset.org)" data-org="${esc(name)}">
       <span class="org-rank">${i+1}</span>
       <span class="org-name" title="${esc(name)}">${esc(name)}</span>
       <div class="org-bar-wrap"><div class="org-bar" style="width:${Math.round(n/mx*100)}%"></div></div>
@@ -2512,7 +2569,7 @@ function showPartidoDetail(partido) {
   const top10 = Object.entries(cnt).sort((a,b) => b[1]-a[1]).slice(0,10);
   const mx = top10[0]?.[1] || 1;
   document.getElementById('partido-org-list').innerHTML = top10.map(([name,n],i) => `
-    <div class="org-item">
+    <div class="org-item" style="cursor:pointer" onclick="navigateToOrg(this.dataset.org)" data-org="${esc(name)}">
       <span class="org-rank">${i+1}</span>
       <span class="org-name" title="${esc(name)}">${esc(name)}</span>
       <div class="org-bar-wrap"><div class="org-bar" style="width:${Math.round(n/mx*100)}%"></div></div>
@@ -2539,6 +2596,211 @@ function showPartidoDetail(partido) {
 function clearPartidoDetail() {
   document.getElementById('partido-detail').hidden      = true;
   document.getElementById('an-partido-overview').hidden = false;
+}
+
+// ── Org detail ────────────────────────────────────────────────
+let _prevAnTab = 'meps';
+
+function showOrgDetail(orgName, extraOrgs) {
+  // Track previous sub-tab for restoring on back
+  const activeBtn = document.querySelector('.an-btn.on');
+  if (activeBtn) _prevAnTab = activeBtn.dataset.an;
+
+  // Show org panel, hide rest of analysis
+  document.getElementById('an-org-detail').hidden = false;
+  document.getElementById('an-srch-wrap').hidden  = true;
+  document.querySelector('.an-subnav').hidden      = true;
+  ['an-sectors','an-meps','an-partidos'].forEach(id =>
+    document.getElementById(id).hidden = true);
+
+  // Build list of all org names to query (main + variants)
+  const allOrgs = extraOrgs ? [orgName, ...extraOrgs] : [orgName];
+  const likeClause = allOrgs.map(() => `LOWER('|'||actores||'|') LIKE LOWER('%|'||?||'|%')`).join(' OR ');
+  const params = allOrgs;
+
+  // ─ Queries ─
+  const total = db.exec(
+    `SELECT COUNT(*) FROM reuniones WHERE ${likeClause}`, params
+  )[0]?.values[0][0] ?? 0;
+
+  const kpiRow = db.exec(
+    `SELECT COUNT(DISTINCT r.mep_id), COUNT(DISTINCT m.partido_nacional)
+     FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
+     WHERE ${likeClause}`, params
+  )[0]?.values[0] ?? [0, 0];
+  const [nMeps, nParties] = kpiRow;
+
+  const topSect = db.exec(
+    `SELECT sector, COUNT(*) n FROM reuniones
+     WHERE (${likeClause}) AND sector IS NOT NULL AND sector!=''
+     GROUP BY sector ORDER BY n DESC LIMIT 1`, params
+  )[0]?.values[0];
+
+  // Header
+  const pc = topSect ? (C[topSect[0]] || C['Otros'])[0] : 'rgba(100,116,139,.4)';
+  const bc2 = topSect ? (C[topSect[0]] || C['Otros'])[1] : '#64748b';
+  document.getElementById('org-detail-hdr').innerHTML = `
+    <div style="flex:1">
+      <div class="mep-detail-name">${esc(orgName)}</div>
+      <div class="mep-detail-sub" style="margin-top:.4rem;display:flex;gap:.5rem;flex-wrap:wrap">
+        <span style="color:var(--t2)">${fmt(total)} ${t('meetings')}</span>
+        <span style="color:var(--t3)">·</span>
+        <span style="color:var(--t2)">${fmt(nMeps)} ${t('org-distinct-meps')}</span>
+        <span style="color:var(--t3)">·</span>
+        <span style="color:var(--t2)">${fmt(nParties)} ${t('org-distinct-parties')}</span>
+        ${topSect ? `<span style="color:var(--t3)">·</span><span class="mep-badge" style="background:${pc};color:${bc2}">${esc(topSect[0])}</span>` : ''}
+      </div>
+    </div>`;
+
+  // Variants detection (only when not already expanded)
+  if (!extraOrgs) {
+    const allActores = db.exec(
+      `SELECT DISTINCT actores FROM reuniones
+       WHERE LOWER(actores) LIKE LOWER('%'||?||'%') AND actores IS NOT NULL`, [orgName]
+    )[0]?.values ?? [];
+    const variants = new Set();
+    allActores.forEach(([a]) =>
+      a.split('|').forEach(x => {
+        const k = x.trim();
+        if (k && k.toLowerCase() !== orgName.toLowerCase()) variants.add(k);
+      })
+    );
+    const vBar = document.getElementById('org-variants-bar');
+    if (variants.size > 0) {
+      const varList = [...variants].slice(0, 5);
+      vBar.style.display = '';
+      vBar.innerHTML = `<strong>${t('org-variants')}</strong> ${varList.map(v => `<em>${esc(v)}</em>`).join(', ')}
+        <button onclick="showOrgDetail('${orgName.replace(/'/g,"\\'")}', ${JSON.stringify(varList)})"
+          style="margin-left:.75rem;background:var(--blue);color:#fff;border:0;border-radius:var(--rf);padding:.2rem .6rem;font-size:.78rem;cursor:pointer">${t('org-expand')}</button>`;
+    } else {
+      vBar.style.display = 'none';
+    }
+  } else {
+    document.getElementById('org-variants-bar').style.display = 'none';
+  }
+
+  // Chart: sectors (donut)
+  const sects = db.exec(
+    `SELECT sector, COUNT(*) n FROM reuniones
+     WHERE (${likeClause}) AND sector IS NOT NULL AND sector!=''
+     GROUP BY sector ORDER BY n DESC`, params
+  )[0]?.values ?? [];
+  document.getElementById('org-sector-sub').textContent = `${fmt(total)} ${t('meetings')}`;
+  mkChart('c-org-sector', {
+    type: 'doughnut',
+    data: {
+      labels: sects.map(r => r[0]),
+      datasets: [{ data: sects.map(r => r[1]),
+        backgroundColor: sects.map(r => (C[r[0]] || C['Otros'])[0]),
+        borderColor:     sects.map(r => (C[r[0]] || C['Otros'])[1]),
+        borderWidth: 1, hoverOffset: 6 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '58%',
+      plugins: { legend: { position: window.innerWidth < 640 ? 'bottom' : 'right',
+        labels: { color: '#475569', font: { size: 11 }, padding: 10 } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.raw} (${Math.round(ctx.raw/total*100)}%)` } } } }
+  });
+
+  // Chart: per year (bar)
+  const years = db.exec(
+    `SELECT substr(fecha,1,4) yr, COUNT(*) n FROM reuniones
+     WHERE (${likeClause}) AND fecha IS NOT NULL
+     GROUP BY yr ORDER BY yr`, params
+  )[0]?.values ?? [];
+  document.getElementById('org-year-sub').textContent = t('mep-year-sub');
+  mkChart('c-org-year', {
+    type: 'bar',
+    data: { labels: years.map(r => r[0]),
+      datasets: [{ data: years.map(r => r[1]),
+        backgroundColor: 'rgba(37,99,235,.55)', borderColor: '#2563eb', borderWidth: 1, borderRadius: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}` } } },
+      scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,.06)' }, ticks: { color: '#94a3b8' }, border: { display: false } },
+                x: { grid: { display: false }, ticks: { color: '#94a3b8' }, border: { display: false } } } }
+  });
+
+  // MEP list (HTML, always — small enough)
+  const mepRows = db.exec(
+    `SELECT m.nombre, m.partido_nacional, r.mep_id, COUNT(*) n
+     FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
+     WHERE (${likeClause})
+     GROUP BY r.mep_id ORDER BY n DESC LIMIT 15`, params
+  )[0]?.values ?? [];
+  const maxMep = mepRows[0]?.[3] || 1;
+  const mepListEl = document.getElementById('org-mep-list');
+  mepListEl.innerHTML = '';
+  mepRows.forEach(([nombre, partido, mepId, n], i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid #f0f0f0;cursor:pointer';
+    div.innerHTML = `
+      <span style="font-size:12px;color:#999;min-width:20px;text-align:right">${i+1}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px">
+          ${esc(nombre)} <span style="font-size:11px;color:#64748b">${esc(shortParty(partido))}</span>
+        </div>
+        <div style="height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden">
+          <div style="height:100%;border-radius:3px;background:${partyBg(partido)};width:${(n/maxMep*100).toFixed(1)}%"></div>
+        </div>
+      </div>
+      <span style="font-size:13px;font-weight:600;color:#003399;flex-shrink:0">${fmt(n)}</span>`;
+    div.addEventListener('click', () => showMepDetail(mepId));
+    mepListEl.appendChild(div);
+  });
+
+  // Recent meetings list
+  const recent = db.exec(
+    `SELECT r.fecha, r.titulo, m.nombre, r.sector, r.mep_id
+     FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
+     WHERE (${likeClause})
+     ORDER BY r.fecha DESC LIMIT 20`, params
+  )[0]?.values ?? [];
+  document.getElementById('org-meeting-list').innerHTML = recent.map(([fecha, titulo, nombre, sector, mepId]) => {
+    const sc = sector ? (C[sector] || C['Otros'])[0] : 'rgba(100,116,139,.3)';
+    return `<div class="org-item" style="flex-direction:column;align-items:flex-start;gap:.3rem;padding:.6rem .75rem">
+      <div style="display:flex;align-items:center;gap:.5rem;width:100%">
+        <span style="font-size:.75rem;color:var(--t3);flex-shrink:0">${esc(fecha)}</span>
+        ${sector ? `<span style="font-size:.7rem;padding:.1rem .45rem;border-radius:var(--rf);background:${sc};flex-shrink:0">${esc(sector)}</span>` : ''}
+        <span class="org-name" style="font-size:.8rem;cursor:pointer;color:var(--blue)" data-mep="${esc(mepId)}">${esc(nombre)}</span>
+      </div>
+      <div style="font-size:.8rem;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%">${esc(titulo || '')}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('org-meeting-list').querySelectorAll('[data-mep]').forEach(el =>
+    el.addEventListener('click', () => showMepDetail(el.dataset.mep))
+  );
+
+  // "Ver todas" button
+  document.getElementById('org-ver-reuniones').onclick = () => {
+    document.getElementById('q').value = orgName;
+    switchTab('search');
+    run(0);
+  };
+
+  // Breadcrumb + history
+  document.getElementById('an-org-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setBreadcrumb('bc-org', [
+    { label: t('bc-home'), fn: () => switchTab('search') },
+    { label: t('bc-orgs'), fn: () => clearOrgDetail() },
+    { label: orgName }
+  ]);
+  history.pushState({ view: 'org-detail', orgName }, '');
+
+  // Apply i18n to new elements
+  applyLang();
+}
+
+function clearOrgDetail() {
+  document.getElementById('an-org-detail').hidden = true;
+  document.getElementById('an-srch-wrap').hidden  = false;
+  document.querySelector('.an-subnav').hidden      = false;
+  ['an-sectors','an-meps','an-partidos'].forEach(id =>
+    document.getElementById(id).hidden = id !== 'an-' + _prevAnTab);
+}
+
+function navigateToOrg(orgName) {
+  switchTab('analisis');
+  if (!analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
+  showOrgDetail(orgName);
 }
 
 // ══════════════════════════════════════════════════════════════
