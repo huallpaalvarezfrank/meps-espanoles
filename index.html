@@ -16,10 +16,12 @@
   <meta property="og:url" content="https://huallpaalvarezfrank.github.io/meps-espanoles/">
   <meta property="og:title" content="Eurodiputómetro · MEPs España">
   <meta property="og:description" content="Descubre con quién se reúnen los 60 eurodiputados españoles. Portal de transparencia parlamentaria europea con datos oficiales del Parlamento Europeo.">
+  <meta property="og:image" content="https://huallpaalvarezfrank.github.io/meps-espanoles/og-image.png">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Eurodiputómetro · MEPs España">
   <meta name="twitter:description" content="Descubre con quién se reúnen los 60 eurodiputados españoles. Portal de transparencia parlamentaria europea.">
+  <meta name="twitter:image" content="https://huallpaalvarezfrank.github.io/meps-espanoles/og-image.png">
   <!-- Favicon: "EP" sobre fondo azul UE -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23003399'/%3E%3Ctext x='16' y='22' font-family='system-ui,sans-serif' font-size='14' font-weight='700' fill='white' text-anchor='middle'%3EEP%3C/text%3E%3C/svg%3E">
   <link rel="shortcut icon" href="/favicon.ico">
@@ -99,6 +101,22 @@
     .btn-apoya-footer{display:inline-flex;align-items:center;font-size:.75rem;color:var(--t2);background:transparent;border:1px solid var(--bh);border-radius:var(--rm);padding:.35rem .85rem;text-decoration:none;transition:border-color .18s,color .18s;white-space:nowrap;min-height:44px;cursor:pointer}
     .btn-apoya-footer:hover{border-color:var(--bh);color:var(--t)}
     @media(max-width:640px){.btn-apoya-footer{width:100%;justify-content:center;margin-bottom:.25rem}}
+    .footer-gh-link{color:var(--t3);text-decoration:none;display:flex;align-items:center;gap:.35rem}
+    .footer-gh-link:hover{color:#003399}
+    /* Modal apoya */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:300;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .2s}
+    .modal-backdrop.open{opacity:1;pointer-events:all}
+    .modal-card{background:#fff;border-radius:var(--rl);padding:2rem 2rem 1.75rem;max-width:420px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.18);transform:translateY(12px);transition:transform .2s;position:relative}
+    .modal-backdrop.open .modal-card{transform:translateY(0)}
+    .modal-close{position:absolute;top:.85rem;right:.85rem;background:none;border:none;cursor:pointer;color:var(--t3);padding:.25rem;border-radius:var(--r);line-height:1;font-size:1.1rem;transition:color .15s}
+    .modal-close:hover{color:var(--t)}
+    .modal-icon{font-size:2rem;margin-bottom:.75rem;text-align:center}
+    .modal-title{font-size:1.15rem;font-weight:700;color:var(--t);margin-bottom:.5rem;text-align:center}
+    .modal-desc{font-size:.875rem;color:var(--t2);line-height:1.6;margin-bottom:1.5rem;text-align:center}
+    .modal-paypal-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;background:#0070ba;color:#fff;font-size:.95rem;font-weight:600;padding:.75rem 1.5rem;border-radius:var(--rf);text-decoration:none;transition:background .15s;border:none;cursor:pointer}
+    .modal-paypal-btn:hover{background:#005ea6}
+    .modal-cancel{display:block;text-align:center;margin-top:.85rem;font-size:.8rem;color:var(--t3);cursor:pointer;background:none;border:none;width:100%;padding:.25rem;transition:color .15s}
+    .modal-cancel:hover{color:var(--t)}
 
     /* Tab nav */
     .tab-nav{position:sticky;top:60px;z-index:85;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--b);display:flex;padding:0 1.75rem;gap:.25rem}
@@ -505,7 +523,7 @@
 <body>
 
 <!-- Progress bar -->
-<div id="db-bar"></div>
+<div id="db-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Cargando base de datos"></div>
 
 <!-- Header -->
 <header class="hdr" role="banner">
@@ -548,11 +566,11 @@
     <div class="hero-ctas fu d3">
       <button class="btn-cta" onclick="document.getElementById('explore-anchor').scrollIntoView({behavior:'smooth',block:'start'})">
         <span data-i18n="btn-explore">Explorar reuniones</span>
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        <svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
       </button>
     </div>
     <div class="srch-wrap fu" style="animation-delay:.38s">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input id="q" type="text" placeholder="Busca por empresa, organización, eurodiputado…" data-i18n-ph="search-ph" autocomplete="off" aria-label="Buscar eurodiputados, organizaciones o ámbitos">
       <div class="autocomplete-dropdown" id="ac-dropdown" style="display:none"></div>
     </div>
@@ -599,7 +617,7 @@
   <!-- Mobile: filter toggle bar -->
   <div class="filter-toggle-bar" id="filter-toggle-bar">
     <button class="filter-toggle-btn" id="filter-toggle">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      <svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
       <span data-i18n="filter-title">Filtros</span>
       <span class="filter-badge-count" id="filter-badge" hidden></span>
     </button>
@@ -724,7 +742,7 @@
 
     <!-- Search bar -->
     <div class="an-srch-wrap" id="an-srch-wrap">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <svg aria-hidden="true" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input id="an-q" type="text" placeholder="Busca un eurodiputado o sector para ver sus gráficos…" data-i18n-ph="an-search-ph" autocomplete="off">
       <div id="an-sugg" class="an-sugg-box" hidden></div>
     </div>
@@ -793,7 +811,7 @@
             <div class="chart-card-sub" id="sector-detail-sub" data-i18n="chart-click-sector-hint">Haz clic en un ámbito del gráfico para ver las organizaciones más frecuentes</div>
             <div id="sector-detail-body">
               <div class="click-hint">
-                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 15l6 6M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14z"/></svg>
+                <svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 15l6 6M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14z"/></svg>
                 <span data-i18n="click-select-sector">Selecciona un ámbito en el gráfico</span>
               </div>
             </div>
@@ -965,7 +983,7 @@
       <div class="pi-title" data-i18n="pi-title">Datos de fuente oficial del Parlamento Europeo</div>
       <p class="pi-text" data-i18n="pi-text">Toda la información publicada en este portal proviene directamente del <strong>Registro de Transparencia del Parlamento Europeo</strong>. Los eurodiputados tienen la obligación legal de declarar sus reuniones con representantes de grupos de interés. Este portal no genera ni interpreta datos: únicamente los recopila, estructura y hace accesibles para periodistas, investigadores y ciudadanos.</p>
       <a class="pi-link" href="https://www.europarl.europa.eu/meps/es/search/advanced?countryCode=ES" target="_blank">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+        <svg aria-hidden="true" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
         <span data-i18n="pi-link">Ver portal oficial del Parlamento Europeo</span>
       </a>
     </div>
@@ -982,40 +1000,40 @@
       <div class="sobre-name">Frank Huallpa Alvarez</div>
       <div class="sobre-role" data-i18n="about-role">Business Intelligence &amp; Public Affairs · Analista Político</div>
       <div class="sobre-location">
-        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <svg aria-hidden="true" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         <span data-i18n="about-location">Madrid, España</span>
       </div>
       <p class="sobre-bio" data-i18n="about-bio">Profesional en análisis político y regulatorio, con especialización en inteligencia de datos aplicada a asuntos públicos, gobernanza y entornos regulatorios complejos. Mi trayectoria combina la ciencia política con herramientas avanzadas de análisis de datos, permitiéndome transformar grandes volúmenes de información en insights estratégicos accionables. Creé este portal como ejercicio de transparencia política y análisis de lobbying en el Parlamento Europeo.</p>
       <div class="sobre-edu-row">
         <span class="edu-badge">
-          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          <svg aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
           <span data-i18n="about-edu-1">Máster Estrategias y Tecnologías para el Desarrollo · UCM-UPM</span>
         </span>
         <span class="edu-badge">
-          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          <svg aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
           <span data-i18n="about-edu-2">Máster Decision Making &amp; Innovation · UCJC</span>
         </span>
         <span class="edu-badge">
-          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          <svg aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
           <span data-i18n="about-edu-3">Lic. Ciencia Política · PUCP (Perú)</span>
         </span>
       </div>
 
       <div class="sobre-links">
-        <a class="sobre-link" href="https://www.linkedin.com/in/frankhuallpa/" target="_blank">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        <a class="sobre-link" href="https://www.linkedin.com/in/frankhuallpa/" target="_blank" rel="noopener noreferrer">
+          <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
           LinkedIn
         </a>
-        <a class="sobre-link" href="https://x.com/huallpa_frank" target="_blank">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <a class="sobre-link" href="https://x.com/huallpa_frank" target="_blank" rel="noopener noreferrer">
+          <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           X / Twitter
         </a>
         <a class="sobre-link" href="mailto:frank.huallpa.alvarez@gmail.com">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+          <svg aria-hidden="true" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
           frank.huallpa.alvarez@gmail.com
         </a>
         <a class="sobre-link" href="https://github.com/huallpaalvarezfrank" target="_blank" rel="noopener noreferrer">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
           GitHub
         </a>
       </div>
@@ -1025,11 +1043,11 @@
 </main>
 
 <footer style="max-width:1200px;margin:0 auto;padding:1.25rem 1.5rem 2rem;border-top:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-size:.75rem;color:var(--t3)">
-  <a href="https://www.paypal.com/ncp/payment/Y3H9Q5AWFV9E6" target="_blank" rel="noopener noreferrer" class="btn-apoya-footer" aria-label="Apoya Eurodiputómetro" data-i18n="btn-apoya">Apoya el proyecto</a>
+  <button onclick="openApoyaModal()" class="btn-apoya-footer" aria-label="Apoya Eurodiputómetro" data-i18n="btn-apoya">Apoya el proyecto</button>
   <span style="font-size:.7rem;opacity:.75">Este sitio usa Google Fonts (dato externo). <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style="color:inherit">Sin cookies propias.</a></span>
   <span>© 2026 Frank Huallpa Alvarez · <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer" title="Licencia Creative Commons BY-NC 4.0" style="color:inherit;text-decoration:none">CC BY-NC 4.0</a></span>
-<a href="https://github.com/huallpaalvarezfrank/meps-espanoles" target="_blank" style="color:var(--t3);text-decoration:none;display:flex;align-items:center;gap:.35rem" onmouseover="this.style.color='#003399'" onmouseout="this.style.color=''">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+<a href="https://github.com/huallpaalvarezfrank/meps-espanoles" target="_blank" rel="noopener noreferrer" class="footer-gh-link">
+    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
     <span data-i18n="footer-github">Eurodiputómetro en GitHub</span>
   </a>
 </footer>
@@ -3383,7 +3401,36 @@ function navigateToSector(sector) {
   goToSectorFull(sector);
 }
 
-// ── PayPal: link directo a paypal.com/ncp/payment/Y3H9Q5AWFV9E6 ──
+// ── Modal "Apoya el proyecto" ──
+function openApoyaModal() {
+  document.getElementById('apoya-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeApoyaModal() {
+  document.getElementById('apoya-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeApoyaModal();
+});
 </script>
+
+<!-- Modal: Apoya el proyecto -->
+<div id="apoya-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="apoya-modal-title" onclick="if(event.target===this)closeApoyaModal()">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeApoyaModal()" aria-label="Cerrar">✕</button>
+    <div class="modal-icon">☕</div>
+    <div class="modal-title" id="apoya-modal-title">Apoya el proyecto</div>
+    <div class="modal-desc">
+      Este portal es gratuito, sin anuncios y de código abierto.<br>
+      Si te resulta útil, puedes invitarme a un café para ayudar a mantenerlo.
+    </div>
+    <a href="https://www.paypal.com/ncp/payment/Y3H9Q5AWFV9E6" target="_blank" rel="noopener noreferrer" class="modal-paypal-btn" onclick="closeApoyaModal()">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 6.243-8.558 6.243H9.83l-1.182 7.49h3.17c.459 0 .85-.334.922-.787l.038-.197.733-4.64.047-.257a.932.932 0 0 1 .92-.788h.58c3.757 0 6.698-1.527 7.556-5.945.36-1.847.174-3.388-.392-4.832z"/></svg>
+      Donar con PayPal
+    </a>
+    <button class="modal-cancel" onclick="closeApoyaModal()">Ahora no</button>
+  </div>
+</div>
 </body>
 </html>

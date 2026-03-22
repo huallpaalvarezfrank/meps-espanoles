@@ -6,21 +6,26 @@ Portal de transparencia política que recoge, limpia y publica las reuniones de 
 ## Estructura del proyecto
 ```
 EU/
-├── EU.py                    ← scraper principal (Playwright)
-├── normalizar.py            ← normalizador de nombres con reglas.csv
-├── clasificar.py            ← clasificación automática con IA (Claude API)
-├── reglas.csv               ← diccionario de equivalencias editable
-├── revisar.csv              ← valores pendientes de revisión manual
-├── meps_es_reuniones.db     ← base de datos SQLite
 ├── index.html               ← portal web (sql.js + Chart.js, sin backend)
+├── 404.html                 ← página de error personalizada
+├── meps_es_reuniones.db     ← base de datos SQLite (en la raíz, no en etl/)
+├── robots.txt
+├── sitemap.xml
+├── etl/
+│   ├── EU.py                ← scraper principal (Playwright)
+│   ├── clasificar.py        ← clasificación automática con IA (Claude API)
+│   ├── normalizar.py        ← normalizador de nombres con reglas.csv
+│   ├── reglas.csv           ← diccionario de equivalencias editable
+│   ├── revisar.csv          ← valores pendientes de revisión manual
+│   └── correcciones.csv     ← correcciones manuales
 └── CLAUDE.md                ← este archivo
 ```
 
 ## Estado actual del proyecto
-- El scraper EU.py funciona y extrae reuniones de los 60 MEPs españoles
+- El scraper etl/EU.py funciona y extrae reuniones de los 60 MEPs españoles
 - La BD tiene ~4.000 registros de reuniones
-- clasificar.py clasifica reuniones con la API de Claude (actores, sector, tipo_reunion)
-- normalizar.py aplica reglas de limpieza y genera revisar.csv con pendientes
+- etl/clasificar.py clasifica reuniones con la API de Claude (actores, sector, tipo_reunion)
+- etl/normalizar.py aplica reglas de limpieza y genera etl/revisar.csv con pendientes
 - index.html es el portal web que lee la BD directamente en el navegador con sql.js
 
 ## Base de datos — esquema ACTUAL (meps_es_reuniones.db)
@@ -58,18 +63,18 @@ EU/
 ## Pipeline semanal (objetivo)
 ```
 Cada domingo a las 23:59 (GitHub Actions):
-  1. EU.py          → scraping de los 60 MEPs, inserta reuniones nuevas en la BD
-  2. clasificar.py  → llama a API de Claude, rellena actores/sector/tipo_reunion en registros nuevos
-  3. normalizar.py  → aplica reglas.csv, actualiza reunion_con, genera revisar.csv
-  4. commit automático → BD actualizada en GitHub
-  5. GitHub Pages   → portal actualizado automáticamente via Datasette Lite
+  1. etl/EU.py          → scraping de los 60 MEPs, inserta reuniones nuevas en la BD
+  2. etl/clasificar.py  → llama a API de Claude, rellena actores/sector/tipo_reunion en registros nuevos
+  3. etl/normalizar.py  → aplica reglas.csv, actualiza reunion_con, genera etl/revisar.csv
+  4. commit automático → meps_es_reuniones.db + etl/revisar.csv actualizados en GitHub
+  5. GitHub Pages   → portal actualizado automáticamente
 ```
 
 ## Trabajo manual semanal (solo esto)
-- Abrir revisar.csv en Excel
+- Abrir etl/revisar.csv en Excel
 - Revisar valores nuevos sin regla (columna `tu_decision`)
 - Guardar como CSV UTF-8
-- Volver a correr normalizar.py
+- Volver a correr etl/normalizar.py
 - Tiempo estimado: 5-10 minutos
 
 ## Decisiones de arquitectura tomadas
@@ -80,7 +85,7 @@ Cada domingo a las 23:59 (GitHub Actions):
 - **BD**: SQLite (sin migrar a PostgreSQL hasta que escale)
 - **Portal**: Datasette Lite en primera fase; Next.js + FastAPI si se necesita más personalización
 
-## Scraper (EU.py) — cómo funciona
+## Scraper (etl/EU.py) — cómo funciona
 - Usa Playwright con Chromium
 - URL base: https://www.europarl.europa.eu/meps/es/search/advanced?countryCode=ES
 - Selector MEPs: `a.es_member-list-item-content` (antes era erpl_, cambió en rediseño web)
@@ -89,14 +94,14 @@ Cada domingo a las 23:59 (GitHub Actions):
 - Guarda en SQLite con INSERT OR IGNORE para evitar duplicados
 - Argumentos: `--limit-meps N` para pruebas, `--headless` para producción
 
-## Normalización (normalizar.py + reglas.csv)
+## Normalización (etl/normalizar.py + etl/reglas.csv)
 - reglas.csv tiene columnas: valor_original, nombre_canonico, sector
 - revisar.csv tiene columnas: valor_original, veces_en_bd, sugerencia, similitud_pct, tu_decision, sector
 - Fuzzy matching con difflib (incluido en Python, sin dependencias extra)
 - Lógica: solo se normaliza cuando el campo contiene exactamente una entidad
 - Reuniones con varias entidades juntas se dejan intactas en reunion_con
 
-## Script clasificar.py
+## Script etl/clasificar.py
 - Lee registros donde actores IS NULL (registros nuevos sin clasificar)
 - Llama a API de Claude (claude-sonnet-4-6) con el texto de reunion_con_original
 - Extrae: actores (separados por |), sector, tipo_reunion (Individual/Grupal)
@@ -115,17 +120,17 @@ anthropic     ← para clasificar.py
 
 ## Comandos útiles
 ```bash
-# Prueba scraper con 2 MEPs
-python EU.py --limit-meps 2
+# Prueba scraper con 2 MEPs (desde la raíz del proyecto)
+python etl/EU.py --limit-meps 2
 
 # Scraping completo sin ventana
-python EU.py --headless
+python etl/EU.py --headless
 
 # Normalizar
-python normalizar.py
+python -X utf8 etl/normalizar.py
 
-# Clasificar (cuando esté creado)
-python clasificar.py
+# Clasificar (requiere ANTHROPIC_API_KEY)
+python -X utf8 etl/clasificar.py
 ```
 
 ## Contexto del creador

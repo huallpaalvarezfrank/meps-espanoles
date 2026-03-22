@@ -22,7 +22,7 @@ from playwright.sync_api import sync_playwright, Error as PWError
 
 LIST_URL   = "https://www.europarl.europa.eu/meps/es/search/advanced?countryCode=ES"
 _HERE      = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_DB = os.path.join(_HERE, "meps_es_reuniones.db")
+DEFAULT_DB = os.path.join(_HERE, "..", "meps_es_reuniones.db")
 
 DB_SCHEMA = """
 CREATE TABLE IF NOT EXISTS meps (
