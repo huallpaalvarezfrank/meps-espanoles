@@ -2045,6 +2045,35 @@ window.addEventListener('popstate', () => {
 });
 
 // ══════════════════════════════════════════════════════════════
+// VARIANT DETECTION HELPERS
+// ══════════════════════════════════════════════════════════════
+const STOP_TOKENS = new Set([
+  'bank','banco','banque','group','grupo','global',
+  'europe','europa','european','europea',
+  'foundation','fundacion','fundación',
+  'institute','instituto','association','asociacion','asociación',
+  'confederation','federation','federacion','federación',
+  'network','council','consejo','committee',
+  'industry','industries','services','service','solutions',
+  'management','corp','corporation','company','holding',
+  'international','internacional','national','nacional'
+]);
+function tokenize(name) {
+  return name
+    .replace(/([a-záéíóúü])([A-ZÁÉÍÓÚ])/g, '$1 $2')
+    .toLowerCase()
+    .split(/[^a-záéíóúüña-z0-9]+/)
+    .filter(t => t.length >= 4 && !STOP_TOKENS.has(t));
+}
+function areVariants(a, b) {
+  const al = a.toLowerCase(), bl = b.toLowerCase();
+  if (al === bl) return false;
+  if (al.includes(bl) || bl.includes(al)) return true;
+  const tokA = tokenize(a), tokB = new Set(tokenize(b));
+  return tokA.length > 0 && tokB.size > 0 && tokA.some(t => tokB.has(t));
+}
+
+// ══════════════════════════════════════════════════════════════
 // ANÁLISIS TAB — main init
 // ══════════════════════════════════════════════════════════════
 function renderOrgsView() {
@@ -2056,8 +2085,22 @@ function renderOrgsView() {
     cnt[k] = (cnt[k] || 0) + 1;
     if (!canonical[k]) canonical[k] = raw;
   }));
-  const top30 = Object.entries(cnt).sort((a,b) => b[1]-a[1]).slice(0,30)
-    .map(([k,n]) => [canonical[k], n]);
+  // Group variants — most-frequent name leads each group
+  const allUnique = Object.entries(cnt).sort((a,b) => b[1]-a[1]).map(([k]) => canonical[k]);
+  const absorbed = new Set();
+  const groupCnt = {};
+  allUnique.forEach(name => {
+    if (absorbed.has(name)) return;
+    groupCnt[name] = cnt[name.toLowerCase()];
+    allUnique.forEach(other => {
+      if (other === name || absorbed.has(other)) return;
+      if (areVariants(name, other)) {
+        absorbed.add(other);
+        groupCnt[name] += cnt[other.toLowerCase()];
+      }
+    });
+  });
+  const top30 = Object.entries(groupCnt).sort((a,b) => b[1]-a[1]).slice(0,30);
 
   const wrap = document.getElementById('c-orgs-wrap');
   const prevList = document.getElementById('org-mobile-list');
@@ -2692,17 +2735,13 @@ function showOrgDetail(orgName) {
   document.getElementById('an-org-overview').hidden = true;
   document.getElementById('an-org-detail').hidden   = false;
 
-  // Detect variants by substring relationship, include them automatically in all queries
+  // Detect variants (substring + shared token), include them automatically in all queries
   const allRows = db.exec('SELECT actores FROM reuniones WHERE actores IS NOT NULL')[0]?.values ?? [];
   const allActorNames = new Set();
   allRows.forEach(([a]) =>
     a.split('|').forEach(x => { const k = x.trim(); if (k) allActorNames.add(k); })
   );
-  const nl = orgName.toLowerCase();
-  const variants = [...allActorNames].filter(k => {
-    const kl = k.toLowerCase();
-    return kl !== nl && (kl.includes(nl) || nl.includes(kl));
-  }).slice(0, 5);
+  const variants = [...allActorNames].filter(k => areVariants(orgName, k)).slice(0, 5);
 
   const allOrgs = [orgName, ...variants];
   const likeClause = allOrgs.map(() => `LOWER('|'||actores||'|') LIKE LOWER('%|'||?||'|%')`).join(' OR ');
