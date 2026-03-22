@@ -2072,20 +2072,14 @@ function areVariants(a, b) {
   const tokA = tokenize(a), tokB = new Set(tokenize(b));
   return tokA.length > 0 && tokB.size > 0 && tokA.some(t => tokB.has(t));
 }
-
-// ══════════════════════════════════════════════════════════════
-// ANÁLISIS TAB — main init
-// ══════════════════════════════════════════════════════════════
-function renderOrgsView() {
-  const allActores = db.exec('SELECT actores FROM reuniones WHERE actores IS NOT NULL')[0]?.values ?? [];
+function groupActors(rows, limit = 10) {
   const cnt = {}, canonical = {};
-  allActores.forEach(([a]) => a.split('|').forEach(x => {
+  rows.forEach(([a]) => a.split('|').forEach(x => {
     const raw = x.trim(); const k = raw.toLowerCase();
     if (!raw) return;
     cnt[k] = (cnt[k] || 0) + 1;
     if (!canonical[k]) canonical[k] = raw;
   }));
-  // Group variants — most-frequent name leads each group
   const allUnique = Object.entries(cnt).sort((a,b) => b[1]-a[1]).map(([k]) => canonical[k]);
   const absorbed = new Set();
   const groupCnt = {};
@@ -2094,13 +2088,18 @@ function renderOrgsView() {
     groupCnt[name] = cnt[name.toLowerCase()];
     allUnique.forEach(other => {
       if (other === name || absorbed.has(other)) return;
-      if (areVariants(name, other)) {
-        absorbed.add(other);
-        groupCnt[name] += cnt[other.toLowerCase()];
-      }
+      if (areVariants(name, other)) { absorbed.add(other); groupCnt[name] += cnt[other.toLowerCase()]; }
     });
   });
-  const top30 = Object.entries(groupCnt).sort((a,b) => b[1]-a[1]).slice(0,30);
+  return Object.entries(groupCnt).sort((a,b) => b[1]-a[1]).slice(0, limit);
+}
+
+// ══════════════════════════════════════════════════════════════
+// ANÁLISIS TAB — main init
+// ══════════════════════════════════════════════════════════════
+function renderOrgsView() {
+  const allActores = db.exec('SELECT actores FROM reuniones WHERE actores IS NOT NULL')[0]?.values ?? [];
+  const top30 = groupActors(allActores, 30);
 
   const wrap = document.getElementById('c-orgs-wrap');
   const prevList = document.getElementById('org-mobile-list');
@@ -2265,9 +2264,7 @@ function showSectorDetail(sector) {
   document.getElementById('sector-detail-title').textContent = `Top ${t('sugg-sectors')} · ${sector}`;
   document.getElementById('sector-detail-sub').textContent   = t('by-freq');
   const rows  = db.exec("SELECT actores FROM reuniones WHERE sector=? AND actores IS NOT NULL", [sector])[0]?.values ?? [];
-  const count = {};
-  rows.forEach(([a]) => a.split('|').forEach(x => { const k=x.trim(); if(k) count[k]=(count[k]||0)+1; }));
-  const top = Object.entries(count).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const top = groupActors(rows, 10);
   const max = top[0]?.[1] || 1;
   document.getElementById('sector-detail-body').innerHTML = top.length
     ? `<div class="org-list">${top.map(([name,n],i)=>`
@@ -2303,9 +2300,7 @@ function goToSectorFull(sector) {
 
   // Top orgs
   const rows = db.exec("SELECT actores FROM reuniones WHERE sector=? AND actores IS NOT NULL",[sector])[0]?.values ?? [];
-  const cnt = {};
-  rows.forEach(([a]) => a.split('|').forEach(x => { const k=x.trim(); if(k) cnt[k]=(cnt[k]||0)+1; }));
-  const top10 = Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const top10 = groupActors(rows, 10);
   const mx = top10[0]?.[1] || 1;
   document.getElementById('an-sect-org-list').innerHTML = top10.map(([name,n],i)=>`
     <div class="org-item" style="cursor:pointer" onclick="navigateToOrg(this.dataset.org)" data-org="${esc(name)}">
@@ -2519,9 +2514,7 @@ function showMepDetail(mepId) {
   });
 
   const rows = db.exec("SELECT actores FROM reuniones WHERE mep_id=? AND actores IS NOT NULL",[mepId])[0]?.values ?? [];
-  const cnt = {};
-  rows.forEach(([a]) => a.split('|').forEach(x => { const k=x.trim(); if(k) cnt[k]=(cnt[k]||0)+1; }));
-  const top10 = Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const top10 = groupActors(rows, 10);
   const mx = top10[0]?.[1] || 1;
   document.getElementById('mep-org-list').innerHTML = top10.map(([name,n],i)=>`
     <div class="org-item" style="cursor:pointer" onclick="navigateToOrg(this.dataset.org)" data-org="${esc(name)}">
@@ -2694,9 +2687,7 @@ function showPartidoDetail(partido) {
     SELECT r.actores FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
     WHERE m.partido_nacional=? AND r.actores IS NOT NULL
   `, [partido])[0]?.values ?? [];
-  const cnt = {};
-  rows.forEach(([a]) => a.split('|').forEach(x => { const k = x.trim(); if (k) cnt[k] = (cnt[k]||0)+1; }));
-  const top10 = Object.entries(cnt).sort((a,b) => b[1]-a[1]).slice(0,10);
+  const top10 = groupActors(rows, 10);
   const mx = top10[0]?.[1] || 1;
   document.getElementById('partido-org-list').innerHTML = top10.map(([name,n],i) => `
     <div class="org-item" style="cursor:pointer" onclick="navigateToOrg(this.dataset.org)" data-org="${esc(name)}">
