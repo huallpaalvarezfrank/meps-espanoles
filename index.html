@@ -2436,20 +2436,50 @@ function showPartidoDetail(partido) {
   `, [partido])[0]?.values ?? [];
   const mepIds = mepRows.map(r => r[0]);
   const mepH   = Math.max(200, mepRows.length * 32);
-  document.getElementById('c-partido-meps').parentElement.style.height = mepH + 'px';
-  mkChart('c-partido-meps', {
-    type: 'bar',
-    data: { labels: mepRows.map(r => r[1]), datasets: [{ data: mepRows.map(r => r[2]), backgroundColor: partyBg(partido), borderColor: partyBorder(partido), borderWidth: 1, borderRadius: 3 }] },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}` } } },
-      scales: {
-        x: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { color: '#94a3b8' }, border: { display: false } },
-        y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 11 }, autoSkip: false }, border: { display: false } }
-      },
-      onClick: (_, els) => { if (els.length) { switchAnTab('meps'); showMepDetail(mepIds[els[0].index]); } }
-    }
-  });
+  const mepCanvas = document.getElementById('c-partido-meps');
+  const mepWrap   = mepCanvas.parentElement;
+  const prevMepList = document.getElementById('partido-mep-mobile-list');
+  if (prevMepList) prevMepList.remove();
+
+  if (window.innerWidth < 640) {
+    mepCanvas.style.display = 'none';
+    mepWrap.style.height = 'auto';
+    const listDiv = document.createElement('div');
+    listDiv.id = 'partido-mep-mobile-list';
+    const maxCount = mepRows[0]?.[2] || 1;
+    mepRows.forEach(([mepId, nombre, n], i) => {
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid #f0f0f0;cursor:pointer';
+      div.innerHTML = `
+        <span style="font-size:12px;color:#999;min-width:20px;text-align:right">${i + 1}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:500;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px">${esc(nombre)}</div>
+          <div style="height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden">
+            <div style="height:100%;border-radius:3px;background:${partyBg(partido)};width:${(n/maxCount*100).toFixed(1)}%"></div>
+          </div>
+        </div>
+        <span style="font-size:13px;font-weight:600;color:#003399;flex-shrink:0">${fmt(n)}</span>`;
+      div.addEventListener('click', () => showMepDetail(mepId));
+      listDiv.appendChild(div);
+    });
+    mepWrap.parentElement.insertBefore(listDiv, mepWrap);
+  } else {
+    mepCanvas.style.display = '';
+    mepWrap.style.height = mepH + 'px';
+    mkChart('c-partido-meps', {
+      type: 'bar',
+      data: { labels: mepRows.map(r => r[1]), datasets: [{ data: mepRows.map(r => r[2]), backgroundColor: partyBg(partido), borderColor: partyBorder(partido), borderWidth: 1, borderRadius: 3 }] },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}` } } },
+        scales: {
+          x: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { color: '#94a3b8' }, border: { display: false } },
+          y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 11 }, autoSkip: false }, border: { display: false } }
+        },
+        onClick: (_, els) => { if (els.length) { switchAnTab('meps'); showMepDetail(mepIds[els[0].index]); } }
+      }
+    });
+  }
 
   // Donut: sectores
   const sects = db.exec(`
