@@ -1220,6 +1220,9 @@ const LANG = {
     'org-variants':              'También encontrado como:',
     'org-expand':                'Ampliar búsqueda',
     'bc-orgs':                   'Organizaciones',
+    'modal-apoya-desc':          'Este portal es gratuito, sin anuncios y de código abierto.<br>Si te resulta útil, puedes invitarme a un café para ayudar a mantenerlo.',
+    'modal-apoya-btn':           'Donar con PayPal',
+    'modal-apoya-cancel':        'Ahora no',
   }
   ,en: {
     'loading':                   'Loading database…',
@@ -1381,6 +1384,9 @@ const LANG = {
     'org-variants':              'Also found as:',
     'org-expand':                'Expand search',
     'bc-orgs':                   'Organizations',
+    'modal-apoya-desc':          'This portal is free, ad-free and open source.<br>If you find it useful, you can buy me a coffee to help keep it running.',
+    'modal-apoya-btn':           'Donate with PayPal',
+    'modal-apoya-cancel':        'Maybe later',
   }
   ,pt: {
     'loading':                   'Carregando base de dados…',
@@ -1542,6 +1548,9 @@ const LANG = {
     'org-variants':              'Também encontrado como:',
     'org-expand':                'Expandir pesquisa',
     'bc-orgs':                   'Organizações',
+    'modal-apoya-desc':          'Este portal é gratuito, sem anúncios e de código aberto.<br>Se te for útil, podes convidar-me a um café para ajudar a mantê-lo.',
+    'modal-apoya-btn':           'Doar com PayPal',
+    'modal-apoya-cancel':        'Agora não',
   }
 };
 
@@ -1557,7 +1566,7 @@ function fmtMes(num, long = false) {
 
 function applyLang() {
   document.documentElement.lang = currentLang;
-  const HTML_KEYS = new Set(['hero-h1','hero-h1-main','footer-source','pi-text']);
+  const HTML_KEYS = new Set(['hero-h1','hero-h1-main','footer-source','pi-text','modal-apoya-desc']);
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     const val = t(key);
@@ -3420,16 +3429,16 @@ document.addEventListener('keydown', e => {
   <div class="modal-card">
     <button class="modal-close" onclick="closeApoyaModal()" aria-label="Cerrar">✕</button>
     <div class="modal-icon">☕</div>
-    <div class="modal-title" id="apoya-modal-title">Apoya el proyecto</div>
-    <div class="modal-desc">
+    <div class="modal-title" id="apoya-modal-title" data-i18n="btn-apoya">Apoya el proyecto</div>
+    <div class="modal-desc" data-i18n="modal-apoya-desc">
       Este portal es gratuito, sin anuncios y de código abierto.<br>
       Si te resulta útil, puedes invitarme a un café para ayudar a mantenerlo.
     </div>
     <a href="https://www.paypal.com/ncp/payment/Y3H9Q5AWFV9E6" target="_blank" rel="noopener noreferrer" class="modal-paypal-btn" onclick="closeApoyaModal()">
       <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 6.243-8.558 6.243H9.83l-1.182 7.49h3.17c.459 0 .85-.334.922-.787l.038-.197.733-4.64.047-.257a.932.932 0 0 1 .92-.788h.58c3.757 0 6.698-1.527 7.556-5.945.36-1.847.174-3.388-.392-4.832z"/></svg>
-      Donar con PayPal
+      <span data-i18n="modal-apoya-btn">Donar con PayPal</span>
     </a>
-    <button class="modal-cancel" onclick="closeApoyaModal()">Ahora no</button>
+    <button class="modal-cancel" onclick="closeApoyaModal()" data-i18n="modal-apoya-cancel">Ahora no</button>
   </div>
 </div>
 </body>
