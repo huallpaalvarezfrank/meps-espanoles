@@ -1015,9 +1015,6 @@ const LANG = {
     'no-results':                'Sin resultados',
     'no-rows':                   'No se encontraron reuniones.',
     'meetings':                  'reuniones',
-    'an-tab-sectors':            '📊 Por ámbito',
-    'an-tab-meps':               '👤 Por eurodiputado',
-    'an-tab-parties':            '🏛️ Por partido',
     'kpi-top-sector-label':      'Ámbito más activo',
     'kpi-grupal-label':          'Reuniones grupales',
     'kpi-of-total':              'del total',
@@ -1168,9 +1165,6 @@ const LANG = {
     'no-results':                'No results',
     'no-rows':                   'No meetings found.',
     'meetings':                  'meetings',
-    'an-tab-sectors':            '📊 By sector',
-    'an-tab-meps':               '👤 By MEP',
-    'an-tab-parties':            '🏛️ By party',
     'kpi-top-sector-label':      'Most active sector',
     'kpi-grupal-label':          'Group meetings',
     'kpi-of-total':              'of total',
@@ -1321,9 +1315,6 @@ const LANG = {
     'no-results':                'Sem resultados',
     'no-rows':                   'Nenhuma reunião encontrada.',
     'meetings':                  'reuniões',
-    'an-tab-sectors':            '📊 Por setor',
-    'an-tab-meps':               '👤 Por eurodeputado',
-    'an-tab-parties':            '🏛️ Por partido',
     'kpi-top-sector-label':      'Setor mais ativo',
     'kpi-grupal-label':          'Reuniões grupais',
     'kpi-of-total':              'do total',
@@ -1443,6 +1434,12 @@ const LANG = {
 
 function t(key) {
   return LANG[currentLang]?.[key] || LANG.es[key] || key;
+}
+function langLocale() {
+  return { es: 'es-ES', en: 'en-GB', pt: 'pt-PT' }[currentLang] || 'es-ES';
+}
+function fmtMes(num, long = false) {
+  return new Date(2000, num - 1, 1).toLocaleDateString(langLocale(), { month: long ? 'long' : 'short' });
 }
 
 function applyLang() {
@@ -1614,9 +1611,7 @@ function renderTimeline() {
      FROM reuniones r JOIN meps m ON r.mep_id = m.mep_id
      WHERE ${conds.join(' AND ')} GROUP BY mes ORDER BY mes ASC`, params
   )[0]?.values ?? [];
-  const MESES_SHORT = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const MESES_LONG  = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  const labels = rows.map(r => { const [y,m]=r[0].split('-'); return `${MESES_SHORT[+m]} ${y.slice(2)}`; });
+  const labels = rows.map(r => { const [y,m]=r[0].split('-'); return `${fmtMes(+m)} ${y.slice(2)}`; });
   const data   = rows.map(r => r[1]);
   // Subtitle
   const tlSub = document.getElementById('tl-subtitle');
@@ -1636,7 +1631,7 @@ function renderTimeline() {
       plugins: {
         legend: { display:false },
         tooltip: { callbacks: {
-          title: ctx => { const [y,m]=rows[ctx[0].dataIndex][0].split('-'); return `${MESES_LONG[+m]} ${y}`; },
+          title: ctx => { const [y,m]=rows[ctx[0].dataIndex][0].split('-'); return `${fmtMes(+m, true)} ${y}`; },
           label: ctx => ` ${fmt(ctx.raw)} ${t('meetings')}`
         }}
       },
@@ -1686,7 +1681,7 @@ function updateDataStatus() {
       const d = new Date(raw + 'T00:00:00');
       const opts = { day: 'numeric', month: 'short', year: 'numeric' };
       document.getElementById('last-update-date').textContent =
-        d.toLocaleDateString('es-ES', opts);
+        d.toLocaleDateString(langLocale(), opts);
     }
   } catch(e) { /* silently ignore */ }
 
@@ -1773,7 +1768,7 @@ function tick(id, target) {
   const ease = t => 1 - Math.pow(1 - t, 3);
   (function step(now) {
     const p = Math.min((now - t0) / 1400, 1);
-    el.textContent = Math.round(ease(p) * target).toLocaleString('es-ES');
+    el.textContent = Math.round(ease(p) * target).toLocaleString(langLocale());
     if (p < 1) requestAnimationFrame(step);
   })(t0);
 }
@@ -2634,7 +2629,7 @@ function filterBySector(sector) {
 }
 
 // ── Helpers ──────────────────────────────────────────────────
-const fmt = n => (n??0).toLocaleString('es-ES');
+const fmt = n => (n??0).toLocaleString(langLocale());
 const esc = s => s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : '';
 
 function shortName(n) {
