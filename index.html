@@ -524,7 +524,7 @@
   <section class="hero">
     <div class="hero-label fu" data-i18n="hero-label">Parlamento Europeo · Datos abiertos</div>
     <h1 class="fu d1">Transparencia<br><em>parlamentaria europea</em></h1>
-    <p class="hero-sub fu d2">Descubre con quién se reúnen los 60 eurodiputados españoles</p>
+    <p class="hero-sub fu d2" data-i18n="hero-p">Descubre con quién se reúnen los 60 eurodiputados españoles</p>
     <div class="hero-ctas fu d3">
       <button class="btn-cta" onclick="document.getElementById('explore-anchor').scrollIntoView({behavior:'smooth',block:'start'})">
         <span data-i18n="btn-explore">Explorar reuniones</span>
@@ -541,20 +541,20 @@
   <div class="stats">
     <div class="stat fu d1">
       <div class="stat-n" id="s-r"><span class="skel-num"></span></div>
-      <div class="stat-l">reuniones registradas</div>
+      <div class="stat-l" data-i18n="stat-l-meetings">reuniones registradas</div>
       <div class="stat-filtered" id="s-r-filtered" style="display:none"></div>
     </div>
     <div class="stat fu d2">
       <div class="stat-n" id="s-m"><span class="skel-num"></span></div>
-      <div class="stat-l">eurodiputados españoles</div>
+      <div class="stat-l" data-i18n="stat-l-meps">eurodiputados españoles</div>
     </div>
     <div class="stat fu d2">
       <div class="stat-n" id="s-o"><span class="skel-num"></span></div>
-      <div class="stat-l">organizaciones distintas</div>
+      <div class="stat-l" data-i18n="stat-l-orgs">organizaciones distintas</div>
     </div>
     <div class="stat fu d3">
       <div class="stat-n" id="s-s"><span class="skel-num"></span></div>
-      <div class="stat-l">ámbitos identificados</div>
+      <div class="stat-l" data-i18n="stat-l-sectors">ámbitos identificados</div>
     </div>
   </div>
 
@@ -684,12 +684,12 @@
     <section class="hm-section" style="margin-top:1.5rem">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">
         <div>
-          <div style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.2rem">Mapa de intereses por partido</div>
-          <div style="font-size:.82rem;color:#94a3b8">Cruza qué partidos se reúnen más con cada ámbito temático</div>
+          <div style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.2rem" data-i18n="hm-title">Mapa de intereses por partido</div>
+          <div style="font-size:.82rem;color:#94a3b8" data-i18n="hm-sub">Cruza qué partidos se reúnen más con cada ámbito temático</div>
         </div>
         <div class="hm-toggles">
-          <button class="hm-toggle on" id="hm-abs" onclick="setHmMode('abs')">Número absoluto</button>
-          <button class="hm-toggle" id="hm-pct" onclick="setHmMode('pct')">% del partido</button>
+          <button class="hm-toggle on" id="hm-abs" onclick="setHmMode('abs')" data-i18n="hm-abs">Número absoluto</button>
+          <button class="hm-toggle" id="hm-pct" onclick="setHmMode('pct')" data-i18n="hm-pct">% del partido</button>
         </div>
       </div>
       <div id="heatmap-container"><!-- populated by renderHeatmap() --></div>
@@ -711,9 +711,9 @@
 
     <!-- Sub-nav pills -->
     <div class="an-subnav">
-      <button class="an-btn on" data-an="meps">Por eurodiputado</button>
-      <button class="an-btn" data-an="sectors">Por ámbito</button>
-      <button class="an-btn" data-an="partidos">Por partido</button>
+      <button class="an-btn on" data-an="meps" data-i18n="an-nav-meps">Por eurodiputado</button>
+      <button class="an-btn" data-an="sectors" data-i18n="an-nav-sectors">Por ámbito</button>
+      <button class="an-btn" data-an="partidos" data-i18n="an-nav-parties">Por partido</button>
     </div>
 
     <!-- ─── Sectores view ─── -->
@@ -901,11 +901,11 @@
   <div class="public-info-card">
     <div class="pi-icon-wrap">🇪🇺</div>
     <div>
-      <div class="pi-title">Datos de fuente oficial del Parlamento Europeo</div>
-      <p class="pi-text">Toda la información publicada en este portal proviene directamente del <strong>Registro de Transparencia del Parlamento Europeo</strong>. Los eurodiputados tienen la obligación legal de declarar sus reuniones con representantes de grupos de interés. Este portal no genera ni interpreta datos: únicamente los recopila, estructura y hace accesibles para periodistas, investigadores y ciudadanos.</p>
+      <div class="pi-title" data-i18n="pi-title">Datos de fuente oficial del Parlamento Europeo</div>
+      <p class="pi-text" data-i18n="pi-text">Toda la información publicada en este portal proviene directamente del <strong>Registro de Transparencia del Parlamento Europeo</strong>. Los eurodiputados tienen la obligación legal de declarar sus reuniones con representantes de grupos de interés. Este portal no genera ni interpreta datos: únicamente los recopila, estructura y hace accesibles para periodistas, investigadores y ciudadanos.</p>
       <a class="pi-link" href="https://www.europarl.europa.eu/meps/es/search/advanced?countryCode=ES" target="_blank">
         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
-        Ver portal oficial del Parlamento Europeo
+        <span data-i18n="pi-link">Ver portal oficial del Parlamento Europeo</span>
       </a>
     </div>
   </div>
@@ -1112,6 +1112,20 @@ const LANG = {
     'about-edu-2':               'Máster Decision Making & Innovation · UCJC',
     'about-edu-3':               'Lic. Ciencia Política · PUCP (Perú)',
     'btn-apoya':                 'Apoya el proyecto',
+    'stat-l-meetings':           'reuniones registradas',
+    'stat-l-meps':               'eurodiputados españoles',
+    'stat-l-orgs':               'organizaciones distintas',
+    'stat-l-sectors':            'ámbitos identificados',
+    'an-nav-meps':               'Por eurodiputado',
+    'an-nav-sectors':            'Por ámbito',
+    'an-nav-parties':            'Por partido',
+    'hm-title':                  'Mapa de intereses por partido',
+    'hm-sub':                    'Cruza qué partidos se reúnen más con cada ámbito temático',
+    'hm-abs':                    'Número absoluto',
+    'hm-pct':                    '% del partido',
+    'pi-title':                  'Datos de fuente oficial del Parlamento Europeo',
+    'pi-text':                   'Toda la información publicada en este portal proviene directamente del <strong>Registro de Transparencia del Parlamento Europeo</strong>. Los eurodiputados tienen la obligación legal de declarar sus reuniones con representantes de grupos de interés. Este portal no genera ni interpreta datos: únicamente los recopila, estructura y hace accesibles para periodistas, investigadores y ciudadanos.',
+    'pi-link':                   'Ver portal oficial del Parlamento Europeo',
   }
   ,en: {
     'loading':                   'Loading database…',
@@ -1245,6 +1259,20 @@ const LANG = {
     'about-edu-2':               'MSc Decision Making & Innovation · UCJC',
     'about-edu-3':               'BA Political Science · PUCP (Peru)',
     'btn-apoya':                 'Support the project',
+    'stat-l-meetings':           'registered meetings',
+    'stat-l-meps':               'Spanish MEPs',
+    'stat-l-orgs':               'different organizations',
+    'stat-l-sectors':            'identified sectors',
+    'an-nav-meps':               'By MEP',
+    'an-nav-sectors':            'By sector',
+    'an-nav-parties':            'By party',
+    'hm-title':                  'Interest map by party',
+    'hm-sub':                    'Cross which parties meet most with each thematic sector',
+    'hm-abs':                    'Absolute number',
+    'hm-pct':                    '% of party',
+    'pi-title':                  'Data from the official European Parliament source',
+    'pi-text':                   'All information published on this portal comes directly from the <strong>European Parliament Transparency Register</strong>. MEPs are legally required to declare their meetings with interest group representatives. This portal does not generate or interpret data: it only collects, structures and makes it accessible to journalists, researchers and citizens.',
+    'pi-link':                   'View official European Parliament portal',
   }
   ,pt: {
     'loading':                   'Carregando base de dados…',
@@ -1378,6 +1406,20 @@ const LANG = {
     'about-edu-2':               'Mestrado Decision Making & Innovation · UCJC',
     'about-edu-3':               'Lic. Ciência Política · PUCP (Peru)',
     'btn-apoya':                 'Apoie o projeto',
+    'stat-l-meetings':           'reuniões registadas',
+    'stat-l-meps':               'eurodeputados espanhóis',
+    'stat-l-orgs':               'organizações distintas',
+    'stat-l-sectors':            'setores identificados',
+    'an-nav-meps':               'Por eurodeputado',
+    'an-nav-sectors':            'Por setor',
+    'an-nav-parties':            'Por partido',
+    'hm-title':                  'Mapa de interesses por partido',
+    'hm-sub':                    'Cruzar quais partidos se reúnem mais com cada setor temático',
+    'hm-abs':                    'Número absoluto',
+    'hm-pct':                    '% do partido',
+    'pi-title':                  'Dados da fonte oficial do Parlamento Europeu',
+    'pi-text':                   'Toda a informação publicada neste portal provém diretamente do <strong>Registo de Transparência do Parlamento Europeu</strong>. Os eurodeputados têm a obrigação legal de declarar as suas reuniões com representantes de grupos de interesse. Este portal não gera nem interpreta dados: apenas os recolhe, estrutura e disponibiliza para jornalistas, investigadores e cidadãos.',
+    'pi-link':                   'Ver portal oficial do Parlamento Europeu',
   }
 };
 
@@ -1387,7 +1429,7 @@ function t(key) {
 
 function applyLang() {
   document.documentElement.lang = currentLang;
-  const HTML_KEYS = new Set(['hero-h1','footer-source']);
+  const HTML_KEYS = new Set(['hero-h1','footer-source','pi-text']);
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     const val = t(key);
