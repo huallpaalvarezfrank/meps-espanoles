@@ -4,6 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Eurodiputómetro · MEPs España</title>
+  <!-- SEO -->
+  <meta name="description" content="Descubre con quién se reúnen los 60 eurodiputados españoles. Portal de transparencia parlamentaria europea con datos oficiales del Parlamento Europeo.">
+  <meta name="keywords" content="eurodiputados españoles, reuniones MEPs, transparencia parlamentaria, lobbying Europa, Parlamento Europeo">
+  <meta name="author" content="Frank Huallpa Alvarez">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://huallpaalvarezfrank.github.io/meps-espanoles/">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:url" content="https://huallpaalvarezfrank.github.io/meps-espanoles/">
+  <meta property="og:title" content="Eurodiputómetro · MEPs España">
+  <meta property="og:description" content="Descubre con quién se reúnen los 60 eurodiputados españoles. Portal de transparencia parlamentaria europea con datos oficiales del Parlamento Europeo.">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Eurodiputómetro · MEPs España">
+  <meta name="twitter:description" content="Descubre con quién se reúnen los 60 eurodiputados españoles. Portal de transparencia parlamentaria europea.">
+  <!-- Favicon: "EP" sobre fondo azul UE -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23003399'/%3E%3Ctext x='16' y='22' font-family='system-ui,sans-serif' font-size='14' font-weight='700' fill='white' text-anchor='middle'%3EEP%3C/text%3E%3C/svg%3E">
+  <link rel="shortcut icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,7 +36,7 @@
       --bh:        rgba(0,0,0,0.18);
       --t:         #0f172a;
       --t2:        #475569;
-      --t3:        #94a3b8;
+      --t3:        #6b7a8f;
       --blue:      #2563eb;
       --blue-l:    #1d4ed8;
       --blue-d:    rgba(37,99,235,0.10);
@@ -511,11 +530,12 @@
 </header>
 
 <!-- Tab nav -->
-<nav class="tab-nav">
-  <button class="tab-btn on" data-tab="search" data-i18n="tab-search">Buscar reuniones</button>
-  <button class="tab-btn" data-tab="analisis" data-i18n="tab-analysis">Análisis</button>
-  <button class="tab-btn" data-tab="mapa" data-i18n="tab-mapa">Mapa de intereses</button>
+<nav class="tab-nav" role="tablist" aria-label="Secciones principales">
+  <button class="tab-btn on" data-tab="search" role="tab" aria-selected="true" aria-controls="panel-search" data-i18n="tab-search">Buscar reuniones</button>
+  <button class="tab-btn" data-tab="analisis" role="tab" aria-selected="false" aria-controls="panel-analisis" data-i18n="tab-analysis">Análisis</button>
+  <button class="tab-btn" data-tab="mapa" role="tab" aria-selected="false" aria-controls="panel-mapa" data-i18n="tab-mapa">Mapa de intereses</button>
 </nav>
+<main id="main-content">
 
 <!-- ═══════════════════════════════════════════════ -->
 <!-- Panel: Buscar -->
@@ -642,9 +662,9 @@
 
     <!-- ── Content area ── -->
     <div class="content-area">
-      <div class="rbar" id="rbar"></div>
+      <div class="rbar" id="rbar" aria-live="polite" aria-atomic="true"></div>
       <!-- Mobile cards (shown <640px) -->
-      <div id="mobile-cards" class="mobile-cards"></div>
+      <div id="mobile-cards" class="mobile-cards" aria-live="polite"></div>
       <!-- Desktop table (hidden <640px) -->
       <div class="tbl-wrap">
         <div class="tbl-box">
@@ -1002,7 +1022,7 @@
     </div>
   </div>
 </section>
-
+</main>
 
 <footer style="max-width:1200px;margin:0 auto;padding:1.25rem 1.5rem 2rem;border-top:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-size:.75rem;color:var(--t3)">
   <a href="https://www.paypal.com/ncp/payment/Y3H9Q5AWFV9E6" target="_blank" rel="noopener noreferrer" class="btn-apoya-footer" aria-label="Apoya Eurodiputómetro" data-i18n="btn-apoya">Apoya el proyecto</a>
@@ -1744,6 +1764,20 @@ function renderTimeline() {
     clearInterval(prog);
     bar.style.background = '#ef4444';
     console.error(e);
+    // Remove loading skeletons so they don't stay forever
+    document.querySelectorAll('.skel-num').forEach(el => el.textContent = '—');
+    document.getElementById('tbody').innerHTML =
+      '<tr><td colspan="6" style="padding:3rem;text-align:center"></td></tr>';
+    // Show user-facing error message
+    const errDiv = document.createElement('div');
+    errDiv.style.cssText = 'margin:2rem auto;max-width:480px;padding:1.5rem;background:var(--surf);border:1px solid #fca5a5;border-radius:var(--rm);text-align:center;color:var(--t)';
+    errDiv.innerHTML = `
+      <div style="font-size:1.5rem;margin-bottom:.75rem">⚠️</div>
+      <div style="font-weight:600;margin-bottom:.5rem">No se pudieron cargar los datos</div>
+      <div style="font-size:.85rem;color:var(--t2);margin-bottom:1.25rem">Comprueba tu conexión a internet e inténtalo de nuevo.</div>
+      <button onclick="window.location.reload()" style="background:var(--blue);color:#fff;border:0;border-radius:var(--rm);padding:.5rem 1.25rem;font-size:.85rem;font-weight:600;cursor:pointer">Reintentar</button>`;
+    const anchor = document.getElementById('explore-anchor') || document.body;
+    anchor.parentElement?.insertBefore(errDiv, anchor) ?? document.body.prepend(errDiv);
   }
 })();
 
@@ -1790,7 +1824,11 @@ function updateDataStatus() {
 
 // ── Main tabs ────────────────────────────────────────────────
 function switchTab(name) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    const active = b.dataset.tab === name;
+    b.classList.toggle('on', active);
+    b.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
   document.querySelectorAll('[id^="panel-"]').forEach(p => p.hidden = p.id !== 'panel-' + name);
   window.scrollTo(0, 0);
   if (name === 'analisis' && !analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
