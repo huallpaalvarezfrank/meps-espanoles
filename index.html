@@ -1226,6 +1226,8 @@ const LANG = {
     'org-recent-meetings':       'Reuniones recientes',
     'org-distinct-meps':         'MEPs distintos',
     'org-distinct-parties':      'Partidos',
+    'tipo-individual':           'individuales',
+    'tipo-grupal':               'grupales',
     'org-variants':              'También encontrado como:',
     'org-expand':                'Ampliar búsqueda',
     'bc-orgs':                   'Organizaciones',
@@ -1390,6 +1392,8 @@ const LANG = {
     'org-recent-meetings':       'Recent meetings',
     'org-distinct-meps':         'Distinct MEPs',
     'org-distinct-parties':      'Parties',
+    'tipo-individual':           'individual',
+    'tipo-grupal':               'group',
     'org-variants':              'Also found as:',
     'org-expand':                'Expand search',
     'bc-orgs':                   'Organizations',
@@ -1554,6 +1558,8 @@ const LANG = {
     'org-recent-meetings':       'Reuniões recentes',
     'org-distinct-meps':         'Eurodeputados distintos',
     'org-distinct-parties':      'Partidos',
+    'tipo-individual':           'individuais',
+    'tipo-grupal':               'grupais',
     'org-variants':              'Também encontrado como:',
     'org-expand':                'Expandir pesquisa',
     'bc-orgs':                   'Organizações',
@@ -2811,6 +2817,17 @@ function showOrgDetail(orgName) {
      GROUP BY sector ORDER BY n DESC LIMIT 1`, params
   )[0]?.values[0];
 
+  const typeRows = db.exec(
+    `SELECT tipo_reunion, COUNT(*) n FROM reuniones
+     WHERE (${likeClause}) AND tipo_reunion IS NOT NULL
+     GROUP BY tipo_reunion`, params
+  )[0]?.values ?? [];
+  let nInd = 0, nGrp = 0;
+  typeRows.forEach(([tipo, n]) => {
+    if (tipo === 'Individual') nInd = n;
+    else if (tipo === 'Grupal') nGrp = n;
+  });
+
   // Header
   const pc = topSect ? (C[topSect[0]] || C['Otros'])[0] : 'rgba(100,116,139,.4)';
   const bc2 = topSect ? (C[topSect[0]] || C['Otros'])[1] : '#64748b';
@@ -2824,6 +2841,8 @@ function showOrgDetail(orgName) {
         <span style="color:var(--t3)">·</span>
         <span style="color:var(--t2)">${fmt(nParties)} ${t('org-distinct-parties')}</span>
         ${topSect ? `<span style="color:var(--t3)">·</span><span class="mep-badge" style="background:${pc};color:${bc2}">${esc(topSect[0])}</span>` : ''}
+        ${nInd > 0 ? `<span style="color:var(--t3)">·</span><span style="color:var(--t2)">${fmt(nInd)} ${t('tipo-individual')}</span>` : ''}
+        ${nGrp > 0 ? `<span style="color:var(--t3)">·</span><span style="color:var(--t2)">${fmt(nGrp)} ${t('tipo-grupal')}</span>` : ''}
       </div>
     </div>`;
 
