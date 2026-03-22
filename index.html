@@ -2122,36 +2122,10 @@ window.addEventListener('popstate', () => {
 // ══════════════════════════════════════════════════════════════
 // VARIANT DETECTION HELPERS
 // ══════════════════════════════════════════════════════════════
-const STOP_TOKENS = new Set([
-  'bank','banco','banque','group','grupo','global',
-  'europe','europa','european','europea',
-  'foundation','fundacion','fundación',
-  'institute','instituto','association','asociacion','asociación',
-  'confederation','confederacion','confederación',
-  'federation','federacion','federación',
-  'network','council','consejo','committee',
-  'comision','comisión',
-  'industry','industries','services','service','solutions',
-  'management','corp','corporation','company','holding',
-  'international','internacional','national','nacional',
-  'española','espanola','español','espanol',
-  'camara','cámara','comercio',
-  'sindical','patronal','profesional','profesionales',
-  'general','central','plataforma','tecnica','técnica'
-]);
-function tokenize(name) {
-  return name
-    .replace(/([a-záéíóúü])([A-ZÁÉÍÓÚ])/g, '$1 $2')
-    .toLowerCase()
-    .split(/[^a-záéíóúüña-z0-9]+/)
-    .filter(t => t.length >= 4 && !STOP_TOKENS.has(t));
-}
 function areVariants(a, b) {
   const al = a.toLowerCase(), bl = b.toLowerCase();
   if (al === bl) return false;
-  if (al.includes(bl) || bl.includes(al)) return true;
-  const tokA = tokenize(a), tokB = new Set(tokenize(b));
-  return tokA.length > 0 && tokB.size > 0 && tokA.some(t => tokB.has(t));
+  return al.includes(bl) || bl.includes(al);
 }
 function groupActors(rows, limit = 10) {
   const cnt = {}, canonical = {};
