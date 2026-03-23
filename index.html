@@ -1742,7 +1742,7 @@ function renderTimeline() {
   if (text)    { const lk=`%${text}%`; conds.push('(r.actores LIKE ? OR r.titulo LIKE ? OR m.nombre LIKE ? OR r.reunion_con LIKE ?)'); params.push(lk,lk,lk,lk); }
   if (sector)  { conds.push('r.sector=?');          params.push(sector); }
   if (mepId)   { conds.push('r.mep_id=?');          params.push(mepId); }
-  if (partido) { conds.push('m.partido_nacional=?'); params.push(partido); }
+  if (partido) { const allP=partiesFor(partido); conds.push(`m.partido_nacional IN (${allP.map(()=>'?').join(',')})`); params.push(...allP); }
   if (tipo)    { conds.push('r.tipo_reunion=?');     params.push(tipo); }
   const rows = db.exec(
     `SELECT strftime('%Y-%m', r.fecha) as mes, COUNT(*) as total
@@ -1939,7 +1939,19 @@ function tick(id, target) {
 function initFilters() {
   populate('f-sector', "SELECT DISTINCT sector FROM reuniones WHERE sector IS NOT NULL AND sector!='' ORDER BY sector", r => [r[0], r[0]]);
   populate('f-mep',    "SELECT mep_id, nombre FROM meps ORDER BY nombre", r => [r[0], r[1]]);
-  populate('f-partido',"SELECT DISTINCT partido_nacional FROM meps WHERE partido_nacional IS NOT NULL ORDER BY partido_nacional", r => [r[0], r[0]]);
+  {
+    const pRows = db.exec("SELECT DISTINCT partido_nacional FROM meps WHERE partido_nacional IS NOT NULL ORDER BY partido_nacional")[0]?.values ?? [];
+    const sel = document.getElementById('f-partido');
+    const seen = new Set();
+    pRows.forEach(([p]) => {
+      const c = canonParty(p);
+      if (!seen.has(c)) {
+        seen.add(c);
+        const o = document.createElement('option'); o.value = c; o.textContent = c;
+        sel.appendChild(o);
+      }
+    });
+  }
 }
 function populate(id, sql, m) {
   const sel = document.getElementById(id);
@@ -1963,7 +1975,7 @@ function run(p = 0) {
   if (text)    { const lk=`%${text}%`; conds.push('(r.actores LIKE ? OR r.titulo LIKE ? OR m.nombre LIKE ? OR r.reunion_con LIKE ?)'); params.push(lk,lk,lk,lk); }
   if (sector)  { conds.push('r.sector=?');          params.push(sector); }
   if (mepId)   { conds.push('r.mep_id=?');          params.push(mepId); }
-  if (partido) { conds.push('m.partido_nacional=?'); params.push(partido); }
+  if (partido) { const allP=partiesFor(partido); conds.push(`m.partido_nacional IN (${allP.map(()=>'?').join(',')})`); params.push(...allP); }
   if (tipo)    { conds.push('r.tipo_reunion=?');     params.push(tipo); }
   const where = conds.join(' AND ');
   const join  = 'FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id WHERE '+where;
@@ -2137,6 +2149,16 @@ function areVariants(a, b) {
   if (al === bl) return false;
   return al.includes(bl) || bl.includes(al);
 }
+// ── Fusión de partidos nacionales ─────────────────────────────────────────
+const PARTY_MERGE = {
+  'Partit dels Socialistes de Catalunya (PSC-PSOE) (España)':
+    'Partido Socialista Obrero Español (España)',
+};
+function canonParty(p) { return PARTY_MERGE[p] || p; }
+function partiesFor(canon) {
+  return [canon, ...Object.keys(PARTY_MERGE).filter(k => PARTY_MERGE[k] === canon)];
+}
+
 const ACTOR_ALIASES = {
   // Inglés → Español: Gobierno
   'government of spain':                                     'Gobierno de España',
@@ -2806,12 +2828,19 @@ function clearMepDetail() {
 // PARTIDOS VIEW
 // ══════════════════════════════════════════════════════════════
 function renderPartidosView() {
-  const partidoData = db.exec(`
+  const raw = db.exec(`
     SELECT m.partido_nacional, COUNT(*) n, COUNT(DISTINCT m.mep_id) nmeps
     FROM reuniones r JOIN meps m ON r.mep_id = m.mep_id
     WHERE m.partido_nacional IS NOT NULL AND m.partido_nacional != ''
     GROUP BY m.partido_nacional ORDER BY n DESC
   `)[0]?.values ?? [];
+  const mergedMap = {};
+  raw.forEach(([p, n, nm]) => {
+    const c = canonParty(p);
+    if (!mergedMap[c]) mergedMap[c] = [c, 0, 0];
+    mergedMap[c][1] += n; mergedMap[c][2] += nm;
+  });
+  const partidoData = Object.values(mergedMap).sort((a, b) => b[1] - a[1]);
 
   const totalR = db.exec('SELECT COUNT(*) FROM reuniones')[0]?.values[0][0] ?? 1;
   const top = partidoData[0];
@@ -2848,11 +2877,13 @@ function renderPartidosView() {
 }
 
 function showPartidoDetail(partido) {
+  const allP = partiesFor(partido);
+  const pIn  = allP.map(() => '?').join(',');
   const total = db.exec(
-    `SELECT COUNT(*) FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id WHERE m.partido_nacional=?`, [partido]
+    `SELECT COUNT(*) FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id WHERE m.partido_nacional IN (${pIn})`, allP
   )[0]?.values[0][0] ?? 0;
   const nmeps = db.exec(
-    `SELECT COUNT(DISTINCT mep_id) FROM meps WHERE partido_nacional=?`, [partido]
+    `SELECT COUNT(DISTINCT mep_id) FROM meps WHERE partido_nacional IN (${pIn})`, allP
   )[0]?.values[0][0] ?? 0;
 
   document.getElementById('partido-detail-title').textContent  = partido;
@@ -2863,8 +2894,8 @@ function showPartidoDetail(partido) {
   // Bar: MEPs del partido
   const mepRows = db.exec(`
     SELECT r.mep_id, m.nombre, COUNT(*) n FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
-    WHERE m.partido_nacional=? GROUP BY r.mep_id ORDER BY n DESC
-  `, [partido])[0]?.values ?? [];
+    WHERE m.partido_nacional IN (${pIn}) GROUP BY r.mep_id ORDER BY n DESC
+  `, allP)[0]?.values ?? [];
   const mepIds = mepRows.map(r => r[0]);
   const mepH   = Math.max(200, mepRows.length * 32);
   const mepCanvas = document.getElementById('c-partido-meps');
@@ -2915,9 +2946,9 @@ function showPartidoDetail(partido) {
   // Donut: sectores
   const sects = db.exec(`
     SELECT r.sector, COUNT(*) n FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
-    WHERE m.partido_nacional=? AND r.sector IS NOT NULL AND r.sector!=''
+    WHERE m.partido_nacional IN (${pIn}) AND r.sector IS NOT NULL AND r.sector!=''
     GROUP BY r.sector ORDER BY n DESC
-  `, [partido])[0]?.values ?? [];
+  `, allP)[0]?.values ?? [];
   mkChart('c-partido-sector', {
     type: 'doughnut',
     data: {
@@ -2930,8 +2961,8 @@ function showPartidoDetail(partido) {
   // Bar: años
   const years = db.exec(`
     SELECT substr(r.fecha,1,4) yr, COUNT(*) n FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
-    WHERE m.partido_nacional=? AND r.fecha IS NOT NULL GROUP BY yr ORDER BY yr
-  `, [partido])[0]?.values ?? [];
+    WHERE m.partido_nacional IN (${pIn}) AND r.fecha IS NOT NULL GROUP BY yr ORDER BY yr
+  `, allP)[0]?.values ?? [];
   mkChart('c-partido-year', {
     type: 'bar',
     data: { labels: years.map(r => r[0]), datasets: [{ data: years.map(r => r[1]), backgroundColor: partyBg(partido), borderColor: partyBorder(partido), borderWidth: 1, borderRadius: 4 }] },
@@ -2941,8 +2972,8 @@ function showPartidoDetail(partido) {
   // Top orgs
   const rows = db.exec(`
     SELECT r.actores FROM reuniones r JOIN meps m ON r.mep_id=m.mep_id
-    WHERE m.partido_nacional=? AND r.actores IS NOT NULL
-  `, [partido])[0]?.values ?? [];
+    WHERE m.partido_nacional IN (${pIn}) AND r.actores IS NOT NULL
+  `, allP)[0]?.values ?? [];
   const top10 = groupActors(rows, 10);
   const mx = top10[0]?.[1] || 1;
   document.getElementById('partido-org-list').innerHTML = top10.map(([name,n],i) => `
@@ -3181,7 +3212,8 @@ function initAnSuggData() {
   const meps     = (db.exec("SELECT mep_id, nombre FROM meps ORDER BY nombre")[0]?.values ?? [])
     .map(r => ({ type: 'mep', label: r[1], id: r[0] }));
   const partidos = (db.exec("SELECT DISTINCT partido_nacional FROM meps WHERE partido_nacional IS NOT NULL AND partido_nacional!='' ORDER BY partido_nacional")[0]?.values ?? [])
-    .map(r => ({ type: 'partido', label: r[0] }));
+    .map(r => canonParty(r[0])).filter((v, i, a) => a.indexOf(v) === i)
+    .map(p => ({ type: 'partido', label: p }));
   // Build org list from actores column applying ACTOR_ALIASES
   const actRows = (db.exec("SELECT actores FROM reuniones WHERE actores IS NOT NULL AND actores!=''")[0]?.values ?? []);
   const orgCnt = {}, orgCanon = {};
@@ -3299,8 +3331,7 @@ function shortName(n) {
 function shortParty(p) {
   if (!p) return '';
   if (p.includes('Popular'))   return 'PP';
-  if (p.includes('PSC'))        return 'PSC-PSOE';
-  if (p.includes('Socialista')) return 'PSOE';
+  if (p.includes('Socialista') || p.includes('PSC')) return 'PSOE';
   if (p.includes('VOX'))        return 'Vox';
   if (p.includes('PODEMOS'))    return 'Podemos';
   if (p.includes('Comuns'))     return 'Comuns';
@@ -3380,11 +3411,21 @@ function renderHeatmap(mode) {
 
   if (!rows.length) return;
 
-  const parties = [...new Set(rows.map(r => r[0]))].sort();
-  const sectors = [...new Set(rows.map(r => r[1]))].sort();
+  // Merge aliased parties
+  const agg = {};
+  rows.forEach(([p, s, n]) => {
+    const c = canonParty(p);
+    const k = c + '|' + s;
+    if (!agg[k]) agg[k] = { p: c, s, n: 0 };
+    agg[k].n += n;
+  });
+  const mergedRows = Object.values(agg).map(({ p, s, n }) => [p, s, n]);
+
+  const parties = [...new Set(mergedRows.map(r => r[0]))].sort();
+  const sectors = [...new Set(mergedRows.map(r => r[1]))].sort();
   const data = {};
   const partyTotals = {};
-  rows.forEach(([party, sector, cnt]) => {
+  mergedRows.forEach(([party, sector, cnt]) => {
     if (!data[party]) data[party] = {};
     data[party][sector] = cnt;
     partyTotals[party] = (partyTotals[party] || 0) + cnt;
