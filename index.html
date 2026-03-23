@@ -2147,6 +2147,7 @@ window.addEventListener('popstate', () => {
 function areVariants(a, b) {
   const al = a.toLowerCase(), bl = b.toLowerCase();
   if (al === bl) return false;
+  if (al.length < 4 || bl.length < 4) return false;
   return al.includes(bl) || bl.includes(al);
 }
 // ── Fusión de partidos nacionales ─────────────────────────────────────────
@@ -2347,6 +2348,23 @@ const ACTOR_ALIASES = {
 
   // ── ETUC (con acrónimo entre paréntesis) ─────────────────────────────────
   'european trade union confederation (etuc)':               'European Trade Union Confederation',
+
+  // ── BP (minúsculas en BD) ─────────────────────────────────────────────────
+  'bp':                                                      'BP',
+
+  // ── UGT (acrónimo ↔ nombre completo) ─────────────────────────────────────
+  'ugt':                                                     'Unión General de Trabajadores de España',
+  'unión general de trabajadores':                           'Unión General de Trabajadores de España',
+
+  // ── BSA / The Software Alliance (mismo org, nombre cambiado) ─────────────
+  'the software alliance':                                   'BSA',
+
+  // ── LaLiga / Liga Nacional de Fútbol Profesional ──────────────────────────
+  'liga nacional de fútbol profesional':                     'LaLiga',
+
+  // ── Misión China (variantes adicionales) ─────────────────────────────────
+  'china mission to the eu':                                 'Misión de China ante la UE',
+  'embajada de china ante la ue':                            'Misión de China ante la UE',
 };
 function groupActors(rows, limit = 10) {
   const cnt = {}, canonical = {};
@@ -3019,7 +3037,13 @@ function showOrgDetail(orgName) {
   allRows.forEach(([a]) =>
     a.split('|').forEach(x => { const k = x.trim(); if (k) allActorNames.add(k); })
   );
-  const variants = [...allActorNames].filter(k => areVariants(orgName, k)).slice(0, 5);
+  const variants = [...allActorNames].filter(k => {
+    const kl = k.toLowerCase(), ol = orgName.toLowerCase();
+    if (kl === ol) return false;
+    if (areVariants(orgName, k)) return true;
+    const aliased = ACTOR_ALIASES[kl];
+    return aliased && aliased.toLowerCase() === ol;
+  });
 
   const allOrgs = [orgName, ...variants];
   const likeClause = allOrgs.map(() => `LOWER('|'||actores||'|') LIKE LOWER('%|'||?||'|%')`).join(' OR ');
