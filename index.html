@@ -2133,13 +2133,39 @@ function areVariants(a, b) {
   if (al === bl) return false;
   return al.includes(bl) || bl.includes(al);
 }
+const ACTOR_ALIASES = {
+  // Inglés → Español: Gobierno
+  'government of spain':                                     'Gobierno de España',
+  'spanish government':                                      'Gobierno de España',
+  // Inglés → Español: Instituciones UE
+  'european commission':                                     'Comisión Europea',
+  'european parliament':                                     'Parlamento Europeo',
+  'council of the european union':                           'Consejo de la Unión Europea',
+  'european council':                                        'Consejo Europeo',
+  'court of justice of the european union':                  'Tribunal de Justicia de la UE',
+  'european central bank':                                   'Banco Central Europeo',
+  'committee of the regions':                                'Comité de las Regiones',
+  'european economic and social committee':                  'Comité Económico y Social Europeo',
+  'european data protection supervisor':                     'Supervisor Europeo de Protección de Datos',
+  // Variantes de Representación Permanente (inglés y forma larga en español)
+  'spanish permanent representation':                        'Representación Permanente de España ante la UE',
+  'spain permanent representation to the eu':                'Representación Permanente de España ante la UE',
+  'representación permanente de españa en la unión europea': 'Representación Permanente de España ante la UE',
+  'representación permanente de españa ante la unión europea': 'Representación Permanente de España ante la UE',
+  // Variantes de formato de empresa
+  'caixabank':                                               'CaixaBank, S.A.',
+  // Capitalización
+  'copa-cogeca':                                             'Copa-Cogeca',
+};
 function groupActors(rows, limit = 10) {
   const cnt = {}, canonical = {};
   rows.forEach(([a]) => a.split('|').forEach(x => {
-    const raw = x.trim(); const k = raw.toLowerCase();
-    if (!raw) return;
+    const raw = x.trim();
+    const normalized = ACTOR_ALIASES[raw.toLowerCase()] || raw;
+    const k = normalized.toLowerCase();
+    if (!normalized) return;
     cnt[k] = (cnt[k] || 0) + 1;
-    if (!canonical[k]) canonical[k] = raw;
+    if (!canonical[k]) canonical[k] = normalized;
   }));
   const allUnique = Object.entries(cnt).sort((a,b) => b[1]-a[1]).map(([k]) => canonical[k]);
   const absorbed = new Set();

@@ -75,6 +75,12 @@ Tu tarea: dado un array JSON de reuniones de eurodiputados españoles, extrae pa
    - No incluyas al eurodiputado (él es el anfitrión, no el actor externo)
    - Usa el nombre más reconocible en su idioma original (ej: "Apple Inc.", no "Apple Incorporated")
    - Usa el contexto del título de la reunión para desambiguar si es necesario
+   - Para entidades españolas o europeas usa SIEMPRE el nombre en español:
+     "Gobierno de España" (no "Government of Spain"), "Comisión Europea" (no "European Commission"),
+     "Parlamento Europeo" (no "European Parliament"), "Consejo de la Unión Europea" (no "Council of the EU"),
+     "Representación Permanente de España ante la UE" (no "Spanish Permanent Representation")
+   - Para entidades de otros países usa su nombre en idioma original: "Deutsche Bank", "Renault S.A."
+   - Usa la forma legal completa cuando sea conocida: "CaixaBank, S.A." no "CaixaBank"
 
 2. sector: elige EXACTAMENTE una de estas categorías (copia el texto exacto):
    {", ".join(VALID_SECTORS)}
