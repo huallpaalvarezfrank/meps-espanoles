@@ -3299,9 +3299,11 @@ function shortName(n) {
 function shortParty(p) {
   if (!p) return '';
   if (p.includes('Popular'))   return 'PP';
-  if (p.includes('Socialista') || p.includes('PSC')) return 'PSOE';
-  if (p.includes('VOX'))       return 'Vox';
-  if (p.includes('PODEMOS') || p.includes('Comuns')) return 'Podemos';
+  if (p.includes('PSC'))        return 'PSC-PSOE';
+  if (p.includes('Socialista')) return 'PSOE';
+  if (p.includes('VOX'))        return 'Vox';
+  if (p.includes('PODEMOS'))    return 'Podemos';
+  if (p.includes('Comuns'))     return 'Comuns';
   if (p.includes('Sumar'))     return 'Sumar';
   if (p.includes('Esquerra'))  return 'ERC';
   if (p.includes('BILDU'))     return 'EH Bildu';
