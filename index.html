@@ -3127,7 +3127,19 @@ function initAnSuggData() {
     .map(r => ({ type: 'mep', label: r[1], id: r[0] }));
   const partidos = (db.exec("SELECT DISTINCT partido_nacional FROM meps WHERE partido_nacional IS NOT NULL AND partido_nacional!='' ORDER BY partido_nacional")[0]?.values ?? [])
     .map(r => ({ type: 'partido', label: r[0] }));
-  anSuggData = { sectors, meps, partidos };
+  // Build org list from actores column applying ACTOR_ALIASES
+  const actRows = (db.exec("SELECT actores FROM reuniones WHERE actores IS NOT NULL AND actores!=''")[0]?.values ?? []);
+  const orgCnt = {}, orgCanon = {};
+  actRows.forEach(([a]) => a.split('|').forEach(x => {
+    const raw = x.trim(); if (!raw) return;
+    const norm = ACTOR_ALIASES[raw.toLowerCase()] || raw;
+    const k = norm.toLowerCase();
+    orgCnt[k] = (orgCnt[k] || 0) + 1;
+    if (!orgCanon[k]) orgCanon[k] = norm;
+  }));
+  const orgs = Object.entries(orgCnt).sort((a,b) => b[1]-a[1])
+    .map(([k]) => ({ type: 'org', label: orgCanon[k] }));
+  anSuggData = { sectors, meps, partidos, orgs };
 }
 
 document.getElementById('an-q').addEventListener('input', function() {
@@ -3135,16 +3147,24 @@ document.getElementById('an-q').addEventListener('input', function() {
   const box = document.getElementById('an-sugg');
   if (!q) { box.hidden = true; return; }
   initAnSuggData();
-  const matchM = anSuggData.meps.filter(m => m.label.toLowerCase().includes(q)).slice(0, 6);
-  const matchS = anSuggData.sectors.filter(s => s.label.toLowerCase().includes(q)).slice(0, 5);
-  const matchP = anSuggData.partidos.filter(p => p.label.toLowerCase().includes(q) || shortParty(p.label).toLowerCase().includes(q)).slice(0, 5);
-  if (!matchM.length && !matchS.length && !matchP.length) { box.hidden = true; return; }
+  const matchM = anSuggData.meps.filter(m => m.label.toLowerCase().includes(q)).slice(0, 4);
+  const matchS = anSuggData.sectors.filter(s => s.label.toLowerCase().includes(q)).slice(0, 3);
+  const matchP = anSuggData.partidos.filter(p => p.label.toLowerCase().includes(q) || shortParty(p.label).toLowerCase().includes(q)).slice(0, 3);
+  const matchO = anSuggData.orgs.filter(o => o.label.toLowerCase().includes(q)).slice(0, 5);
+  if (!matchM.length && !matchS.length && !matchP.length && !matchO.length) { box.hidden = true; return; }
   let html = '';
   if (matchM.length) {
     html += `<div class="an-sugg-group">${t('sugg-meps')}</div>`;
     html += matchM.map(m => `<div class="an-sugg-item" onclick="selectAnMep(${m.id})">
       <span class="an-sugg-tag" style="background:rgba(100,116,139,.3);color:#94a3b8">MEP</span>
       ${esc(m.label)}
+    </div>`).join('');
+  }
+  if (matchO.length) {
+    html += `<div class="an-sugg-group">${t('sugg-orgs')}</div>`;
+    html += matchO.map(o => `<div class="an-sugg-item" onclick="selectAnOrg('${esc(o.label).replace(/'/g,"\\'")}')">
+      <span class="an-sugg-tag" style="background:rgba(59,130,246,.15);color:#2563eb">ORG</span>
+      ${esc(o.label)}
     </div>`).join('');
   }
   if (matchP.length) {
@@ -3187,6 +3207,14 @@ function selectAnPartido(partido) {
   if (!analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
   switchAnTab('partidos');
   showPartidoDetail(partido);
+}
+
+function selectAnOrg(orgName) {
+  document.getElementById('an-q').value = '';
+  document.getElementById('an-sugg').hidden = true;
+  if (!analisisInit && db) { renderAnalisisTab(); analisisInit = true; }
+  switchAnTab('orgs');
+  showOrgDetail(orgName);
 }
 
 // Close dropdown on outside click
