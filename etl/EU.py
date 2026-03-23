@@ -324,11 +324,11 @@ def upsert_mep(conn, meta):
         INSERT INTO meps (mep_id, nombre, foto_url, grupo_politico, rol_grupo, partido_nacional)
         VALUES (:mep_id, :nombre, :foto_url, :grupo_politico, :rol_grupo, :partido_nacional)
         ON CONFLICT(mep_id) DO UPDATE SET
-            nombre           = excluded.nombre,
-            foto_url         = excluded.foto_url,
-            grupo_politico   = excluded.grupo_politico,
-            rol_grupo        = excluded.rol_grupo,
-            partido_nacional = excluded.partido_nacional
+            nombre           = COALESCE(excluded.nombre,           nombre),
+            foto_url         = COALESCE(excluded.foto_url,         foto_url),
+            grupo_politico   = COALESCE(excluded.grupo_politico,   grupo_politico),
+            rol_grupo        = COALESCE(excluded.rol_grupo,        rol_grupo),
+            partido_nacional = COALESCE(excluded.partido_nacional, partido_nacional)
     """, meta)
 
 def insert_reuniones(conn, rows):
