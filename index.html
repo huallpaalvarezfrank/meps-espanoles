@@ -3457,7 +3457,6 @@ function initAutocomplete() {
     let html = '';
 
     if (mepRows.length) {
-      html += `<div class="autocomplete-group-label">${t('sugg-meps')}</div>`;
       mepRows.forEach(([name]) => {
         html += `<div class="autocomplete-item" data-type="mep" data-val="${esc(name)}">
           <span class="ac-icon">👤</span><span>${highlight(name, q)}</span></div>`;
@@ -3465,7 +3464,6 @@ function initAutocomplete() {
     }
 
     if (orgRows.length) {
-      html += `<div class="autocomplete-group-label">${t('sugg-orgs')}</div>`;
       orgRows.forEach(([org]) => {
         html += `<div class="autocomplete-item" data-type="org" data-val="${esc(org)}">
           <span class="ac-icon">🏢</span><span>${highlight(org, q)}</span></div>`;
@@ -3473,7 +3471,6 @@ function initAutocomplete() {
     }
 
     if (sectorRows.length) {
-      html += `<div class="autocomplete-group-label">${t('sugg-sectors')}</div>`;
       sectorRows.forEach(([sec]) => {
         html += `<div class="autocomplete-item" data-type="sector" data-val="${esc(sec)}">
           <span class="ac-icon">🏷</span><span>${highlight(sec, q)}</span></div>`;
