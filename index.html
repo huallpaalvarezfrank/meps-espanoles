@@ -2149,7 +2149,9 @@ function areVariants(a, b) {
   const al = a.toLowerCase(), bl = b.toLowerCase();
   if (al === bl) return false;
   if (al.length < 4 || bl.length < 4) return false;
-  return al.includes(bl) || bl.includes(al);
+  const [shorter, longer] = al.length <= bl.length ? [al, bl] : [bl, al];
+  const escaped = shorter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp('\\b' + escaped + '\\b').test(longer);
 }
 // ── Fusión de partidos nacionales ─────────────────────────────────────────
 const PARTY_MERGE = {
