@@ -1610,11 +1610,11 @@ const PAGE = 25;
 const WASM = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/';
 
 const C = { // Sector colors [bg, text]
-  'Institución pública':         ['rgba(37,99,235,.18)',   '#93c5fd'],
-  'ONG':                         ['rgba(20,184,166,.18)',  '#2dd4bf'],
+  'Sector público':              ['rgba(37,99,235,.18)',   '#93c5fd'],
+  'Sociedad Civil':              ['rgba(20,184,166,.18)',  '#2dd4bf'],
   'Organizaciones empresariales':['rgba(245,158,11,.18)',  '#fbbf24'],
   'Industria':                   ['rgba(148,163,184,.18)', '#94a3b8'],
-  'Agricultura':                 ['rgba(132,204,22,.18)',  '#a3e635'],
+  'Agroalimentario':             ['rgba(132,204,22,.18)',  '#a3e635'],
   'Tecnología':                  ['rgba(59,130,246,.18)',  '#60a5fa'],
   'Salud':                       ['rgba(236,72,153,.18)',  '#f472b6'],
   'Transporte':                  ['rgba(234,179,8,.18)',   '#facc15'],
@@ -1636,6 +1636,7 @@ const C = { // Sector colors [bg, text]
   'Tabaco':                      ['rgba(107,114,128,.14)', '#d1d5db'],
   'Deporte':                     ['rgba(16,185,129,.18)',  '#34d399'],
   'Turismo':                     ['rgba(234,179,8,.12)',   '#fef9c3'],
+  'Organismos internacionales':  ['rgba(30,64,175,.16)',   '#bfdbfe'],
 };
 
 // ── State ────────────────────────────────────────────────────
@@ -2365,6 +2366,73 @@ const ACTOR_ALIASES = {
   // ── Misión China (variantes adicionales) ─────────────────────────────────
   'china mission to the eu':                                 'Misión de China ante la UE',
   'embajada de china ante la ue':                            'Misión de China ante la UE',
+
+  // ── ONCE y sub-entidades (todas bajo ONCE) ────────────────────────────────
+  'organización nacional de ciegos de españa':               'ONCE',
+  'organizacion nacional de ciegos de españa':               'ONCE',
+  'fundación once':                                          'ONCE',
+  'grupo social once':                                       'ONCE',
+  'once la rioja':                                           'ONCE',
+
+  // ── RENFE ─────────────────────────────────────────────────────────────────
+  'renfe operadora':                                         'RENFE',
+  'red nacional de ferrocarriles españoles':                 'RENFE',
+
+  // ── NAVANTIA ──────────────────────────────────────────────────────────────
+  'navantia s.a.':                                           'NAVANTIA',
+  'navantia, s.a.':                                         'NAVANTIA',
+
+  // ── WWF ───────────────────────────────────────────────────────────────────
+  'world wildlife fund':                                     'WWF',
+  'wwf european policy programme':                           'WWF',
+  'wwf-adena':                                               'WWF',
+
+  // ── Organismos ONU (siglas conocidas) ────────────────────────────────────
+  'united nations relief and works agency':                  'UNRWA',
+  'united nations high commissioner for refugees':           'UNHCR',
+  'unhcr - the un refugee agency':                           'UNHCR',
+  'unicef eu':                                               'UNICEF',
+  "united nations children's fund":                          'UNICEF',
+  'united nations educational, scientific and cultural organization': 'UNESCO',
+  'international labour organization':                       'OIT',
+  'international labour organisation':                       'OIT',
+  'international organization for migration':                'OIM',
+  'organisation internationale pour les migrations':         'OIM',
+  'united nations office on drugs and crime':                'UNODC',
+  'world food programme':                                    'WFP',
+  'programme alimentaire mondial':                           'WFP',
+  'programa mundial de alimentos':                           'WFP',
+  'united nations development programme':                    'PNUD',
+
+  // ── GSK (GlaxoSmithKline) ─────────────────────────────────────────────────
+  'glaxosmithkline':                                         'GSK',
+  'glaxosmithkline plc':                                     'GSK',
+
+  // ── Sanofi ────────────────────────────────────────────────────────────────
+  'sanofi s.a.':                                             'Sanofi',
+  'sanofi sa':                                               'Sanofi',
+
+  // ── ANFAC (automoción española) ───────────────────────────────────────────
+  'asociación española de fabricantes de automóviles y camiones': 'ANFAC',
+  'anfac - spanish association of automobile and truck manufacturers': 'ANFAC',
+
+  // ── ACEA (automoción europea) ─────────────────────────────────────────────
+  "association des constructeurs européens d'automobiles":   'ACEA',
+
+  // ── Philip Morris (consolidar todas las variantes) ───────────────────────
+  'philip morris':                                           'Philip Morris International Inc.',
+  'pmi':                                                     'Philip Morris International Inc.',
+  'philip morris tabaco':                                    'Philip Morris International Inc.',
+  'phillip morris':                                          'Philip Morris International Inc.',
+
+  // ── JTI / Japan Tobacco ───────────────────────────────────────────────────
+  'japan tobacco international':                             'JTI',
+  'jt international':                                        'JTI',
+  'japan tobacco international s.a.':                        'JTI',
+  'japan tobacco international sa':                          'JTI',
+
+  // ── Ecma International (estándares informáticos, ≠ ECMA tabaco) ──────────
+  'ecma international':                                      'Ecma International',
 };
 function groupActors(rows, limit = 10) {
   const cnt = {}, canonical = {};

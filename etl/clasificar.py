@@ -40,30 +40,41 @@ MAX_TOKENS      = 4096
 SEPARADOR_CSV   = ";"
 
 VALID_SECTORS = [
-    "Energía", "Banca", "Tecnología", "ONG", "Transporte", "Agricultura",
+    "Energía", "Banca", "Tecnología", "Sociedad Civil", "Transporte", "Agroalimentario",
     "Salud", "Medio ambiente", "Industria", "Educación", "Medios", "Defensa",
-    "Consultoría", "Evento", "Institución pública", "Institución UE",
+    "Consultoría", "Evento", "Sector público", "Institución UE",
     "Organizaciones empresariales", "Sindicatos", "Think tank",
     "Automoción", "Tabaco", "Distribución", "Deporte", "Cosméticos y perfumería",
-    "Turismo", "Otros",
+    "Turismo", "Organismos internacionales", "Otros",
 ]
 
 # Mapa de normalización: si reglas.csv o Claude devuelven un sector no canónico,
 # se reemplaza por su equivalente canónico antes de escribir en la BD.
 SECTOR_NORMALIZE = {
-    "Banca y finanzas":            "Banca",
-    "Consultoría y comunicación":  "Consultoría",
-    "Administración pública":      "Institución pública",
-    "Telecomunicaciones":          "Tecnología",
-    "Medios de comunicación":      "Medios",
-    "Farmacéutica":                "Salud",
-    "Agricultura y alimentación":  "Agricultura",
-    "Aeronáutica y defensa":       "Defensa",
-    "Discapacidad y social":       "ONG",
-    "ONG y derechos humanos":      "ONG",
-    "Academia e investigación":    "Educación",
-    "Partidos políticos":          "Institución pública",
-    "Diplomacia":                  "Institución pública",
+    # Legado (nombres anteriores)
+    "ONG":                              "Sociedad Civil",
+    "Institución pública":              "Sector público",
+    "Agricultura":                      "Agroalimentario",
+    # Variantes que Claude puede generar
+    "Banca y finanzas":                 "Banca",
+    "Consultoría y comunicación":       "Consultoría",
+    "Administración pública":           "Sector público",
+    "Telecomunicaciones":               "Tecnología",
+    "Medios de comunicación":           "Medios",
+    "Farmacéutica":                     "Salud",
+    "Agricultura y alimentación":       "Agroalimentario",
+    "Pesca":                            "Agroalimentario",
+    "Ganadería":                        "Agroalimentario",
+    "Aeronáutica y defensa":            "Defensa",
+    "Discapacidad y social":            "Sociedad Civil",
+    "ONG y derechos humanos":           "Sociedad Civil",
+    "Academia e investigación":         "Educación",
+    "Partidos políticos":               "Sector público",
+    "Diplomacia":                       "Sector público",
+    "Organismos ONU":                   "Organismos internacionales",
+    "Organismos multilaterales":        "Organismos internacionales",
+    "Organizaciones internacionales":   "Organismos internacionales",
+    "Redes de ciudades":                "Organismos internacionales",
 }
 
 SYSTEM_PROMPT = f"""Eres un asistente especializado en transparencia política del Parlamento Europeo.
@@ -84,6 +95,19 @@ Tu tarea: dado un array JSON de reuniones de eurodiputados españoles, extrae pa
 
 2. sector: elige EXACTAMENTE una de estas categorías (copia el texto exacto):
    {", ".join(VALID_SECTORS)}
+
+   REGLAS DE CLASIFICACIÓN (casos frecuentemente confundidos):
+   - Sector público: gobiernos nacionales/regionales, administraciones, partidos políticos, embajadas, misiones diplomáticas de países
+   - Organismos internacionales: agencias ONU (UNICEF, UNHCR, UNRWA, UNESCO, FAO, OIM, OIT, OMS, PNUD), organizaciones de Estados (OEA, OEI, OCDE, OMC, Consejo de Europa), redes de ciudades (Eurocities, CEMR)
+   - Sociedad Civil: ONGs, fundaciones, asociaciones ciudadanas, plataformas, think tanks sociales, organizaciones de derechos humanos
+   - Agroalimentario: agricultura, ganadería, pesca, acuicultura, industria alimentaria, bebidas, cooperativas agrarias
+   - Tabaco: fabricantes de cigarrillos, cigarros, cigarrillos electrónicos, industria tabaquera, nicotina (IQOS, vapeo)
+   - Tecnología: empresas de software/hardware, plataformas digitales, inteligencia artificial, estándares informáticos (Ecma International es Tecnología)
+   - Energía: petróleo, gas, renovables, electricidad, hidrógeno (ExxonMobil, Repsol, Naturgy son Energía, NO Medios ni Industria)
+   - Defensa: empresas de defensa y aeroespacial en contexto militar (Boeing, Airbus Defence, Rolls-Royce defence, NAVANTIA)
+   - Consultoría: empresas de consultoría estratégica y comunicación pública (Vinces, Llorente y Cuenca, KPMG cuando actúa como consultor)
+   - Automoción: fabricantes de vehículos, proveedores de automoción, flota y alquiler de coches (Enterprise Mobility es Automoción, no Consultoría)
+   - Turismo: hoteles, plataformas de alojamiento, turismo (Airbnb es Turismo)
 
 3. tipo_reunion: "Individual" si hay exactamente 1 actor, "Grupal" si hay 2 o más
 
