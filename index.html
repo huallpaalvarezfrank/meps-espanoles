@@ -2435,6 +2435,22 @@ const ACTOR_ALIASES = {
 
   // ── Ecma International (estándares informáticos, ≠ ECMA tabaco) ──────────
   'ecma international':                                      'Ecma International',
+
+  // ── Banco Santander (forma corta sin S.A.) ────────────────────────────────
+  'banco santander':                                         'Banco Santander, S.A.',
+
+  // ── Mercadona (S.A. con punto → SA sin punto) ────────────────────────────
+  'mercadona s.a.':                                          'Mercadona SA',
+
+  // ── Llorente y Cuenca (sufijos S.L.) ─────────────────────────────────────
+  'llorente y cuenca, s.l.':                                 'Llorente y Cuenca',
+  'llorente y cuenca, s.l':                                  'Llorente y Cuenca',
+
+  // ── Atresmedia (sin coma antes de S.A.) ──────────────────────────────────
+  'atresmedia corporación de medios de comunicación s.a.':   'Atresmedia Corporación de Medios de Comunicación, S.A.',
+
+  // ── ARAG ASAJA (guión vs espacio) ─────────────────────────────────────────
+  'arag-asaja':                                              'ARAG ASAJA',
 };
 function groupActors(rows, limit = 10) {
   const cnt = {}, canonical = {};
