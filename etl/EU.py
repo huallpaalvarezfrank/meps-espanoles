@@ -410,11 +410,8 @@ def main():
         # ── Por cada MEP ──────────────────────────────────────────────────────
         for i, mep in enumerate(meps, 1):
             print(f"[{i}/{len(meps)}] {mep['name']}", end="", flush=True)
-            try:
-                mep_page = open_in_new_tab(context, mep["anchor"])
-            except Exception:
-                mep_page = context.new_page()
-                mep_page = goto_with_retries(mep_page, mep["href"])
+            mep_page = context.new_page()
+            mep_page = goto_with_retries(mep_page, mep["href"])
 
             mep_id = mep["mep_id"]
 
@@ -426,6 +423,10 @@ def main():
 
             # Reuniones
             mep_page = goto_meetings_past(mep_page)
+            try:
+                mep_page.wait_for_selector(".es_document", timeout=10000)
+            except Exception:
+                pass  # El MEP puede no tener reuniones publicadas aún
             load_all_meetings(mep_page)
             rows = extract_meetings(mep_page, mep_id)
             new = insert_reuniones(conn, rows)
