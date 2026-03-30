@@ -1791,7 +1791,7 @@ function renderTimeline() {
   const prog = setInterval(() => { pct = Math.min(pct + Math.random() * 12, 85); bar.style.width = pct + '%'; }, 200);
   try {
     const SQL = await initSqlJs({ locateFile: f => WASM + f });
-    const ver = await (await fetch('db_version.txt', { cache: 'no-cache' })).text().catch(() => Date.now());
+    const ver = await (await fetch('db_version.txt?_=' + Date.now(), { cache: 'no-cache' })).text().catch(() => Date.now());
     const buf = await (await fetch('meps_es_reuniones.db?v=' + String(ver).trim())).arrayBuffer();
     db = new SQL.Database(new Uint8Array(buf));
     clearInterval(prog);
