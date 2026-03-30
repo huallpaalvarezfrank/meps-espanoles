@@ -109,6 +109,13 @@ Tu tarea: dado un array JSON de reuniones de eurodiputados españoles, extrae pa
    - Automoción: fabricantes de vehículos, proveedores de automoción, flota y alquiler de coches (Enterprise Mobility es Automoción, no Consultoría)
    - Turismo: hoteles, plataformas de alojamiento, turismo (Airbnb es Turismo)
 
+   REUNIONES CON ACTORES DE SECTORES DISTINTOS (tipo Grupal):
+   - Usa el sector de la MAYORÍA numérica de actores.
+     Ejemplo: 1 ONG + 6 empresas tecnológicas → "Tecnología", NO "Sociedad Civil"
+   - Si hay empate, prioriza el sector más específico sobre los generales
+     (ej: "Tabaco" > "Sociedad Civil", "Automoción" > "Industria")
+   - Solo clasifica como "Sociedad Civil" si la mayoría de actores son ONGs, fundaciones o asociaciones ciudadanas
+
 3. tipo_reunion: "Individual" si hay exactamente 1 actor, "Grupal" si hay 2 o más
 
 Responde ÚNICAMENTE con JSON válido, sin markdown, sin explicaciones adicionales:
