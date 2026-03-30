@@ -181,7 +181,7 @@ def aplicar_reglas(conn, reglas):
         if clave in reglas:
             canonico, sector = reglas[clave]
             cur.execute(
-                "UPDATE reuniones SET reunion_con = ?, sector = ?, normalizado = 1 WHERE id = ?",
+                "UPDATE OR IGNORE reuniones SET reunion_con = ?, sector = ?, normalizado = 1 WHERE id = ?",
                 (canonico, sector if sector else None, id_)
             )
             if canonico != valor or sector:
@@ -189,7 +189,7 @@ def aplicar_reglas(conn, reglas):
         elif valor_limpio != valor:
             # Solo limpieza de formato, sin regla explícita
             cur.execute(
-                "UPDATE reuniones SET reunion_con = ?, normalizado = 0 WHERE id = ?",
+                "UPDATE OR IGNORE reuniones SET reunion_con = ?, normalizado = 0 WHERE id = ?",
                 (valor_limpio, id_)
             )
             modificadas += 1

@@ -37,10 +37,13 @@ jobs:
       - name: Normalizar nombres (normalizar.py)
         run: python -X utf8 etl/normalizar.py
 
+      - name: Actualizar versión de BD
+        run: echo "$(date -u +%s)" > db_version.txt
+
       - name: Commit y push BD actualizada
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add meps_es_reuniones.db etl/revisar.csv
+          git add meps_es_reuniones.db etl/revisar.csv db_version.txt
           git diff --staged --quiet || git commit -m "Actualización automática $(date +'%Y-%m-%d')"
           git push
