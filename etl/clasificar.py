@@ -42,7 +42,7 @@ SEPARADOR_CSV   = ";"
 VALID_SECTORS = [
     "Energía", "Banca", "Tecnología", "Sociedad Civil", "Transporte", "Agroalimentario",
     "Salud", "Medio ambiente", "Industria", "Educación", "Medios", "Defensa",
-    "Consultoría", "Evento", "Sector público", "Institución UE",
+    "Consultoría", "Sector público", "Institución UE",
     "Organizaciones empresariales", "Sindicatos", "Think tank",
     "Automoción", "Tabaco", "Distribución", "Deporte", "Cosméticos y perfumería",
     "Turismo", "Organismos internacionales", "Otros",
