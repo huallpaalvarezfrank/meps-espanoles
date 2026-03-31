@@ -2373,6 +2373,8 @@ const ACTOR_ALIASES = {
   // ── ONCE y sub-entidades (todas bajo ONCE) ────────────────────────────────
   'organización nacional de ciegos de españa':               'ONCE',
   'organizacion nacional de ciegos de españa':               'ONCE',
+  'organización nacional de ciegos de españa (once)':        'ONCE',
+  'once — organización nacional de ciegos de españa':        'ONCE',
   'fundación once':                                          'ONCE',
   'grupo social once':                                       'ONCE',
   'once la rioja':                                           'ONCE',
@@ -3851,10 +3853,12 @@ function initAutocomplete() {
       ['%' + q + '%']
     )[0]?.values ?? [];
 
-    const orgRows = db.exec(
-      "SELECT DISTINCT reunion_con FROM reuniones WHERE reunion_con IS NOT NULL AND reunion_con LIKE ? LIMIT 3",
+    const orgRowsRaw = db.exec(
+      "SELECT DISTINCT reunion_con FROM reuniones WHERE reunion_con IS NOT NULL AND reunion_con LIKE ? LIMIT 20",
       ['%' + q + '%']
     )[0]?.values ?? [];
+    const wordRe = new RegExp('(?:^|[\\s(\\-])' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    const orgRows = orgRowsRaw.filter(([org]) => wordRe.test(org)).slice(0, 3);
 
     const sectorRows = db.exec(
       "SELECT DISTINCT sector FROM reuniones WHERE sector IS NOT NULL AND sector LIKE ? LIMIT 2",
