@@ -2057,8 +2057,8 @@ function actorBadges(a) {
 }
 function sectorBadge(s) {
   if (!s) return `<span style="color:var(--t3)">—</span>`;
-  const [bg, color] = C[s] || C['Otros'];
-  return `<span class="badge" style="background:${bg};color:${color};border:1px solid rgba(0,0,0,0.07)">${esc(s)}</span>`;
+  const [bg] = C[s] || C['Otros'];
+  return `<span class="badge" style="background:${bg};color:var(--t2);border:1px solid rgba(0,0,0,0.07)">${esc(s)}</span>`;
 }
 
 // ── Pagination ───────────────────────────────────────────────
