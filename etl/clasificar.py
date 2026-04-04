@@ -192,7 +192,7 @@ def add_missing_columns(conn):
 
 def fetch_unclassified(conn, limit=None):
     """
-    Devuelve registros donde actores IS NULL.
+    Devuelve registros donde actores IS NULL o sector IS NULL.
     Usa reunion_con_original si existe, si no cae back a reunion_con (columna cruda).
     """
     cur = conn.cursor()
@@ -202,7 +202,7 @@ def fetch_unclassified(conn, limit=None):
             COALESCE(reunion_con_original, reunion_con) AS texto,
             titulo
         FROM reuniones
-        WHERE actores IS NULL
+        WHERE (actores IS NULL OR sector IS NULL)
           AND COALESCE(reunion_con_original, reunion_con) IS NOT NULL
         ORDER BY id
     """
@@ -323,7 +323,7 @@ def write_results(conn, results, reglas_sector, batch_records):
         sector_final   = sector_manual if sector_manual else fields["sector"]
 
         cur.execute(
-            "UPDATE reuniones SET actores = ?, sector = ?, tipo_reunion = ? WHERE id = ?",
+            "UPDATE reuniones SET actores = COALESCE(actores, ?), sector = ?, tipo_reunion = COALESCE(tipo_reunion, ?) WHERE id = ?",
             (fields["actores"], sector_final, fields["tipo_reunion"], rid),
         )
     conn.commit()
