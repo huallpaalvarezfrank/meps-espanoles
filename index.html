@@ -1839,15 +1839,15 @@ function updateDataStatus() {
     }
   } catch(e) { /* silently ignore */ }
 
-  // Countdown to next Sunday at 23:59
+  // Countdown to next Saturday at 23:59
   function tick() {
     const now = new Date();
     const next = new Date(now);
     const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-    const daysUntilSunday = (7 - dayOfWeek) % 7; // 0 if today is Sunday
-    next.setDate(now.getDate() + daysUntilSunday);
+    const daysUntilSaturday = (6 - dayOfWeek + 7) % 7; // 0 if today is Saturday
+    next.setDate(now.getDate() + daysUntilSaturday);
     next.setHours(23, 59, 0, 0);
-    // If that moment is already past (or it's Sunday night after 23:59), jump to next Sunday
+    // If that moment is already past (or it's Saturday night after 23:59), jump to next Saturday
     if (next <= now) next.setDate(next.getDate() + 7);
     const diff = next - now;
     if (diff <= 0) {
