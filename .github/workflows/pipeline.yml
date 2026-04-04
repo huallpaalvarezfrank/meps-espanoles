@@ -2,7 +2,7 @@ name: Pipeline semanal MEPs
 
 on:
   schedule:
-    - cron: '59 22 * * 6'  # Sábados a las 23:59 hora Madrid (invierno UTC+1; en verano UTC+2 corre a las 00:59 del domingo)
+    - cron: '59 21 * * 6'  # Sábados ~23:59 hora Madrid (verano UTC+2=23:59; invierno UTC+1=22:59 — siempre en sábado)
   workflow_dispatch:        # permite lanzar manualmente desde GitHub
 
 jobs:
