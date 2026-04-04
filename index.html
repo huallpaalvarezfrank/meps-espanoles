@@ -1914,6 +1914,7 @@ function initStats() {
       const rows = db.exec("SELECT actores FROM reuniones WHERE actores IS NOT NULL AND actores!=''")[0]?.values ?? [];
       const seen = new Set();
       rows.forEach(([a]) => a.split('|').forEach(x => { const raw = x.trim(); if (!raw) return; seen.add((ACTOR_ALIASES[raw.toLowerCase()] || raw).toLowerCase()); }));
+      window._nOrgsUnique = seen.size;
       return seen.size;
     })()],
     ['s-s', q("SELECT COUNT(DISTINCT sector) FROM reuniones WHERE sector IS NOT NULL AND sector!=''")]
@@ -2725,7 +2726,7 @@ function renderSectorsView() {
   const sectorData = db.exec("SELECT sector, COUNT(*) n FROM reuniones WHERE sector IS NOT NULL AND sector!='' GROUP BY sector ORDER BY n DESC")[0]?.values ?? [];
   const totalR   = db.exec('SELECT COUNT(*) FROM reuniones')[0]?.values[0][0] ?? 1;
   const grupal   = db.exec("SELECT COUNT(*) FROM reuniones WHERE tipo_reunion='Grupal'")[0]?.values[0][0] ?? 0;
-  const orgs     = db.exec("SELECT COUNT(DISTINCT reunion_con) FROM reuniones WHERE reunion_con IS NOT NULL AND reunion_con!=''"  )[0]?.values[0][0] ?? 0;
+  const orgs     = window._nOrgsUnique ?? 0;
 
   const topS = sectorData[0];
   document.getElementById('kpi-top-sector').textContent   = topS ? topS[0] : '—';
