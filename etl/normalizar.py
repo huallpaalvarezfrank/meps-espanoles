@@ -180,10 +180,17 @@ def aplicar_reglas(conn, reglas):
         clave = valor_limpio.lower()
         if clave in reglas:
             canonico, sector = reglas[clave]
-            cur.execute(
-                "UPDATE OR IGNORE reuniones SET reunion_con = ?, sector = ?, normalizado = 1 WHERE id = ?",
-                (canonico, sector if sector else None, id_)
-            )
+            if sector:
+                cur.execute(
+                    "UPDATE OR IGNORE reuniones SET reunion_con = ?, sector = ?, normalizado = 1 WHERE id = ?",
+                    (canonico, sector, id_)
+                )
+            else:
+                # Regla sin sector: actualizar nombre canónico pero NO tocar sector existente
+                cur.execute(
+                    "UPDATE OR IGNORE reuniones SET reunion_con = ?, normalizado = 1 WHERE id = ?",
+                    (canonico, id_)
+                )
             if canonico != valor or sector:
                 modificadas += 1
         elif valor_limpio != valor:

@@ -91,7 +91,7 @@ commissioner designate;Comisario/a designado/a;Institución UE
 commissioner-designate;Comisario/a designado/a;Institución UE
 confederación española de organizaciones de mayores;Confederación Española de Organizaciones de Mayores;Sociedad Civil
 confederación española de organizaciones empresariales;CEOE — Confederación Española de Organizaciones Empresariales;Organizaciones empresariales
-confederación española de organizaciones empresariales cev;CEOE — Confederación Española de Organizaciones Empresariales;
+confederación española de organizaciones empresariales cev;CEOE — Confederación Española de Organizaciones Empresariales;Organizaciones empresariales
 confederación sindical de comisiones obreras;CCOO — Confederación Sindical de Comisiones Obreras;Sindicatos
 confederación sindical de comisiones obreras ugt sumar;CCOO — Confederación Sindical de Comisiones Obreras;
 cooperativas agro-alimentarias de españa;Cooperativas Agro-alimentarias de España;Agroalimentario
@@ -99,8 +99,8 @@ cooperativas agroalimentarias de andalucía;Cooperativas Agroalimentarias de And
 cooperativas agroalimentarias de españa;Cooperativas Agro-alimentarias de España;Agroalimentario
 copa cogeca;Copa-Cogeca;Agroalimentario
 copa-cogeca;Copa-Cogeca;Agroalimentario
-copa-cogeca risi;Copa-Cogeca;
-copa_cogeca;Copa-Cogeca;
+copa-cogeca risi;Copa-Cogeca;Agroalimentario
+copa_cogeca;Copa-Cogeca;Agroalimentario
 cosmetics europe;Cosmetics Europe;Cosméticos y perfumería
 danone;Danone;Agroalimentario
 dg mare comisión europea;Comisión Europea;
@@ -149,7 +149,7 @@ gobierno vasco;Gobierno Vasco;Sector público
 google;Google LLC;Tecnología
 google spain;Google LLC;Tecnología
 grupo santander;Banco Santander, S.A.;Banca
-grupo vall companys;Grupo Vall Companys;
+grupo vall companys;Grupo Vall Companys;Agroalimentario
 grupo valls companys;Grupo Vall Companys;Agroalimentario
 gsk;GSK (GlaxoSmithKline);Salud
 hipra, s.a;HIPRA, S.A.;Salud
@@ -212,7 +212,8 @@ naturgy energy group;Naturgy Energy Group, S.A.;Energía
 naturgy energy group, s.a;Naturgy Energy Group;Energía
 naturgy energy group, s.a.;Naturgy Energy Group;Energía
 navantia;Navantia, S.A.;Defensa
-navantia, s.a;Navantia, S.A.;
+navantia, s.a;Navantia, S.A.;Defensa
+navantia, s.a.;Navantia, S.A.;Defensa
 neoelectra;NeoElectra;Energía
 netflix international b.v;Netflix International B.V.;Medios
 netflix international b.v.;Netflix International B.V.;Medios
@@ -308,7 +309,7 @@ unión general de trabajadores (ugt);UGT — Unión General de Trabajadores de E
 unión general de trabajadores de españa;UGT — Unión General de Trabajadores de España;Sindicatos
 unión general de trabajadores de españa ruge;UGT — Unión General de Trabajadores de España;
 unrwa;UNRWA;Organismos internacionales
-vall companys;Grupo Vall Companys;
+vall companys;Grupo Vall Companys;Agroalimentario
 verkhovna rada;Verkhovna Rada (Parlamento de Ucrania);Sector público
 verkhovna rhada;Verkhovna Rada (Parlamento de Ucrania);Sector público
 vinces;Vinces Consulting;Consultoría
